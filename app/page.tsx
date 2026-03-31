@@ -122,7 +122,18 @@ export default function Home() {
       if (e.key === 'Escape') setAddOnsExpanded(false)
     }
     window.addEventListener('keydown', onKeyDown)
-    return () => window.removeEventListener('keydown', onKeyDown)
+    const prevHtmlOverflow = document.documentElement.style.overflow
+    const prevBodyOverflow = document.body.style.overflow
+    const prevBodyOverscroll = document.body.style.overscrollBehavior
+    document.documentElement.style.overflow = 'hidden'
+    document.body.style.overflow = 'hidden'
+    document.body.style.overscrollBehavior = 'contain'
+    return () => {
+      window.removeEventListener('keydown', onKeyDown)
+      document.documentElement.style.overflow = prevHtmlOverflow
+      document.body.style.overflow = prevBodyOverflow
+      document.body.style.overscrollBehavior = prevBodyOverscroll
+    }
   }, [addOnsExpanded])
 
   useEffect(() => {
@@ -353,7 +364,7 @@ export default function Home() {
       ) : null}
 
       <div
-        className={`fixed inset-0 z-[70] transition-opacity duration-500 ${
+        className={`fixed inset-0 z-[70] transition-opacity duration-500 overscroll-none ${
           addOnsExpanded ? 'opacity-100' : 'opacity-0 pointer-events-none'
         }`}
       >
@@ -366,7 +377,7 @@ export default function Home() {
             addOnsExpanded ? 'translate-y-0' : 'translate-y-full'
           }`}
         >
-          <div className="max-w-3xl mx-auto h-full flex flex-col">
+          <div className="max-w-3xl mx-auto h-[85vh] flex flex-col min-h-0">
             <div className="sticky top-0 bg-white/90 backdrop-blur-xl px-4 pt-4 pb-4 border-b border-outline-variant/20">
               <div className="flex items-start justify-between gap-4">
                 <div>
@@ -389,7 +400,7 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="px-4 py-4 overflow-y-auto">
+            <div className="px-4 py-4 overflow-y-auto flex-1 min-h-0 overscroll-contain touch-pan-y">
               <div className="space-y-3">
                 {extras.map((x) => {
                   const qty = extraQty[x.id] ?? 0
