@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: conciergo-ui
+    runtime: node
+    plan: free
+    buildCommand: rm -f .env.local && npm ci && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_VERSION
+        value: 20
+      - key: NPM_CONFIG_PRODUCTION
+        value: "false"
