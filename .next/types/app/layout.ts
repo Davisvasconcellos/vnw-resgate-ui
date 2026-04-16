@@ -1,4 +1,4 @@
-// File: E:\PROJETOS\LIMPAJA\limpaja-ui\app\layout.tsx
+// File: E:\AULAS\VAINAWEB\backhend\DESAFIO-FINAL\vnw-ajuda-ui\app\layout.tsx
 import * as entry from '../../../app/layout.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

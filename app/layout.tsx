@@ -2,6 +2,7 @@ import './globals.css'
 import type { Metadata } from 'next'
 import { Plus_Jakarta_Sans, Manrope } from 'next/font/google'
 import { I18nProvider } from '@/components/i18n/I18nProvider'
+import BottomNavWrapper from '@/components/BottomNavWrapper'
 
 const headline = Plus_Jakarta_Sans({
   subsets: ['latin'],
@@ -18,8 +19,8 @@ const body = Manrope({
 })
 
 export const metadata: Metadata = {
-  title: 'CONCIERGO',
-  description: 'Sistema de serviços de diaristas',
+  title: 'VNW Resgate — Apoio em Emergências',
+  description: 'Plataforma de apoio em situações de emergência — conectando pessoas afetadas a voluntários e recursos em tempo real.',
 }
 
 export default function RootLayout({
@@ -36,7 +37,10 @@ export default function RootLayout({
         />
       </head>
       <body className={`min-proto-h ${headline.variable} ${body.variable}`}>
-        <I18nProvider>{children}</I18nProvider>
+        <I18nProvider>
+          {children}
+          <BottomNavWrapper />
+        </I18nProvider>
       </body>
     </html>
   )

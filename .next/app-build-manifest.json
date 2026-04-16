@@ -1,9 +1,9 @@
 {
   "pages": {
-    "/page": [
+    "/dashboard/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/page.js"
+      "static/chunks/app/dashboard/page.js"
     ],
     "/layout": [
       "static/chunks/webpack.js",
@@ -11,30 +11,65 @@
       "static/css/app/layout.css",
       "static/chunks/app/layout.js"
     ],
-    "/filtros/page": [
+    "/profile/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/filtros/page.js"
+      "static/chunks/app/profile/page.js"
     ],
-    "/my-bookings/page": [
+    "/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/my-bookings/page.js"
+      "static/chunks/app/page.js"
     ],
-    "/user-profile/page": [
+    "/help/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/user-profile/page.js"
+      "static/chunks/app/help/page.js"
+    ],
+    "/assist/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/assist/page.js"
     ],
     "/login/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/login/page.js"
     ],
-    "/_not-found/page": [
+    "/onboarding/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/_not-found/page.js"
+      "static/chunks/app/onboarding/page.js"
+    ],
+    "/shelter/manage/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/shelter/manage/page.js"
+    ],
+    "/nearby/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/nearby/page.js"
+    ],
+    "/missing/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/missing/page.js"
+    ],
+    "/request/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/request/page.js"
+    ],
+    "/help/shelters/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/help/shelters/page.js"
+    ],
+    "/help/phones/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/help/phones/page.js"
     ]
   }
 }

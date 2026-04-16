@@ -1,151 +1,147 @@
-import Button from '@/components/ui/Button'
-import TextInput from '@/components/ui/TextInput'
-import Image from 'next/image'
+'use client'
+
+import { Suspense, useState } from 'react'
 import Link from 'next/link'
-import logo from '@/assets/img/logo.png'
+import { useSearchParams, useRouter } from 'next/navigation'
 
-export default function Login() {
+function LoginContent() {
+  const searchParams = useSearchParams()
+  const router = useRouter()
+  const role = searchParams.get('role') ?? 'volunteer'
+  const offer = searchParams.get('offer') ?? ''
+  
+  const [phone, setPhone] = useState('')
+  const [loading, setLoading] = useState(false)
+
+  const offerLabels: Record<string, string> = {
+    shelter: 'Abrigo',
+    transport: 'Transporte',
+    boat: 'Barco / Lancha',
+    volunteer: 'Voluntário',
+  }
+
+  const handleLogin = () => {
+    setLoading(true)
+    const phoneDigits = phone.replace(/\D/g, '')
+    // Telefone curinga de teste
+    if (phoneDigits === '5521123456789' || phoneDigits === '21123456789') {
+      setTimeout(() => {
+        router.push(`/onboarding?offer=${offer}`)
+      }, 500)
+    } else {
+      setTimeout(() => {
+        setLoading(false)
+        alert('Telefone não cadastrado. Use o curinga 21 1234-56789 para testar.')
+      }, 1000)
+    }
+  }
+
+  const handleGoogleLogin = () => {
+    setLoading(true)
+    setTimeout(() => {
+      router.push(`/onboarding?offer=${offer}`)
+    }, 600)
+  }
+
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-6 relative overflow-x-hidden bg-surface">
-      <div className="absolute inset-0 z-0 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-surface via-surface to-surface" />
-
-        <svg
-          className="absolute -top-20 left-0 w-full h-72 login-wave-1"
-          viewBox="0 0 1440 320"
-          preserveAspectRatio="none"
-        >
-          <path
-            fill="rgba(0,88,190,0.18)"
-            d="M0,64L60,90.7C120,117,240,171,360,197.3C480,224,600,224,720,202.7C840,181,960,139,1080,117.3C1200,96,1320,96,1380,96L1440,96L1440,0L1380,0C1320,0,1200,0,1080,0C960,0,840,0,720,0C600,0,480,0,360,0C240,0,120,0,60,0L0,0Z"
-          />
-          <path
-            fill="rgba(0,88,190,0.32)"
-            d="M0,0L80,16C160,32,320,64,480,90.7C640,117,800,139,960,138.7C1120,139,1280,117,1360,106.7L1440,96L1440,0L1360,0C1280,0,1120,0,960,0C800,0,640,0,480,0C320,0,160,0,80,0L0,0Z"
-          />
-        </svg>
-
-        <svg
-          className="absolute -top-28 -right-20 w-[520px] h-[520px] login-wave-2"
-          viewBox="0 0 400 400"
-          aria-hidden="true"
-        >
-          <path
-            fill="rgba(0,88,190,0.22)"
-            d="M235.6,35.9c42.1,7.7,86.6,26.4,108.1,61.1c21.7,34.8,20.5,85.5,1.6,128.6c-18.9,43.2-55.4,78.9-97.8,97.9c-42.6,18.9-91.1,20.9-132.8,2.4C73,307.3,38.2,268.2,27,224.7c-11.1-43.6,1.4-91.5,28.5-130.6C82.8,54.9,126.9,28.1,171.3,27C195.3,26.4,211.1,31.5,235.6,35.9z"
-          />
-        </svg>
-
-        <div className="absolute -bottom-40 -left-40 w-[420px] h-[420px] rounded-full bg-secondary/10 login-float-1" />
-        <div className="absolute bottom-24 left-24 w-20 h-20 rounded-full bg-primary/10 login-float-2" />
+    <main
+      className="min-h-screen flex flex-col"
+      style={{ background: 'linear-gradient(160deg, #0a1628 0%, #0d2247 40%, #1a3a6e 100%)' }}
+    >
+      {/* BG blobs */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-32 -left-32 w-80 h-80 rounded-full opacity-20 login-wave-1" style={{ background: 'radial-gradient(circle, #1565C0, transparent)' }} />
+        <div className="absolute bottom-20 -right-24 w-64 h-64 rounded-full opacity-15 login-wave-2" style={{ background: 'radial-gradient(circle, #43A047, transparent)' }} />
       </div>
 
-      <main className="relative z-10 w-full max-w-md">
-        <header className="text-center mb-10">
-          <div className="flex items-center justify-center">
-            <Image src={logo} alt="CONCIERGO" priority className="h-12 w-auto" />
+      {/* Header */}
+      <div className="relative z-10 flex items-center gap-3 px-4 pt-14 pb-6">
+        <Link href="/assist" className="flex items-center justify-center w-10 h-10 rounded-xl bg-white/10 text-white active:scale-95 transition-transform">
+          <span className="material-symbols-outlined text-[22px]">arrow_back</span>
+        </Link>
+      </div>
+
+      <div className="relative z-10 flex-1 flex flex-col px-6">
+        {/* Title */}
+        <div className="mb-8">
+          <div className="flex items-center justify-center w-16 h-16 rounded-2xl mb-4" style={{ background: 'linear-gradient(135deg, #1565C0, #1976D2)', boxShadow: '0 12px 32px -8px rgba(21,101,192,0.6)' }}>
+            <span className="material-symbols-outlined text-white text-[36px]" style={{ fontVariationSettings: `'FILL' 1` }}>volunteer_activism</span>
           </div>
-        </header>
-
-        <section className="rounded-xl p-8 shadow-[0_32px_64px_-16px_rgba(0,88,190,0.10)] border border-outline-variant/15 bg-white/55 backdrop-blur-3xl">
-          <form className="space-y-6">
-            <div className="space-y-2">
-              <label
-                htmlFor="email"
-                className="block text-sm font-semibold text-on-surface-variant px-1"
-              >
-                Email Address
-              </label>
-              <TextInput id="email" placeholder="name@company.com" type="email" icon="mail" />
-            </div>
-            <div className="space-y-2">
-              <div className="flex justify-between items-center px-1">
-                <label
-                  htmlFor="password"
-                  className="block text-sm font-semibold text-on-surface-variant"
-                >
-                  Password
-                </label>
-                <a
-                  href="#"
-                  className="text-xs font-bold text-primary hover:text-on-primary-fixed-variant transition-colors"
-                >
-                  Forgot Password?
-                </a>
-              </div>
-              <TextInput id="password" placeholder="••••••••" type="password" icon="lock" />
-            </div>
-            <div className="pt-2">
-              <Button className="w-full" type="submit">
-                Sign In
-              </Button>
-            </div>
-          </form>
-
-          <div className="mt-8 pt-8 border-t border-outline-variant/10 flex flex-col items-center space-y-6">
-            <div className="relative w-full text-center">
-              <span className="bg-white/0 px-4 text-xs font-bold text-outline uppercase tracking-widest relative z-10">
-                Or continue with
-              </span>
-            </div>
-            <div className="grid grid-cols-1 gap-4 w-full">
-              <button className="flex items-center justify-center py-3 px-4 bg-surface-container-high rounded-md hover:bg-surface-container-highest transition-colors active:scale-95 duration-200">
-                <img
-                  alt="Google Logo"
-                  className="w-5 h-5 mr-3"
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuCu7gl0IkeP8KZblVlztXd31TBJC9AIbeZUlRqPyzHFskaNqKZ7iCtbx99MBZUW2AdOCUn0BG9EAgCxtYRHjwXgvsnX4knhvMqMsxe5d7KzDQG-_pNNLZJoAvKARVH-eCS9912DC8VFcCTDCi8R9ANRcTlYdoYSOy3NEOWQJ9TQ0eWabBzgaB-43d1ypdkTSi6SF1fl8EpajN6v82iHxjgTh3zG8MXtjNGbjiQCnsxB58Ygh3HOmtKeTFqQ0MEwDOa7gw76b2JoHQY"
-                />
-                <span className="text-sm font-bold text-on-surface">
-                  Google
-                </span>
-              </button>
-            </div>
-
-            <div className="grid grid-cols-3 gap-3 w-full">
-              <Link
-                href="/"
-                className="flex items-center justify-center py-3 px-4 bg-surface-container-high rounded-md hover:bg-surface-container-highest transition-colors active:scale-95 duration-200 text-sm font-bold text-on-surface"
-              >
-                Cliente
-              </Link>
-              <Link
-                href="/profissional"
-                className="flex items-center justify-center py-3 px-4 bg-surface-container-high rounded-md hover:bg-surface-container-highest transition-colors active:scale-95 duration-200 text-sm font-bold text-on-surface"
-              >
-                Diarista
-              </Link>
-              <Link
-                href="/admin"
-                className="flex items-center justify-center py-3 px-4 bg-surface-container-high rounded-md hover:bg-surface-container-highest transition-colors active:scale-95 duration-200 text-sm font-bold text-on-surface"
-              >
-                Admin
-              </Link>
-            </div>
-          </div>
-        </section>
-
-        <footer className="mt-10 text-center">
-          <p className="text-on-surface-variant font-medium">
-            Don&apos;t have an account?
-            <a
-              className="text-primary font-bold hover:underline underline-offset-4 ml-1"
-              href="#"
-            >
-              Sign Up
-            </a>
+          <h1 className="text-2xl font-bold text-white font-headline">Acesse como voluntário</h1>
+          <p className="text-white/60 text-sm mt-1 leading-snug">
+            {offer ? `Para oferecer ${offerLabels[offer] ?? offer}, você precisa fazer login.` : 'Para oferecer ajuda, faça login.'}
           </p>
-        </footer>
-      </main>
-
-      <div className="fixed bottom-12 right-12 opacity-10 pointer-events-none select-none hidden lg:block">
-        <div className="w-64 h-64 rounded-full overflow-hidden">
-          <img
-            className="w-full h-full object-cover grayscale"
-            alt="Modern minimalist bathroom"
-            src="https://lh3.googleusercontent.com/aida-public/AB6AXuD_J4PaA9055jrcKPxjyhySBeXNV3Klju3cBrpXhbmuQAbvCtH4cgjOvN4nMGNdVMRJWlk3FRbk04R4rpjeXHOw3XOs8Xe7K2i5LpjQWnAyI0C3OoHM4Wz6NApDLmxx14rKhBeuqkvBfH3NaRMKaeY5UpIyRYKyOy530-FCOkN3ihNFNB3ZSykZeHebPc3hGml_oy6gwd1gxzpNtDgdAU4SkTOs4tY8wlgo-JwKcToHrriDvLAB_yAVBQan9P8afjfgwfp16cpf_PM"
-          />
         </div>
+
+        {/* Login options */}
+        <div className="space-y-3">
+          <button
+            onClick={handleGoogleLogin}
+            disabled={loading}
+            className="w-full flex items-center gap-4 rounded-2xl px-5 py-4 font-semibold text-slate-800 transition-all active:scale-[0.97] disabled:opacity-75"
+            style={{ background: 'white', boxShadow: '0 4px 16px rgba(0,0,0,0.15)' }}
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" className="shrink-0">
+              <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+              <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+              <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+              <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+            </svg>
+            <span className="flex-1 text-left font-headline text-base">Entrar com Google</span>
+            <span className="material-symbols-outlined text-slate-400 text-[20px]">chevron_right</span>
+          </button>
+
+          <div className="relative flex items-center gap-3">
+            <div className="flex-1 h-px bg-white/15" />
+            <span className="text-white/30 text-xs font-semibold">ou</span>
+            <div className="flex-1 h-px bg-white/15" />
+          </div>
+
+          <div className="rounded-2xl overflow-hidden shadow-lg" style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.12)' }}>
+            <div className="px-4 py-3">
+              <label className="text-white/50 text-xs font-semibold uppercase tracking-wide">Telefone</label>
+              <div className="flex items-center gap-3 mt-1.5 focus-within:bg-white/5 px-2 py-1 -mx-2 rounded-lg transition-colors">
+                <span className="text-white font-bold text-base">🇧🇷 +55</span>
+                <input
+                  type="tel"
+                  placeholder="(21) 1234-56789"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  onKeyDown={(e) => { if (e.key === 'Enter') handleLogin() }}
+                  className="flex-1 bg-transparent text-white placeholder-white/30 text-base font-semibold outline-none border-none"
+                />
+              </div>
+            </div>
+            <button
+              onClick={handleLogin}
+              disabled={loading}
+              className="w-full flex items-center justify-center gap-2 py-4 font-bold text-white font-headline text-base transition-all active:scale-[0.97] disabled:opacity-75"
+              style={{ background: 'linear-gradient(135deg, #1565C0, #1976D2)' }}
+            >
+              {loading ? (
+                <div className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent" />
+              ) : (
+                <>
+                  <span className="material-symbols-outlined text-[20px]" style={{ fontVariationSettings: `'FILL' 1` }}>sms</span>
+                  Enviar código SMS
+                </>
+              )}
+            </button>
+          </div>
+        </div>
+
+        <p className="text-white/25 text-xs text-center mt-8 leading-relaxed">
+          Ao fazer login você concorda com os termos de uso e se compromete a atuar como voluntário de forma responsável.
+        </p>
       </div>
-    </div>
+    </main>
+  )
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen" style={{ background: 'linear-gradient(160deg, #0a1628, #1a3a6e)' }} />}>
+      <LoginContent />
+    </Suspense>
   )
 }
