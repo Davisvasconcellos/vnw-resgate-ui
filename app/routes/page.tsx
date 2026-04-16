@@ -78,18 +78,18 @@ export default function RoutesPage() {
                 <div className="flex-1 min-w-0 pr-4">
                   <h3 className="font-extrabold text-on-surface text-lg font-headline">{route.name}</h3>
                   <div className="mt-3 space-y-2">
-                    <p className="text-xs text-on-surface-variant font-medium flex items-center gap-2">
+                    <div className="text-xs text-on-surface-variant font-medium flex items-center gap-2">
                       <div className="w-6 h-6 rounded-lg bg-primary/5 flex items-center justify-center text-primary">
                         <span className="material-symbols-outlined text-[14px]">location_on</span>
                       </div>
                       {t('routesPage.origin').replace('{loc}', route.location)}
-                    </p>
-                    <p className="text-xs text-on-surface-variant font-medium flex items-center gap-2">
+                    </div>
+                    <div className="text-xs text-on-surface-variant font-medium flex items-center gap-2">
                       <div className="w-6 h-6 rounded-lg bg-secondary/5 flex items-center justify-center text-secondary">
                         <span className="material-symbols-outlined text-[14px]">group</span>
                       </div>
                       {route.people === 1 ? t('shelterManage.person') : t('routesPage.rescued').replace('{count}', route.people.toString())}
-                    </p>
+                    </div>
                   </div>
                 </div>
                 {route.status === 'ongoing' && (

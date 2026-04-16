@@ -25,7 +25,7 @@ export default function BottomNavPublic() {
               key={item.href}
               href={item.href}
               className={`flex flex-col items-center gap-1 p-2 min-w-[72px] transition-all active:scale-95 ${
-                isActive ? 'text-blue-600' : 'text-slate-400'
+                isActive ? 'text-[#7B1FA2]' : 'text-slate-400'
               }`}
             >
               <span 

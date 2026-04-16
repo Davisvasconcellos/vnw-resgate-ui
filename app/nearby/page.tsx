@@ -8,6 +8,7 @@ import CapacityBar from '@/components/ui/CapacityBar'
 import StatusBadge from '@/components/ui/StatusBadge'
 import InteractiveMap from '@/components/ui/InteractiveMap'
 import BottomNavTransport from '@/components/BottomNavTransport'
+import BottomNavBoat from '@/components/BottomNavBoat'
 import BottomNavShelterManage from '@/components/BottomNavShelterManage'
 
 type Tab = 'shelters' | 'requests'
@@ -233,6 +234,7 @@ export default function NearbyPage() {
 
       {/* Navbars contextuais */}
       {moduleParam === 'transport' && <BottomNavTransport />}
+      {moduleParam === 'boat' && <BottomNavBoat />}
       {moduleParam === 'shelter' && <BottomNavShelterManage onCheckinClick={() => {}} />}
     </main>
   )

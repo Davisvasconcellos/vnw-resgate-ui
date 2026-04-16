@@ -25,9 +25,11 @@ function OnboardingContent() {
       if (offer === 'shelter') {
         router.push('/shelter/manage')
       } else if (offer === 'transport' || offer === 'boat') {
-        router.push('/nearby')
+        router.push(`/nearby?module=${offer}`)
+      } else if (offer === 'volunteer') {
+        router.push('/volunteer')
       } else {
-        router.push('/dashboard')
+        router.push('/volunteer')
       }
     }, 1500)
   }

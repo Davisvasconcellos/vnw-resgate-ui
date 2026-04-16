@@ -13,9 +13,9 @@ export default function AssistPage() {
       label: language === 'pt-BR' ? 'Mapa' : 'Maps',
       icon: 'map',
       description: t('rescue.nearbyStatusDesc'),
-      color: '#2E7D32',
-      bg: 'rgba(46,125,50,0.1)',
-      border: 'rgba(46,125,50,0.2)',
+      color: '#E65100',
+      bg: 'rgba(230,81,0,0.1)',
+      border: 'rgba(230,81,0,0.2)',
       href: '/nearby'
     },
     {
@@ -62,9 +62,9 @@ export default function AssistPage() {
       label: t('assistPage.types.volunteer'),
       icon: 'volunteer_activism',
       description: t('assistPage.types.volunteerDesc'),
-      color: '#C2185B',
-      bg: 'rgba(194,24,91,0.1)',
-      border: 'rgba(194,24,91,0.2)',
+      color: '#2E7D32',
+      bg: 'rgba(46,125,50,0.1)',
+      border: 'rgba(46,125,50,0.2)',
       href: '/onboarding?offer=volunteer'
     },
   ]

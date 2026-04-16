@@ -302,7 +302,7 @@ export default function ShelterManagePage() {
                     onClick={() => changeStatus(selectedEntry, 'present')}
                     disabled={available < selectedEntry.people}
                     className="w-full flex items-center justify-center gap-2 rounded-2xl py-4 font-bold text-white text-base active:scale-[0.97] transition-all disabled:opacity-50"
-                    style={{ background: 'linear-gradient(135deg, #1B5E20, #2E7D32)', boxShadow: '0 8px 24px -6px rgba(27,94,32,0.4)' }}
+                    style={{ background: 'linear-gradient(135deg, #0D47A1, #1565C0)', boxShadow: '0 8px 24px -6px rgba(13,71,161,0.4)' }}
                   >
                     <span className="material-symbols-outlined text-[20px]">login</span>
                     {t('shelterManage.checkinBtn')}
@@ -381,7 +381,7 @@ export default function ShelterManagePage() {
                     onClick={handleManualCheckin}
                     disabled={!name.trim()}
                     className="w-full flex items-center justify-center gap-2 rounded-2xl py-4 font-bold text-white text-base font-headline active:scale-[0.97] transition-all disabled:opacity-50"
-                    style={{ background: 'linear-gradient(135deg, #1B5E20, #2E7D32)', boxShadow: '0 8px 24px -6px rgba(27,94,32,0.4)' }}
+                    style={{ background: 'linear-gradient(135deg, #0D47A1, #1565C0)', boxShadow: '0 8px 24px -6px rgba(13,71,161,0.4)' }}
                   >
                     <span className="material-symbols-outlined text-[22px]" style={{ fontVariationSettings: `'FILL' 1` }}>fact_check</span>
                     {t('onboarding.submit')}

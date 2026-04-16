@@ -31,7 +31,7 @@ export default function BottomNavShelterManage({ onCheckinClick }: Props) {
         <div className="relative -top-10">
           <button
             onClick={onCheckinClick}
-            className="w-16 h-16 rounded-full bg-secondary text-on-secondary shadow-xl shadow-secondary/40 flex items-center justify-center active:scale-90 transition-all border-4 border-white"
+            className="w-16 h-16 rounded-full bg-[#1565C0] text-white shadow-xl shadow-[#1565C0]/40 flex items-center justify-center active:scale-90 transition-all border-4 border-white"
           >
             <span className="material-symbols-outlined text-[32px] font-bold">fact_check</span>
           </button>
@@ -39,9 +39,9 @@ export default function BottomNavShelterManage({ onCheckinClick }: Props) {
 
         {/* Management Button (Active) */}
         <div
-          className="flex flex-col items-center gap-1.5 p-2 min-w-[70px] transition-all text-primary"
+          className="flex flex-col items-center gap-1.5 p-2 min-w-[70px] transition-all text-[#1565C0]"
         >
-          <div className="w-10 h-10 rounded-2xl bg-primary/10 flex items-center justify-center">
+          <div className="w-10 h-10 rounded-2xl bg-[#1565C0]/10 flex items-center justify-center">
             <span className="material-symbols-outlined text-[24px]" style={{ fontVariationSettings: `'FILL' 1` }}>grid_view</span>
           </div>
           <span className="text-[10px] font-extrabold uppercase tracking-widest">Gestão</span>

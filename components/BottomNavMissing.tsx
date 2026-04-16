@@ -31,7 +31,7 @@ export default function BottomNavMissing({ onAddClick }: Props) {
         <div className="relative -top-10">
           <button
             onClick={onAddClick}
-            className="w-16 h-16 rounded-full bg-primary text-on-primary shadow-xl shadow-primary/40 flex items-center justify-center active:scale-90 transition-all border-4 border-white"
+            className="w-16 h-16 rounded-full bg-[#7B1FA2] text-white shadow-xl shadow-[#7B1FA2]/40 flex items-center justify-center active:scale-90 transition-all border-4 border-white"
           >
             <span className="material-symbols-outlined text-[32px] font-bold">add</span>
           </button>
@@ -39,9 +39,9 @@ export default function BottomNavMissing({ onAddClick }: Props) {
 
         {/* Missing Button (Active) */}
         <div
-          className="flex flex-col items-center gap-1.5 p-2 min-w-[80px] transition-all text-primary"
+          className="flex flex-col items-center gap-1.5 p-2 min-w-[80px] transition-all text-[#7B1FA2]"
         >
-          <div className="w-10 h-10 rounded-2xl bg-primary/10 flex items-center justify-center">
+          <div className="w-10 h-10 rounded-2xl bg-[#7B1FA2]/10 flex items-center justify-center">
             <span className="material-symbols-outlined text-[26px]" style={{ fontVariationSettings: `'FILL' 1` }}>person_search</span>
           </div>
           <span className="text-[10px] font-extrabold uppercase tracking-widest">{t('navPublic.missing')}</span>

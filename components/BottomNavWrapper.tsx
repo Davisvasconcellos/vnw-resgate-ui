@@ -8,6 +8,7 @@ import BottomNavTransport from '@/components/BottomNavTransport'
 import BottomNavVolunteer from '@/components/BottomNavVolunteer'
 import BottomNavPublic from '@/components/BottomNavPublic'
 import BottomNavAssist from '@/components/BottomNavAssist'
+import BottomNavBoat from '@/components/BottomNavBoat'
 
 
 type Role = 'civilian' | 'shelter' | 'transport' | 'boat' | 'volunteer' | null
@@ -26,42 +27,44 @@ export default function BottomNavWrapper() {
     }
   }, [pathname])
 
-  // Ocultar nav bar totalmente nestas rotas (telas cheias)
-  const HIDDEN_ROUTES = ['/', '/login', '/onboarding', '/missing', '/shelter/manage', '/nearby']
+  // Ocultar nav bar totalmente nestas rotas (telas cheias ou limpeza visual)
+  const HIDDEN_ROUTES = [
+    '/', 
+    '/login', 
+    '/onboarding', 
+    '/missing', 
+    '/shelter/manage', 
+    '/nearby'
+  ]
   if (HIDDEN_ROUTES.includes(pathname)) return null
 
-  // Barra de assistência (KPIs + Opções)
+  // PRIORIDADE 1: Barra de assistência exclusiva para a tela /assist 
+  // Deve vir antes de qualquer lógica de Role para não 'vazar' a barra anterior
   if (pathname === '/assist') {
     return <BottomNavAssist />
   }
 
-  // Rotas Públicas (Ajuda, Desaparecidos, etc) — Usam a nova barra pública
-  const PUBLIC_ROUTES = ['/help', '/missing', '/help/shelters', '/help/phones', '/request']
+  // Rotas Públicas (Ajuda, Desaparecidos, etc)
+  const PUBLIC_ROUTES = ['/help', '/help/shelters', '/help/phones', '/request']
   if (PUBLIC_ROUTES.includes(pathname)) {
     return <BottomNavPublic />
   }
 
-  // Se for civil (nenhum localStorage ou apagado), usa a barra laranja SOS civil
-  if (role === 'civilian' || !role) {
-    return <BottomNavRescue />
-  }
-
-
   // Se for abrigo
-  if (role === 'shelter') {
+  if (role === 'shelter' && pathname.startsWith('/shelter')) {
     return <BottomNavShelter />
   }
 
-  // Se for transporte ou barco
-  if (role === 'transport' || role === 'boat') {
+  // Se for transporte
+  if (role === 'transport' && pathname.startsWith('/routes')) {
     return <BottomNavTransport />
   }
 
-  // Se for voluntário geral
-  if (role === 'volunteer') {
-    return <BottomNavVolunteer />
+  // Se for barco
+  if (role === 'boat' && pathname.startsWith('/routes')) {
+    return <BottomNavBoat />
   }
 
-  // Fallback seguro
-  return <BottomNavRescue />
+  // Fallback seguro: Nenhuma barra genérica aparecendo do nada
+  return null
 }

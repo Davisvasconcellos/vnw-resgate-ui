@@ -23,17 +23,14 @@ export default function BottomNavShelter() {
       <div className="relative -top-5">
         <button
           onClick={() => {
-            // Se já estiver no shelter/manage, pode disparar um evento ou a pessoa simplesmente clica no botão principal lá
-            // Para garantir, vamos redirecionar as pessoas com checkin=true para abrir o modal automaticamente (opcional)
             if (pathname !== '/shelter/manage') {
               window.location.href = '/shelter/manage?action=checkin'
             } else {
-              // Já estamos no manage, emite evento customizado ou atualiza URL
               window.dispatchEvent(new CustomEvent('open-manual-checkin'))
             }
           }}
           className="flex flex-col items-center justify-center w-16 h-16 rounded-full text-white shadow-lg active:scale-95 transition-transform"
-          style={{ background: 'linear-gradient(135deg, #1B5E20, #2E7D32)', boxShadow: '0 8px 20px -6px rgba(27,94,32,0.6)' }}
+          style={{ background: 'linear-gradient(135deg, #0D47A1, #1565C0)', boxShadow: '0 8px 20px -6px rgba(13,71,161,0.6)' }}
         >
           <span className="material-symbols-outlined text-[32px]" style={{ fontVariationSettings: `'FILL' 1` }}>
             person_add
