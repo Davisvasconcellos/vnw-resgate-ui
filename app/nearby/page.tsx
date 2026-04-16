@@ -7,9 +7,6 @@ import { SHELTERS, HELP_REQUESTS, HELP_TYPE_LABELS } from '@/app/mock-data'
 import CapacityBar from '@/components/ui/CapacityBar'
 import StatusBadge from '@/components/ui/StatusBadge'
 import InteractiveMap from '@/components/ui/InteractiveMap'
-import BottomNavTransport from '@/components/BottomNavTransport'
-import BottomNavBoat from '@/components/BottomNavBoat'
-import BottomNavShelterManage from '@/components/BottomNavShelterManage'
 
 type Tab = 'shelters' | 'requests'
 
@@ -80,13 +77,13 @@ export default function NearbyPage() {
   const selectedRequest = HELP_REQUESTS.find((r) => r.id === selectedPin)
 
   return (
-    <main className="min-h-screen bg-surface dark:bg-inverse-surface flex flex-col pb-44 transition-colors">
+    <main className="min-h-screen bg-surface dark:bg-[#0a1628] flex flex-col pb-44 transition-colors">
       {/* Header contextual */}
       {!moduleParam && (
-        <div className="sticky top-0 z-20 px-4 pt-12 pb-6 bg-surface/90 dark:bg-inverse-surface/90 backdrop-blur-xl border-b border-outline-variant/10 transition-colors">
+        <div className="sticky top-0 z-20 px-4 pt-12 pb-6 bg-surface/90 dark:bg-[#0a1628]/90 backdrop-blur-xl border-b border-outline-variant/10 transition-colors">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h1 className="text-3xl font-extrabold text-on-surface dark:text-inverse-on-surface font-headline tracking-tight transition-colors">
+              <h1 className="text-3xl font-extrabold text-on-surface dark:text-white font-headline tracking-tight transition-colors">
                 Situação próxima
               </h1>
               <div className="flex items-center gap-2 mt-1.5">
@@ -109,7 +106,7 @@ export default function NearbyPage() {
             </div>
             <button 
               onClick={() => router.back()}
-              className="flex items-center justify-center w-12 h-12 rounded-2xl bg-surface-container-high dark:bg-white/10 active:scale-95 transition-all shadow-sm border border-outline-variant/5 text-on-surface-variant dark:text-inverse-on-surface"
+              className="flex items-center justify-center w-12 h-12 rounded-2xl bg-surface-container-high dark:bg-white/10 active:scale-95 transition-all shadow-sm border border-outline-variant/5 text-on-surface-variant dark:text-white"
             >
               <span className="material-symbols-outlined text-[24px]">close</span>
             </button>
@@ -118,7 +115,7 @@ export default function NearbyPage() {
       )}
 
       {/* Filters Overlay */}
-      <div className="px-4 py-4 bg-surface/50 dark:bg-inverse-surface/50 border-b border-outline-variant/5">
+      <div className="px-4 py-4 bg-surface/50 dark:bg-white/5 border-b border-outline-variant/5">
         <div className="flex items-center gap-2">
           <span className="text-on-surface-variant dark:text-outline-variant text-[10px] font-extrabold uppercase tracking-widest shrink-0">Raio:</span>
           <div className="flex gap-1.5 overflow-x-auto no-scrollbar pb-1">
@@ -183,11 +180,11 @@ export default function NearbyPage() {
       {selectedPin && (selectedShelter || selectedRequest) && (
         <div className="fixed inset-0 z-[100] flex flex-col justify-end">
           <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setSelectedPin(null)} />
-          <div className="relative z-10 bg-white rounded-t-[2rem] px-5 pt-4 pb-32 reveal-pop max-h-[85vh] overflow-y-auto w-full shadow-2xl border-t border-slate-200">
+          <div className="relative z-10 bg-white dark:bg-[#0d2247] rounded-t-[2rem] px-5 pt-4 pb-32 reveal-pop max-h-[85vh] overflow-y-auto w-full shadow-2xl border-t border-slate-200 dark:border-white/5">
             <div className="w-10 h-1 rounded-full bg-slate-200 mx-auto mb-5 shrink-0" />
             {selectedShelter && (
               <div>
-                <h3 className="font-bold text-slate-800 text-lg leading-tight font-headline mb-1">{selectedShelter.name}</h3>
+                <h3 className="font-bold text-slate-800 dark:text-white text-lg leading-tight font-headline mb-1">{selectedShelter.name}</h3>
                 <p className="text-xs text-slate-500 mb-6">{selectedShelter.reference} · {selectedShelter.distanceKm} km</p>
                 <CapacityBar current={selectedShelter.occupied} total={selectedShelter.capacity} />
                 <div className="flex gap-3 mt-6">
@@ -199,12 +196,12 @@ export default function NearbyPage() {
             {selectedRequest && (
               <div>
                 <div className="flex justify-between items-start mb-6">
-                  <h3 className="font-bold text-slate-800 text-lg leading-tight font-headline">Pedido: {HELP_TYPE_LABELS[selectedRequest.type]?.label || selectedRequest.type}</h3>
+                  <h3 className="font-bold text-slate-800 dark:text-white text-lg leading-tight font-headline">Pedido: {HELP_TYPE_LABELS[selectedRequest.type]?.label || selectedRequest.type}</h3>
                   <StatusBadge status={selectedRequest.status} />
                 </div>
                 <div className="space-y-4 mb-8 text-sm">
-                  <div className="flex items-center gap-3"><span className="material-symbols-outlined text-blue-600">location_on</span><span>{selectedRequest.address}</span></div>
-                  <div className="flex items-center gap-3"><span className="material-symbols-outlined text-emerald-600">group</span><span>{selectedRequest.people} pessoas</span></div>
+                  <div className="flex items-center gap-3"><span className="material-symbols-outlined text-blue-600">location_on</span><span className="dark:text-white">{selectedRequest.address}</span></div>
+                  <div className="flex items-center gap-3"><span className="material-symbols-outlined text-emerald-600">group</span><span className="dark:text-white">{selectedRequest.people} pessoas</span></div>
                 </div>
                 <button className="w-full bg-blue-600 text-white font-bold py-4 rounded-2xl flex items-center justify-center gap-2 shadow-lg active:scale-95 transition-transform"><span className="material-symbols-outlined">directions_car</span>Atender</button>
               </div>
@@ -215,27 +212,22 @@ export default function NearbyPage() {
 
       {/* Tabs */}
       <div className="flex gap-2 px-4 mt-4">
-        <button onClick={() => { setTab('shelters'); setSelectedPin(null) }} className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-2xl text-sm font-bold transition-all border ${tab === 'shelters' ? 'bg-blue-50 text-blue-700 border-blue-200' : 'bg-white text-slate-500 border-slate-200'}`}><span className="material-symbols-outlined text-[18px]">house</span>Abrigos</button>
-        <button onClick={() => { setTab('requests'); setSelectedPin(null) }} className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-2xl text-sm font-bold transition-all border ${tab === 'requests' ? 'bg-red-50 text-red-700 border-red-200' : 'bg-white text-slate-500 border-slate-200'}`}><span className="material-symbols-outlined text-[18px]">sos</span>Pedidos</button>
+        <button onClick={() => { setTab('shelters'); setSelectedPin(null) }} className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-2xl text-sm font-bold transition-all border ${tab === 'shelters' ? 'bg-blue-50 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-500/20' : 'bg-white dark:bg-white/5 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-white/5'}`}><span className="material-symbols-outlined text-[18px]">house</span>Abrigos</button>
+        <button onClick={() => { setTab('requests'); setSelectedPin(null) }} className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-2xl text-sm font-bold transition-all border ${tab === 'requests' ? 'bg-red-50 dark:bg-red-900/40 text-red-700 dark:text-red-300 border-red-200 dark:border-red-500/20' : 'bg-white dark:bg-white/5 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-white/5'}`}><span className="material-symbols-outlined text-[18px]">sos</span>Pedidos</button>
       </div>
 
-      {/* List */}
       <div className="px-4 mt-3 space-y-2.5">
         {(tab === 'shelters' ? filteredShelters : filteredRequests).map((item: any) => (
-          <button key={item.id} onClick={() => setSelectedPin(item.id)} className={`w-full text-left rounded-2xl p-4 transition-all border bg-white border-slate-100`}>
+          <button key={item.id} onClick={() => setSelectedPin(item.id)} className="w-full text-left rounded-2xl p-4 transition-all border bg-white dark:bg-white/5 border-slate-100 dark:border-white/10 shadow-sm">
             <div className="flex items-center justify-between mb-2">
-              <p className="font-bold text-slate-800 text-sm leading-snug">{item.name || HELP_TYPE_LABELS[item.type as keyof typeof HELP_TYPE_LABELS]?.label || item.type}</p>
-              <span className="text-xs font-bold text-slate-400">{item.calcDistance} km</span>
+              <p className="font-bold text-slate-800 dark:text-white text-sm leading-snug">{item.name || HELP_TYPE_LABELS[item.type as keyof typeof HELP_TYPE_LABELS]?.label || item.type}</p>
+              <span className="text-xs font-bold text-slate-400 dark:text-outline-variant">{item.calcDistance} km</span>
             </div>
             {tab === 'shelters' ? <CapacityBar current={item.occupied} total={item.capacity} /> : <StatusBadge status={item.status} size="sm" />}
           </button>
         ))}
       </div>
 
-      {/* Navbars contextuais */}
-      {moduleParam === 'transport' && <BottomNavTransport />}
-      {moduleParam === 'boat' && <BottomNavBoat />}
-      {moduleParam === 'shelter' && <BottomNavShelterManage onCheckinClick={() => {}} />}
     </main>
   )
 }

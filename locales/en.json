@@ -317,5 +317,9 @@
       "boat": "Vessel Operator",
       "volunteer": "Volunteer"
     }
+  },
+  "navVolunteer": {
+    "myTasks": "My Tasks",
+    "opportunities": "Opportunities"
   }
 }

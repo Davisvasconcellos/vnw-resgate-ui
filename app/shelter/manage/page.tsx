@@ -6,7 +6,6 @@ import CapacityBar from '@/components/ui/CapacityBar'
 import { useSearchParams } from 'next/navigation'
 import { useI18n } from '@/components/i18n/I18nProvider'
 import AppHeader from '@/components/headers/AppHeader'
-import BottomNavShelterManage from '@/components/BottomNavShelterManage'
 
 const INITIAL = {
   name: 'Ginásio Municipal Lauro Linhares',
@@ -123,15 +122,15 @@ export default function ShelterManagePage() {
   const countByStatus = (status: EntryStatus) => entries.filter((e) => e.status === status).length
 
   return (
-    <main className="min-h-screen bg-surface flex flex-col pb-44 pt-16">
+    <main className="min-h-screen bg-surface dark:bg-[#0a1628] flex flex-col pb-44 pt-16 transition-colors">
       <AppHeader />
 
       <div className="px-5 pt-8 shrink-0 max-w-2xl mx-auto w-full">
         <section className="mb-8">
-          <h1 className="text-4xl font-extrabold font-headline text-on-surface tracking-tight leading-tight">
+          <h1 className="text-4xl font-extrabold font-headline text-on-surface dark:text-white tracking-tight leading-tight">
             {t('shelterManage.title')}
           </h1>
-          <p className="mt-2 text-on-surface-variant font-body text-base">
+          <p className="mt-2 text-on-surface-variant dark:text-slate-400 font-body text-base">
             {shelter.name}
           </p>
         </section>
@@ -139,15 +138,15 @@ export default function ShelterManagePage() {
 
       <div className="px-5 pb-8 space-y-6 max-w-2xl mx-auto w-full">
         {/* Capacity dashboard element */}
-        <div className="bg-surface-container-lowest rounded-[2.5rem] p-8 shadow-sm border border-outline-variant/10 relative overflow-hidden group">
+        <div className="bg-surface-container-lowest dark:bg-white/5 rounded-[2.5rem] p-8 shadow-sm border border-outline-variant/10 dark:border-white/5 relative overflow-hidden group">
           <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -mr-16 -mt-16 transition-transform group-hover:scale-110" />
           
           <div className="flex justify-between items-end relative z-10">
             <div>
               <p className="text-[10px] font-extrabold text-outline uppercase tracking-[0.2em] mb-2">{t('shelterManage.labelCapacity')}</p>
               <div className="flex items-baseline gap-2">
-                <span className="text-6xl font-black text-on-surface font-headline tracking-tighter">{shelter.occupied}</span>
-                <span className="text-outline text-2xl font-bold">/ {shelter.capacity}</span>
+                <span className="text-6xl font-black text-on-surface dark:text-white font-headline tracking-tighter">{shelter.occupied}</span>
+                <span className="text-outline dark:text-slate-500 text-2xl font-bold">/ {shelter.capacity}</span>
               </div>
             </div>
             <div className="text-right">
@@ -180,7 +179,7 @@ export default function ShelterManagePage() {
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id as EntryStatus)}
                   className={`flex items-center gap-1.5 px-3 py-2 rounded-xl border shrink-0 transition-all ${
-                    isActive ? `${tab.bg} ${tab.border} shadow-sm` : 'bg-white border-slate-100 opacity-70'
+                    isActive ? `${tab.bg} ${tab.border} shadow-sm` : 'bg-white dark:bg-white/5 border-slate-100 dark:border-white/5 opacity-70'
                   }`}
                 >
                   <span className={`material-symbols-outlined text-[18px] ${isActive ? tab.color : 'text-slate-400'}`} style={{ fontVariationSettings: `'FILL' ${isActive ? 1 : 0}` }}>
@@ -202,7 +201,7 @@ export default function ShelterManagePage() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder={t('shelterManage.search')}
-              className="w-full bg-white border border-slate-200 pl-10 pr-4 py-3 rounded-xl text-sm outline-none focus:border-blue-500 transition-colors"
+              className="w-full bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 pl-10 pr-4 py-3 rounded-xl text-sm dark:text-white outline-none focus:border-blue-500 transition-colors"
             />
           </div>
 
@@ -219,7 +218,7 @@ export default function ShelterManagePage() {
                     setAssuming(false)
                     setAssumeMessage('')
                   }}
-                  className="w-full text-left flex items-start gap-3 bg-white border border-slate-100 rounded-2xl p-4 shadow-sm active:scale-[0.98] transition-transform"
+                  className="w-full text-left flex items-start gap-3 bg-white dark:bg-white/5 border border-slate-100 dark:border-white/5 rounded-2xl p-4 shadow-sm active:scale-[0.98] transition-transform"
                 >
                   <div className={`flex items-center justify-center w-10 h-10 rounded-xl shrink-0 ${
                     entry.status === 'request' ? 'bg-orange-50 text-orange-600' :
@@ -231,7 +230,7 @@ export default function ShelterManagePage() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between gap-2">
-                      <p className="font-bold text-slate-800 text-sm leading-tight truncate">{entry.name}</p>
+                      <p className="font-bold text-slate-800 dark:text-white text-sm leading-tight truncate">{entry.name}</p>
                       <span className="text-[10px] font-bold text-slate-400 shrink-0">{entry.updatedAt}</span>
                     </div>
                     <p className="text-xs text-slate-500 mt-1 flex items-center gap-1">
@@ -391,7 +390,6 @@ export default function ShelterManagePage() {
             </div>
           </div>
         )}
-      <BottomNavShelterManage onCheckinClick={() => setShowCheckinModal(true)} />
     </main>
   )
 }

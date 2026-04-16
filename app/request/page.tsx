@@ -65,7 +65,7 @@ function RequestForm() {
 
   if (submitted) {
     return (
-      <main className="min-h-screen bg-slate-50 flex flex-col items-center justify-center px-6">
+      <main className="min-h-screen bg-slate-50 dark:bg-[#0a1628] flex flex-col items-center justify-center px-6 transition-colors">
         <div
           className="flex items-center justify-center w-20 h-20 rounded-full mb-6"
           style={{ background: 'linear-gradient(135deg, #1B5E20, #2E7D32)', boxShadow: '0 12px 32px -8px rgba(27,94,32,0.5)' }}
@@ -74,13 +74,13 @@ function RequestForm() {
             check_circle
           </span>
         </div>
-        <h2 className="text-2xl font-bold text-slate-800 font-headline text-center">{t('request.successTitle')}</h2>
+        <h2 className="text-2xl font-bold text-slate-800 dark:text-white font-headline text-center">{t('request.successTitle')}</h2>
         <p className="text-slate-500 text-center mt-2 leading-relaxed">
           {t('request.successDesc').replace('{type}', TYPES.find(t => t.value === selectedType)?.label || '')}
         </p>
-        <div className="mt-6 bg-white rounded-2xl p-4 shadow-sm border border-slate-100 w-full max-w-sm">
+        <div className="mt-6 bg-white dark:bg-white/5 rounded-2xl p-4 shadow-sm border border-slate-100 dark:border-white/10 w-full max-w-sm">
           <p className="text-xs text-slate-500 font-semibold uppercase tracking-wide mb-3">{t('request.summary')}</p>
-          <div className="space-y-2 text-sm text-slate-600">
+          <div className="space-y-2 text-sm text-slate-600 dark:text-slate-400">
             <div className="flex justify-between">
               <span>{t('request.type')}</span>
               <span className="font-bold">{TYPES.find(t => t.value === selectedType)?.label}</span>
@@ -107,15 +107,25 @@ function RequestForm() {
   }
 
   return (
-    <main className="min-h-screen bg-surface pt-16 pb-[120px]">
+    <main className="min-h-screen bg-surface dark:bg-[#0a1628] pt-16 pb-[120px] transition-colors">
       <AppHeader />
 
-      <div className="px-4 pt-8 shrink-0 max-w-2xl mx-auto">
+      <div className="px-4 pt-6 shrink-0 max-w-2xl mx-auto">
+        {/* Navigation / Back */}
+        <div className="flex items-center gap-2 mb-6">
+          <Link href="/help?module=help" className="flex items-center gap-2 text-slate-500 hover:text-primary transition-colors group">
+            <div className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-white/5 flex items-center justify-center group-hover:scale-110 transition-transform">
+              <span className="material-symbols-outlined text-[20px]">arrow_back</span>
+            </div>
+            <span className="text-xs font-bold uppercase tracking-widest">{t('onboarding.back') || 'Voltar'}</span>
+          </Link>
+        </div>
+
         <section className="mb-8">
-          <h1 className="text-3xl font-extrabold font-headline text-on-surface tracking-tight leading-tight">
+          <h1 className="text-3xl font-extrabold font-headline text-on-surface dark:text-white tracking-tight leading-tight">
             {t('request.title')}
           </h1>
-          <p className="mt-2 text-on-surface-variant font-body">
+          <p className="mt-2 text-on-surface-variant dark:text-slate-400 font-body">
             {t('request.noLogin')}
           </p>
         </section>
@@ -133,8 +143,8 @@ function RequestForm() {
                 onClick={() => setSelectedType(t_item.value)}
                 className={`flex flex-col items-start gap-2 rounded-2xl p-3.5 border-2 text-left transition-all active:scale-[0.97] ${
                   selectedType === t_item.value
-                    ? 'border-blue-500 bg-blue-50'
-                    : 'border-slate-200 bg-white'
+                    ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
+                    : 'border-slate-200 dark:border-white/10 bg-white dark:bg-white/5'
                 }`}
               >
                 <span
@@ -144,7 +154,7 @@ function RequestForm() {
                   {t_item.icon}
                 </span>
                 <div>
-                  <p className={`font-bold text-sm font-headline ${selectedType === t_item.value ? 'text-blue-700' : 'text-slate-700'}`}>
+                  <p className={`font-bold text-sm font-headline ${selectedType === t_item.value ? 'text-blue-700 dark:text-blue-300' : 'text-slate-700 dark:text-slate-200'}`}>
                     {t_item.label}
                   </p>
                   <p className="text-[10px] text-slate-400 mt-0.5 leading-snug">{t_item.description}</p>
@@ -169,17 +179,17 @@ function RequestForm() {
         </section>
 
         {/* Contact info form */}
-        <section className="bg-surface-container-lowest rounded-[2rem] p-6 border border-outline-variant/10 shadow-sm space-y-5">
+        <section className="bg-surface-container-lowest dark:bg-white/5 rounded-[2rem] p-6 border border-outline-variant/10 dark:border-white/5 shadow-sm space-y-5">
           <div className="flex items-center gap-3 mb-1">
             <div className="w-10 h-10 rounded-xl bg-primary/5 flex items-center justify-center text-primary border border-primary/10">
               <span className="material-symbols-outlined text-[22px]">contact_phone</span>
             </div>
-            <p className="text-sm font-extrabold text-on-surface uppercase tracking-widest">{t('request.contactInfo')}</p>
+            <p className="text-sm font-extrabold text-on-surface dark:text-white uppercase tracking-widest">{t('request.contactInfo')}</p>
           </div>
           
           <div className="space-y-4">
             <div>
-              <p className="text-[11px] font-bold text-on-surface-variant mb-1.5 ml-1 uppercase tracking-wider">{t('request.name')}</p>
+              <p className="text-[11px] font-bold text-slate-500 dark:text-slate-500 mb-1.5 ml-1 uppercase tracking-wider">{t('request.name')}</p>
               <TextInput 
                 placeholder="Ex: João Silva" 
                 value={name} 
@@ -188,7 +198,7 @@ function RequestForm() {
               />
             </div>
             <div>
-              <p className="text-[11px] font-bold text-on-surface-variant mb-1.5 ml-1 uppercase tracking-wider">{t('request.phone')}</p>
+              <p className="text-[11px] font-bold text-slate-500 dark:text-slate-500 mb-1.5 ml-1 uppercase tracking-wider">{t('request.phone')}</p>
               <TextInput 
                 placeholder="(00) 00000-0000" 
                 value={phone} 
@@ -208,29 +218,29 @@ function RequestForm() {
         </section>
 
         {/* People count */}
-        <section className="bg-surface-container-lowest rounded-[2rem] p-6 border border-outline-variant/10 shadow-sm">
-          <p className="text-sm font-extrabold text-on-surface uppercase tracking-widest mb-6 flex items-center gap-3">
+        <section className="bg-surface-container-lowest dark:bg-white/5 rounded-[2rem] p-6 border border-outline-variant/10 dark:border-white/5 shadow-sm">
+          <div className="text-sm font-extrabold text-on-surface dark:text-white uppercase tracking-widest mb-6 flex items-center gap-3">
              <div className="w-10 h-10 rounded-xl bg-secondary/5 flex items-center justify-center text-secondary border border-secondary/10">
               <span className="material-symbols-outlined text-[22px]">diversity_3</span>
             </div>
             {t('request.peopleCount')}
-          </p>
-          <div className="flex items-center gap-4 bg-surface-container-low rounded-3xl p-3 border border-outline-variant/5">
+          </div>
+          <div className="flex items-center gap-4 bg-slate-100 dark:bg-white/5 rounded-3xl p-3 border border-slate-200 dark:border-white/5">
             <button
               type="button"
               onClick={() => setPeople(Math.max(1, people - 1))}
-              className="flex items-center justify-center w-14 h-14 rounded-2xl bg-white text-on-surface text-2xl font-bold active:scale-95 transition-all shadow-sm border border-outline-variant/10"
+              className="flex items-center justify-center w-14 h-14 rounded-2xl bg-white dark:bg-white/10 text-slate-700 dark:text-white text-2xl font-bold active:scale-95 transition-all shadow-sm border border-slate-200 dark:border-white/10"
             >
               <span className="material-symbols-outlined">remove</span>
             </button>
             <div className="flex-1 text-center">
-              <span className="text-5xl font-extrabold text-on-surface font-headline leading-none block">{people}</span>
-              <p className="text-[10px] font-bold uppercase text-on-surface-variant tracking-widest mt-2">{people === 1 ? t('request.person') : t('request.people')}</p>
+              <span className="text-5xl font-extrabold text-slate-900 dark:text-white font-headline leading-none block">{people}</span>
+              <p className="text-[10px] font-bold uppercase text-slate-500 dark:text-slate-400 tracking-widest mt-2">{people === 1 ? t('request.person') : t('request.people')}</p>
             </div>
             <button
               type="button"
               onClick={() => setPeople(Math.min(99, people + 1))}
-              className="flex items-center justify-center w-14 h-14 rounded-2xl bg-primary text-on-primary text-2xl font-bold active:scale-95 transition-all shadow-lg shadow-primary/20"
+              className="flex items-center justify-center w-14 h-14 rounded-2xl bg-primary text-white text-2xl font-bold active:scale-95 transition-all shadow-lg shadow-primary/20"
             >
               <span className="material-symbols-outlined">add</span>
             </button>
@@ -239,7 +249,7 @@ function RequestForm() {
       </form>
 
       {/* Fixed submit button - positioned higher to clear bottom nav */}
-      <div className="fixed bottom-24 left-0 w-full px-4 pt-16 pb-2 bg-gradient-to-t from-surface via-surface/80 to-transparent pointer-events-none z-50">
+      <div className="fixed bottom-24 left-0 w-full px-4 pt-16 pb-2 bg-gradient-to-t from-surface dark:from-[#0a1628] via-surface/80 dark:via-[#0a1628]/80 to-transparent pointer-events-none z-50 transition-colors">
         <div className="max-w-2xl mx-auto pointer-events-auto">
           <button
             type="submit"
@@ -263,7 +273,7 @@ function RequestForm() {
 
 export default function RequestPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-slate-50 flex items-center justify-center"><div className="h-8 w-8 animate-spin rounded-full border-2 border-blue-500 border-t-transparent" /></div>}>
+    <Suspense fallback={<div className="min-h-screen bg-slate-50 dark:bg-[#0a1628] flex items-center justify-center"><div className="h-8 w-8 animate-spin rounded-full border-2 border-blue-500 border-t-transparent" /></div>}>
       <RequestForm />
     </Suspense>
   )

@@ -35,30 +35,30 @@ export default function RoutesPage() {
   const filtered = routes.filter(r => r.status === activeTab)
 
   return (
-    <main className="min-h-screen bg-surface flex flex-col pb-28 pt-16">
+    <main className="min-h-screen bg-surface dark:bg-[#0a1628] flex flex-col pb-28 pt-16 transition-colors">
       <AppHeader />
 
       <div className="px-4 pt-8">
         <section className="mb-6">
-          <h1 className="text-3xl font-extrabold font-headline text-on-surface tracking-tight leading-tight">
+          <h1 className="text-3xl font-extrabold font-headline text-on-surface dark:text-white tracking-tight leading-tight">
             {t('routesPage.title')}
           </h1>
-          <p className="mt-2 text-on-surface-variant font-body">
+          <p className="mt-2 text-on-surface-variant dark:text-slate-400 font-body">
             {t('routesPage.subtitle')}
           </p>
         </section>
         
         {/* Tabs */}
-        <div className="flex bg-surface-container-low p-1.5 rounded-2xl mb-8 shadow-sm border border-outline-variant/10">
+        <div className="flex bg-surface-container-low dark:bg-white/5 p-1.5 rounded-2xl mb-8 shadow-sm border border-outline-variant/10 dark:border-white/5">
           <button
             onClick={() => setActiveTab('ongoing')}
-            className={`flex-1 py-3 text-xs font-bold rounded-xl transition-all ${activeTab === 'ongoing' ? 'bg-white text-primary shadow-sm' : 'text-on-surface-variant hover:bg-white/50'}`}
+            className={`flex-1 py-3 text-xs font-bold rounded-xl transition-all ${activeTab === 'ongoing' ? 'bg-white text-primary shadow-sm' : 'text-on-surface-variant dark:text-slate-400 hover:bg-white/50 dark:hover:bg-white/5'}`}
           >
             {t('routesPage.tabOngoing')} ({routes.filter(r => r.status === 'ongoing').length})
           </button>
           <button
             onClick={() => setActiveTab('finished')}
-            className={`flex-1 py-3 text-xs font-bold rounded-xl transition-all ${activeTab === 'finished' ? 'bg-white text-secondary shadow-sm' : 'text-on-surface-variant hover:bg-white/50'}`}
+            className={`flex-1 py-3 text-xs font-bold rounded-xl transition-all ${activeTab === 'finished' ? 'bg-white text-secondary shadow-sm' : 'text-on-surface-variant dark:text-slate-400 hover:bg-white/50 dark:hover:bg-white/5'}`}
           >
             {t('routesPage.tabFinished')} ({routes.filter(r => r.status === 'finished').length})
           </button>
@@ -73,18 +73,18 @@ export default function RoutesPage() {
           </div>
         ) : (
           filtered.map(route => (
-            <div key={route.id} className="bg-surface-container-lowest rounded-[2rem] p-6 shadow-sm border border-outline-variant/10 hover:shadow-md transition-all">
+            <div key={route.id} className="bg-surface-container-lowest dark:bg-white/5 rounded-[2rem] p-6 shadow-sm border border-outline-variant/10 dark:border-white/5 hover:shadow-md transition-all">
               <div className="flex justify-between items-start">
                 <div className="flex-1 min-w-0 pr-4">
-                  <h3 className="font-extrabold text-on-surface text-lg font-headline">{route.name}</h3>
+                  <h3 className="font-extrabold text-on-surface dark:text-white text-lg font-headline">{route.name}</h3>
                   <div className="mt-3 space-y-2">
-                    <div className="text-xs text-on-surface-variant font-medium flex items-center gap-2">
+                    <div className="text-xs text-on-surface-variant dark:text-slate-400 font-medium flex items-center gap-2">
                       <div className="w-6 h-6 rounded-lg bg-primary/5 flex items-center justify-center text-primary">
                         <span className="material-symbols-outlined text-[14px]">location_on</span>
                       </div>
                       {t('routesPage.origin').replace('{loc}', route.location)}
                     </div>
-                    <div className="text-xs text-on-surface-variant font-medium flex items-center gap-2">
+                    <div className="text-xs text-on-surface-variant dark:text-slate-400 font-medium flex items-center gap-2">
                       <div className="w-6 h-6 rounded-lg bg-secondary/5 flex items-center justify-center text-secondary">
                         <span className="material-symbols-outlined text-[14px]">group</span>
                       </div>

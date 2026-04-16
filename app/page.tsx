@@ -24,7 +24,7 @@ export default function HomePage() {
   }
 
   return (
-    <main className="min-proto-h w-full flex flex-col transition-all duration-500 ease-in-out" style={{ background: theme === 'dark' ? '#070f1a' : '#f8fafc' }}>
+    <main className="min-proto-h w-full flex flex-col bg-[#f8fafc] dark:bg-[#0a1628] transition-all duration-500 ease-in-out">
       {/* Animated background blobs - only visible in dark mode or subtle in light */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none transition-opacity duration-1000" style={{ opacity: theme === 'dark' ? 1 : 0.4 }}>
         <div className="absolute -top-32 -left-32 w-80 h-80 rounded-full opacity-20 login-wave-1" style={{ background: 'radial-gradient(circle, #1565C0, transparent)' }} />
@@ -94,8 +94,8 @@ export default function HomePage() {
 
       <div className="relative z-10 flex-1 flex flex-col justify-center px-6 gap-4 pb-36">
         <Link href="/help" className="block group">
-          <div className="flex items-center gap-4 rounded-2xl p-5 transition-all active:scale-[0.97] bg-white dark:bg-red-800/90 backdrop-blur-md shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_12px_32px_-8px_rgba(198,40,40,0.5)] border border-slate-100 dark:border-white/10 overflow-hidden relative">
-            <div className="absolute inset-0 bg-gradient-to-br from-red-500/5 to-transparent dark:hidden" />
+          <div className="flex items-center gap-4 rounded-2xl p-5 transition-all active:scale-[0.97] bg-white dark:bg-white/5 backdrop-blur-md shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-none border border-slate-100 dark:border-white/10 overflow-hidden relative">
+            <div className="absolute inset-0 bg-gradient-to-br from-red-500/5 to-transparent dark:from-red-500/10 dark:to-transparent" />
             
             <div className="flex items-center justify-center w-14 h-14 rounded-xl bg-red-600 text-white shrink-0 relative z-10 shadow-lg shadow-red-600/20">
               <span className="material-symbols-outlined text-[32px]" style={{ fontVariationSettings: `'FILL' 1` }}>
@@ -111,8 +111,8 @@ export default function HomePage() {
         </Link>
 
         <Link href="/login?role=volunteer" className="block group">
-          <div className="flex items-center gap-4 rounded-2xl p-5 transition-all active:scale-[0.97] bg-white dark:bg-blue-800/90 backdrop-blur-md shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_12px_32px_-8px_rgba(21,101,192,0.5)] border border-slate-100 dark:border-white/10 overflow-hidden relative">
-            <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent dark:hidden" />
+          <div className="flex items-center gap-4 rounded-2xl p-5 transition-all active:scale-[0.97] bg-white dark:bg-white/5 backdrop-blur-md shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-none border border-slate-100 dark:border-white/10 overflow-hidden relative">
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent dark:from-blue-500/10 dark:to-transparent" />
             
             <div className="flex items-center justify-center w-14 h-14 rounded-xl bg-blue-600 text-white shrink-0 relative z-10 shadow-lg shadow-blue-600/20">
               <span className="material-symbols-outlined text-[32px]" style={{ fontVariationSettings: `'FILL' 1` }}>
@@ -128,8 +128,8 @@ export default function HomePage() {
         </Link>
 
         <Link href="/nearby" className="block group">
-          <div className="flex items-center gap-4 rounded-2xl p-5 transition-all active:scale-[0.97] bg-white dark:bg-emerald-800/90 backdrop-blur-md shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_12px_32px_-8px_rgba(27,94,32,0.5)] border border-slate-100 dark:border-white/10 overflow-hidden relative">
-            <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-transparent dark:hidden" />
+          <div className="flex items-center gap-4 rounded-2xl p-5 transition-all active:scale-[0.97] bg-white dark:bg-white/5 backdrop-blur-md shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-none border border-slate-100 dark:border-white/10 overflow-hidden relative">
+            <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-transparent dark:from-emerald-500/10 dark:to-transparent" />
             
             <div className="flex items-center justify-center w-14 h-14 rounded-xl bg-emerald-600 text-white shrink-0 relative z-10 shadow-lg shadow-emerald-600/20">
               <span className="material-symbols-outlined text-[32px]" style={{ fontVariationSettings: `'FILL' 1` }}>

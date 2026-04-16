@@ -12,15 +12,15 @@ export default function BottomNavVolunteer() {
   const isMyTasks = pathname === '/volunteer/tasks'
 
   return (
-    <nav className="fixed bottom-0 left-0 w-full z-50 bg-white/95 backdrop-blur-xl border-t border-slate-100 shadow-[0_-8px_32px_rgba(0,0,0,0.06)]">
+    <nav className="fixed bottom-0 left-0 w-full z-50 bg-white/95 dark:bg-[#070d17]/95 backdrop-blur-xl border-t border-slate-100 dark:border-white/10 shadow-[0_-8px_32px_rgba(0,0,0,0.06)] dark:shadow-none">
       <div className="flex items-center justify-around px-4 py-3 pb-safe max-w-lg mx-auto relative">
         
         {/* Home Button */}
         <Link
           href="/assist"
-          className="flex flex-col items-center gap-1.5 p-2 min-w-[70px] transition-all active:scale-90 text-on-surface-variant group"
+          className="flex flex-col items-center gap-1.5 p-2 min-w-[70px] transition-all active:scale-90 text-on-surface-variant dark:text-slate-400 group"
         >
-          <div className="w-10 h-10 rounded-2xl group-hover:bg-primary/5 flex items-center justify-center transition-colors">
+          <div className="w-10 h-10 rounded-2xl group-hover:bg-primary/5 dark:group-hover:bg-white/5 flex items-center justify-center transition-colors">
             <span className="material-symbols-outlined text-[24px]">home</span>
           </div>
           <span className="text-[10px] font-extrabold uppercase tracking-widest">{t('navPublic.home')}</span>
@@ -30,22 +30,22 @@ export default function BottomNavVolunteer() {
         <div className="relative -top-10">
           <Link
             href="/volunteer"
-            className="w-16 h-16 rounded-full flex items-center justify-center active:scale-90 transition-all border-4 border-white shadow-xl bg-[#2E7D32] text-white shadow-[#2E7D32]/40"
+            className="w-16 h-16 rounded-full flex items-center justify-center active:scale-90 transition-all border-4 border-white dark:border-[#0a1628] shadow-xl bg-[#2E7D32] text-white shadow-[#2E7D32]/40"
           >
             <span className="material-symbols-outlined text-[32px] font-bold">volunteer_activism</span>
           </Link>
-          <div className="absolute top-0 right-0 w-5 h-5 bg-[#1B5E20] text-white text-[10px] font-black rounded-full border-2 border-white flex items-center justify-center shadow-sm">3</div>
+          <div className="absolute top-0 right-0 w-5 h-5 bg-[#1B5E20] text-white text-[10px] font-black rounded-full border-2 border-white dark:border-[#0a1628] flex items-center justify-center shadow-sm">3</div>
         </div>
 
         {/* My Tasks Button */}
         <Link
           href="/volunteer/tasks"
           className={`flex flex-col items-center gap-1.5 p-2 min-w-[70px] transition-all active:scale-90 group ${
-            isMyTasks ? 'text-[#C2185B]' : 'text-on-surface-variant'
+            isMyTasks ? 'text-[#2E7D32] dark:text-green-400' : 'text-on-surface-variant dark:text-slate-400'
           }`}
         >
           <div className={`w-10 h-10 rounded-2xl flex items-center justify-center transition-colors ${
-            isMyTasks ? 'bg-pink-50 text-[#C2185B]' : 'group-hover:bg-pink-50/50'
+            isMyTasks ? 'bg-green-50 dark:bg-green-900/20 text-[#2E7D32] dark:text-green-400' : 'group-hover:bg-green-50/50 dark:group-hover:bg-white/5'
           }`}>
             <span 
               className="material-symbols-outlined text-[24px]"
@@ -54,7 +54,7 @@ export default function BottomNavVolunteer() {
               task_alt
             </span>
           </div>
-          <span className="text-[10px] font-extrabold uppercase tracking-widest">Minhas Atividades</span>
+          <span className="text-[10px] font-extrabold uppercase tracking-widest">{t('navVolunteer.myTasks') || 'Minhas Tarefas'}</span>
         </Link>
 
       </div>

@@ -1,9 +1,11 @@
 {
   "/_not-found/page": "app/_not-found/page.js",
-  "/dashboard/page": "app/dashboard/page.js",
-  "/onboarding/page": "app/onboarding/page.js",
-  "/volunteer/page": "app/volunteer/page.js",
   "/missing/page": "app/missing/page.js",
-  "/volunteer/tasks/page": "app/volunteer/tasks/page.js",
-  "/assist/page": "app/assist/page.js"
+  "/filtros/page": "app/filtros/page.js",
+  "/onboarding/page": "app/onboarding/page.js",
+  "/shelter/manage/page": "app/shelter/manage/page.js",
+  "/assist/page": "app/assist/page.js",
+  "/page": "app/page.js",
+  "/shelter/team/page": "app/shelter/team/page.js",
+  "/login/page": "app/login/page.js"
 }

@@ -285,6 +285,10 @@
     "checkoutBtn": "Registrar Check-out (Saída)",
     "undo": "Desfazer ou mover para aguardando"
   },
+  "navVolunteer": {
+    "myTasks": "Minhas Tarefas",
+    "opportunities": "Oportunidades"
+  },
   "routesPage": {
     "title": "Meus Resgates",
     "subtitle": "Gerencie quem está no seu veículo",

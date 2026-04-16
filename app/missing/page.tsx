@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useI18n } from '@/components/i18n/I18nProvider'
 import AppHeader from '@/components/headers/AppHeader'
@@ -60,18 +60,34 @@ export default function MissingPage() {
   const [search, setSearch] = useState('')
   const [showAddModal, setShowAddModal] = useState(false)
 
+  useEffect(() => {
+    const handleOpenAdd = () => setShowAddModal(true)
+    window.addEventListener('open-add-missing', handleOpenAdd)
+    return () => window.removeEventListener('open-add-missing', handleOpenAdd)
+  }, [])
+
   const filtered = MOCK_DATA.filter(p => p.status === activeTab && p.name.toLowerCase().includes(search.toLowerCase()))
 
   return (
-    <main className="min-h-screen bg-surface flex flex-col pb-40 pt-16">
+    <main className="min-h-screen bg-surface dark:bg-[#0a1628] flex flex-col pb-40 pt-16 transition-colors">
       <AppHeader />
 
-      <div className="px-5 pt-10 shrink-0 max-w-2xl mx-auto w-full">
+      <div className="px-5 pt-6 shrink-0 max-w-2xl mx-auto w-full">
+        {/* Navigation / Back */}
+        <div className="flex items-center gap-2 mb-6">
+          <Link href="/help?module=help" className="flex items-center gap-2 text-slate-500 hover:text-primary transition-colors group">
+            <div className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-white/5 flex items-center justify-center group-hover:scale-110 transition-transform">
+              <span className="material-symbols-outlined text-[20px]">arrow_back</span>
+            </div>
+            <span className="text-xs font-bold uppercase tracking-widest">{t('onboarding.back') || 'Voltar'}</span>
+          </Link>
+        </div>
+
         <section className="mb-8">
-          <h1 className="text-4xl font-extrabold font-headline text-on-surface tracking-tight leading-tight">
+          <h1 className="text-4xl font-extrabold font-headline text-on-surface dark:text-white tracking-tight leading-tight">
             {t('missingPage.title')}
           </h1>
-          <p className="mt-2 text-on-surface-variant font-body text-base">
+          <p className="mt-2 text-on-surface-variant dark:text-slate-400 font-body text-base">
             {t('missingPage.subtitle')}
           </p>
         </section>
@@ -79,7 +95,7 @@ export default function MissingPage() {
 
       <div className="px-4 pb-6 space-y-6 max-w-2xl mx-auto w-full">
         {/* Toggle Tabs */}
-        <div className="flex bg-surface-container-low p-1.5 rounded-2xl shadow-sm border border-outline-variant/10">
+        <div className="flex bg-surface-container-low dark:bg-white/5 p-1.5 rounded-2xl shadow-sm border border-outline-variant/10 dark:border-white/5">
           <button
             onClick={() => setActiveTab('missing')}
             className={`flex-1 py-3 text-xs font-bold rounded-xl transition-all ${
@@ -95,7 +111,7 @@ export default function MissingPage() {
             className={`flex-1 py-3 text-xs font-bold rounded-xl transition-all ${
               activeTab === 'found' 
                 ? 'bg-white text-secondary shadow-sm' 
-                : 'text-on-surface-variant hover:bg-white/50'
+                : 'text-on-surface-variant dark:text-slate-400 hover:bg-white/50 dark:hover:bg-white/5'
             }`}
           >
             {t('missingPage.tabFound')}
@@ -110,7 +126,7 @@ export default function MissingPage() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder={t('missingPage.searchPlace')}
-            className="w-full bg-surface-container-highest border-none pl-14 pr-6 py-4 rounded-2xl text-sm font-semibold text-on-surface placeholder:text-outline/70 focus:ring-2 focus:ring-primary/20 transition-all shadow-sm"
+            className="w-full bg-surface-container-highest dark:bg-white/5 border-none dark:border dark:border-white/5 pl-14 pr-6 py-4 rounded-2xl text-sm font-semibold text-on-surface dark:text-white placeholder:text-outline/70 focus:ring-2 focus:ring-primary/20 transition-all shadow-sm"
           />
         </div>
 
@@ -124,7 +140,7 @@ export default function MissingPage() {
             </div>
           ) : (
             filtered.map(person => (
-              <div key={person.id} className="bg-surface-container-lowest rounded-[2rem] p-5 border border-outline-variant/10 shadow-sm hover:shadow-xl transition-all group overflow-hidden">
+              <div key={person.id} className="bg-surface-container-lowest dark:bg-white/5 rounded-[2rem] p-5 border border-outline-variant/10 dark:border-white/5 shadow-sm hover:shadow-xl transition-all group overflow-hidden">
                 <div className="flex items-center gap-5">
                   <div className="relative shrink-0">
                     <div className="w-24 h-24 rounded-2xl bg-surface-container-low flex items-center justify-center text-outline group-hover:bg-primary/5 group-hover:text-primary transition-colors overflow-hidden">
@@ -135,11 +151,11 @@ export default function MissingPage() {
                   <div className="flex-1 min-w-0 py-1">
                     <div className="flex justify-between items-start">
                       <div>
-                        <h2 className="font-extrabold text-on-surface font-headline text-2xl tracking-tight">
+                        <h2 className="font-extrabold text-on-surface dark:text-white font-headline text-2xl tracking-tight">
                           {person.name}
                         </h2>
                         <div className="mt-2 flex items-center gap-3">
-                          <span className="bg-surface-container-high text-on-surface-variant text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-widest border border-outline-variant/5">
+                          <span className="bg-surface-container-high dark:bg-white/5 text-on-surface-variant dark:text-slate-400 text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-widest border border-outline-variant/5 dark:border-white/5">
                             {t('missingPage.age').replace('{age}', person.age.toString())}
                           </span>
                           <div className="flex items-center gap-1.5 text-secondary">
@@ -157,22 +173,22 @@ export default function MissingPage() {
                         <span className="material-symbols-outlined text-[16px]">location_on</span>
                       </div>
                       <div className="text-xs">
-                        <p className="text-outline uppercase text-[9px] font-extrabold tracking-widest mb-0.5">{t('missingPage.lastSeen')}</p>
-                        <p className="text-on-surface font-semibold leading-tight">{person.lastSeen}</p>
+                        <p className="text-outline dark:text-slate-500 uppercase text-[9px] font-extrabold tracking-widest mb-0.5">{t('missingPage.lastSeen')}</p>
+                        <p className="text-on-surface dark:text-white font-semibold leading-tight">{person.lastSeen}</p>
                       </div>
                     </div>
                   </div>
                 </div>
 
                 <div className="mt-6 space-y-4">
-                  <div className="relative p-4 rounded-xl bg-surface-container-low/50 italic text-on-surface-variant text-[13px] leading-relaxed border border-outline-variant/5">
+                  <div className="relative p-4 rounded-xl bg-surface-container-low/50 dark:bg-white/5 italic text-on-surface-variant dark:text-slate-400 text-[13px] leading-relaxed border border-outline-variant/5 dark:border-white/5">
                      "{person.description}"
                   </div>
                   
-                  <div className="flex items-center justify-between pt-2 border-t border-outline-variant/10 bg-surface-container-low/20 -mx-5 -mb-5 px-5 py-4">
+                  <div className="flex items-center justify-between border-t border-outline-variant/10 dark:border-white/10 -mx-5 -mb-5 px-5 py-5 transition-colors">
                     <div className="flex-1">
                       <p className="text-[9px] font-extrabold text-outline uppercase tracking-widest mb-0.5">{t('missingPage.reporter')}</p>
-                      <p className="text-xs font-extrabold text-on-surface-variant">{person.reporterName}</p>
+                      <p className="text-xs font-extrabold text-on-surface-variant dark:text-white">{person.reporterName}</p>
                     </div>
                     <a href={`tel:${person.reporterPhone}`} className="flex items-center gap-2.5 text-on-primary bg-primary px-6 py-3.5 rounded-[1.25rem] active:scale-95 transition-all shadow-lg shadow-primary/20">
                       <span className="material-symbols-outlined text-[20px]">call</span>
@@ -190,10 +206,10 @@ export default function MissingPage() {
       {showAddModal && (
         <div className="fixed inset-0 z-[100] flex flex-col justify-end">
           <div className="absolute inset-0 bg-black/60 backdrop-blur-md" onClick={() => setShowAddModal(false)} />
-          <div className="relative z-10 bg-white rounded-t-[3rem] px-6 pt-5 pb-40 reveal-pop max-h-[92vh] overflow-y-auto w-full shadow-2xl">
+          <div className="relative z-10 bg-white dark:bg-[#0d2247] rounded-t-[3rem] px-6 pt-5 pb-40 reveal-pop max-h-[92vh] overflow-y-auto w-full shadow-2xl transition-colors">
             <div className="w-10 h-1 rounded-full bg-slate-200 mx-auto mb-5 shrink-0" />
-            <h2 className="text-xl font-bold text-slate-800 font-headline mb-1">{t('missingPage.modalTitle')}</h2>
-            <p className="text-sm text-slate-500 mb-6">{t('missingPage.modalDesc')}</p>
+            <h2 className="text-xl font-bold text-slate-800 dark:text-white font-headline mb-1">{t('missingPage.modalTitle')}</h2>
+            <p className="text-sm text-slate-500 dark:text-slate-400 mb-6">{t('missingPage.modalDesc')}</p>
             
             <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); setShowAddModal(false); }}>
               <div className="flex bg-slate-50 border border-slate-200 border-dashed rounded-2xl h-24 items-center justify-center text-slate-400 active:bg-slate-100 transition-colors">
@@ -247,8 +263,6 @@ export default function MissingPage() {
           </div>
         </div>
       )}
-      {/* Substituída a barra global pela barra exclusiva de Desaparecidos */}
-      <BottomNavMissing onAddClick={() => setShowAddModal(true)} />
     </main>
   )
 }

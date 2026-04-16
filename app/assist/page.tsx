@@ -70,16 +70,16 @@ export default function AssistPage() {
   ]
 
   return (
-    <main className="min-h-screen bg-surface pb-32">
+    <main className="min-h-screen bg-surface dark:bg-[#0a1628] pb-32 transition-colors">
       <AppHeader />
 
       <div className="px-4 pt-24 pb-8 space-y-8 max-w-2xl mx-auto">
         {/* Intro Section */}
-        <section>
-          <h1 className="text-3xl font-extrabold font-headline text-on-surface tracking-tight leading-tight">
+        <section className="px-1">
+          <h1 className="text-4xl font-extrabold font-headline text-on-surface dark:text-white tracking-tight leading-tight">
             {t('assistPage.title')}
           </h1>
-          <p className="mt-2 text-on-surface-variant font-body">
+          <p className="mt-2 text-on-surface-variant dark:text-slate-400 font-body text-base">
             {t('assistPage.subtitle')}
           </p>
         </section>
@@ -89,23 +89,23 @@ export default function AssistPage() {
           {[
             { label: t('assistPage.statVolunteers'), value: '128', icon: 'volunteer_activism', color: 'text-primary' },
             { label: t('assistPage.statOpen'), value: HELP_REQUESTS.length.toString(), icon: 'pending', color: 'text-secondary' },
-            { label: t('assistPage.statToday'), value: '89', icon: 'check_circle', color: 'text-emerald-600' },
+            { label: t('assistPage.statToday'), value: '89', icon: 'check_circle', color: 'text-emerald-600 dark:text-emerald-400' },
           ].map((stat) => (
-            <div key={stat.label} className="rounded-2xl bg-surface-container-lowest p-4 shadow-sm border border-outline-variant/10 text-center transition-all hover:shadow-md">
-              <div className={`w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center mx-auto mb-2`}>
+            <div key={stat.label} className="rounded-2xl bg-white dark:bg-white/5 p-4 shadow-sm border border-slate-100 dark:border-white/10 text-center transition-all hover:shadow-md">
+              <div className={`w-10 h-10 rounded-full bg-slate-50 dark:bg-white/5 flex items-center justify-center mx-auto mb-2`}>
                 <span className={`material-symbols-outlined ${stat.color} text-[22px]`} style={{ fontVariationSettings: `'FILL' 1` }}>
                   {stat.icon}
                 </span>
               </div>
-              <p className="text-xl font-bold text-on-surface font-headline">{stat.value}</p>
-              <p className="text-[9px] font-bold text-on-surface-variant uppercase tracking-wider mt-0.5">{stat.label}</p>
+              <p className="text-xl font-bold text-on-surface dark:text-white font-headline">{stat.value}</p>
+              <p className="text-[9px] font-bold text-on-surface-variant dark:text-slate-500 uppercase tracking-wider mt-0.5">{stat.label}</p>
             </div>
           ))}
         </div>
 
         {/* Action Grid */}
         <section>
-          <h2 className="text-sm font-bold text-on-surface-variant uppercase tracking-widest mb-4 flex items-center gap-2">
+          <h2 className="text-xs font-bold text-on-surface-variant dark:text-slate-500 uppercase tracking-widest mb-4 flex items-center gap-2 px-1">
             <span className="w-1.5 h-1.5 rounded-full bg-primary" />
             Escolha como ajudar
           </h2>
@@ -113,7 +113,7 @@ export default function AssistPage() {
             {HELP_CARDS.map((card) => (
               <Link key={card.label} href={card.href} className="group">
                 <div
-                  className="flex flex-col items-start gap-4 rounded-3xl p-5 active:scale-[0.97] transition-all min-h-[160px] shadow-sm hover:shadow-xl hover:-translate-y-1 relative overflow-hidden bg-surface-container-lowest border border-outline-variant/10"
+                  className="flex flex-col items-start gap-4 rounded-[2rem] p-5 active:scale-[0.97] transition-all min-h-[170px] shadow-sm hover:shadow-xl hover:-translate-y-1 relative overflow-hidden bg-white dark:bg-white/5 border border-slate-100 dark:border-white/10"
                 >
                   {/* Decorative faint icon in background */}
                   <span className="material-symbols-outlined absolute -right-3 -bottom-3 text-[80px] opacity-[0.03] rotate-12 transition-transform group-hover:scale-110 group-hover:rotate-6" style={{ color: card.color }}>
@@ -129,11 +129,11 @@ export default function AssistPage() {
                     </span>
                   </div>
                   <div className="flex-1 relative z-10">
-                    <p className="font-extrabold text-on-surface font-headline text-sm leading-tight group-hover:text-primary transition-colors">{card.label}</p>
-                    <p className="text-[10px] text-on-surface-variant mt-2 leading-relaxed line-clamp-2 font-medium">{card.description}</p>
+                    <p className="font-extrabold text-[#191C1E] dark:text-white font-headline text-sm leading-tight group-hover:text-primary dark:group-hover:text-primary-fixed transition-colors">{card.label}</p>
+                    <p className="text-[10px] text-on-surface-variant dark:text-slate-400 mt-2 leading-relaxed line-clamp-2 font-medium">{card.description}</p>
                   </div>
                   <div className="w-full flex justify-end relative z-10 pt-2">
-                    <div className="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center border border-slate-100 transition-all group-hover:bg-primary group-hover:text-white group-hover:border-primary">
+                    <div className="w-8 h-8 rounded-full bg-slate-50 dark:bg-white/10 flex items-center justify-center border border-slate-100 dark:border-white/10 transition-all group-hover:bg-primary group-hover:text-white group-hover:border-primary">
                       <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
                     </div>
                   </div>

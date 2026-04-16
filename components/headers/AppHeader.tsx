@@ -46,21 +46,21 @@ export default function AppHeader({
     <header className="fixed top-0 w-full z-50 glass-header">
       <div className="flex justify-between items-center px-4 h-16 w-full max-w-7xl mx-auto relative">
         <div className="flex items-center gap-3">
-          <div className="flex items-center gap-2">
+          <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity active:scale-95 duration-200">
             <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-white shadow-lg shadow-primary/20">
               <span className="material-symbols-outlined text-[20px]" style={{ fontVariationSettings: `'FILL' 1` }}>sos</span>
             </div>
-            <span className="font-headline font-extrabold text-lg tracking-tighter text-primary">VNW-RESCUE</span>
-          </div>
+            <span className="font-headline font-extrabold text-lg tracking-tighter text-primary dark:text-white">VNW-RESCUE</span>
+          </Link>
           <span className="text-outline-variant/30 px-2 font-light">|</span>
         </div>
         <div className="flex items-center gap-3">
-          <div className="p-2 hover:bg-slate-100/50 rounded-full transition-colors cursor-pointer relative">
-            <span className="material-symbols-outlined text-on-surface-variant">
+          <div className="p-2 hover:bg-slate-100/50 dark:hover:bg-white/5 rounded-full transition-colors cursor-pointer relative">
+            <span className="material-symbols-outlined text-on-surface-variant dark:text-slate-400">
               notifications
             </span>
             {showNotificationDot ? (
-              <span className="absolute top-2 right-2 w-2 h-2 bg-error rounded-full" />
+              <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-error rounded-full border border-white dark:border-[#0a1628]" />
             ) : null}
           </div>
           <button
@@ -81,20 +81,18 @@ export default function AppHeader({
           {menuOpen ? (
             <div
               ref={menuRef}
-              className="absolute top-16 right-4 w-48 bg-white/90 backdrop-blur-xl border border-outline-variant/20 rounded-xl shadow-lg p-2"
+              className="absolute top-16 right-4 w-48 bg-white/95 dark:bg-[#0d2247]/95 backdrop-blur-xl border border-outline-variant/20 dark:border-white/10 rounded-xl shadow-lg p-2"
             >
               <Link
                 href="/user-profile"
-                className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-surface-container-low transition-colors"
+                className="flex items-center px-4 py-2.5 rounded-lg hover:bg-slate-50 dark:hover:bg-white/5 transition-colors"
                 onClick={() => setMenuOpen(false)}
               >
-                <span className="material-symbols-outlined">person</span>
-                <span className="text-sm font-semibold">{t('menu.profile')}</span>
+                <span className="text-sm font-bold dark:text-white uppercase tracking-wider">{t('menu.profile')}</span>
               </Link>
-              <div className="px-3 py-2 rounded-lg">
-                <div className="flex items-center gap-3">
-                  <span className="material-symbols-outlined">translate</span>
-                  <span className="text-sm font-semibold">
+              <div className="px-4 py-2.5 rounded-lg">
+                <div className="flex items-center">
+                  <span className="text-sm font-bold dark:text-white uppercase tracking-wider">
                     {t('menu.language')}
                   </span>
                 </div>
@@ -108,7 +106,7 @@ export default function AppHeader({
                     className={`px-3 py-2 rounded-lg text-xs font-extrabold border transition-colors ${
                       language === 'en'
                         ? 'bg-primary text-on-primary border-primary/30'
-                        : 'bg-white/60 text-on-surface-variant border-outline-variant/20 hover:bg-surface-container-low'
+                        : 'bg-white/60 dark:bg-white/10 text-on-surface-variant dark:text-slate-400 border-outline-variant/20 dark:border-white/5 hover:bg-slate-50 dark:hover:bg-white/10'
                     }`}
                   >
                     EN
@@ -122,7 +120,7 @@ export default function AppHeader({
                     className={`px-3 py-2 rounded-lg text-xs font-extrabold border transition-colors ${
                       language === 'pt-BR'
                         ? 'bg-primary text-on-primary border-primary/30'
-                        : 'bg-white/60 text-on-surface-variant border-outline-variant/20 hover:bg-surface-container-low'
+                        : 'bg-white/60 dark:bg-white/10 text-on-surface-variant dark:text-slate-400 border-outline-variant/20 dark:border-white/5 hover:bg-slate-50 dark:hover:bg-white/10'
                     }`}
                   >
                     PT-BR
@@ -131,11 +129,10 @@ export default function AppHeader({
               </div>
               <Link
                 href="/login"
-                className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-surface-container-low transition-colors"
+                className="flex items-center px-4 py-2.5 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/10 transition-colors"
                 onClick={() => setMenuOpen(false)}
               >
-                <span className="material-symbols-outlined">logout</span>
-                <span className="text-sm font-semibold">{t('menu.exit')}</span>
+                <span className="text-sm font-bold text-error dark:text-red-400 uppercase tracking-wider">{t('menu.exit')}</span>
               </Link>
             </div>
           ) : null}

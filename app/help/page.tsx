@@ -9,7 +9,7 @@ export default function HelpPage() {
 
   const categories = [
     {
-      href: '/request?type=rescue',
+      href: '/request?type=rescue&module=help',
       icon: 'sos',
       label: t('help.rescue'),
       description: t('help.rescueDesc'),
@@ -21,7 +21,7 @@ export default function HelpPage() {
       badgeText: 'text-red-700',
     },
     {
-      href: '/help/shelters',
+      href: '/help/shelters?module=help',
       icon: 'house',
       label: t('help.shelters'),
       description: t('help.sheltersDesc'),
@@ -33,7 +33,7 @@ export default function HelpPage() {
       badgeText: 'text-blue-700',
     },
     {
-      href: '/missing',
+      href: '/missing?module=help',
       icon: 'person_search',
       label: t('help.missing'),
       description: t('help.missingDesc'),
@@ -45,7 +45,7 @@ export default function HelpPage() {
       badgeText: 'text-purple-700',
     },
     {
-      href: '/help/phones',
+      href: '/help/phones?module=help',
       icon: 'call',
       label: t('help.phones'),
       description: t('help.phonesDesc'),
@@ -59,23 +59,33 @@ export default function HelpPage() {
   ]
 
   return (
-    <main className="min-h-screen bg-surface pb-28 pt-16">
+    <main className="min-h-screen bg-surface dark:bg-[#0a1628] pb-28 pt-16 transition-colors">
       <AppHeader />
 
-      <div className="px-4 pt-8 space-y-8 max-w-2xl mx-auto">
+      <div className="px-4 pt-6 space-y-8 max-w-2xl mx-auto">
+        {/* Navigation / Back */}
+        <div className="flex items-center gap-2">
+          <Link href="/" className="flex items-center gap-2 text-slate-500 hover:text-primary transition-colors group">
+            <div className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-white/5 flex items-center justify-center group-hover:scale-110 transition-transform">
+              <span className="material-symbols-outlined text-[20px]">arrow_back</span>
+            </div>
+            <span className="text-xs font-bold uppercase tracking-widest">{t('onboarding.back') || 'Voltar'}</span>
+          </Link>
+        </div>
+
         {/* Intro */}
         <section>
-          <h1 className="text-3xl font-extrabold font-headline text-on-surface tracking-tight leading-tight">
+          <h1 className="text-3xl font-extrabold font-headline text-on-surface dark:text-white tracking-tight leading-tight">
             {t('help.title')}
           </h1>
-          <p className="mt-2 text-on-surface-variant font-body">
+          <p className="mt-2 text-on-surface-variant dark:text-slate-400 font-body">
             {t('help.subtitle')}
           </p>
         </section>
 
         <div className="space-y-6">
           {/* Quick action banner */}
-          <Link href="/request?type=rescue">
+          <Link href="/request?type=rescue&module=help">
             <div
               className="flex items-center gap-4 rounded-3xl p-5 active:scale-[0.98] transition-all relative overflow-hidden group shadow-lg"
               style={{ background: 'linear-gradient(135deg, #ba1a1a, #ff5449)' }}
@@ -99,7 +109,7 @@ export default function HelpPage() {
             {categories.map((cat) => (
               <Link key={cat.href} href={cat.href} className="group">
                 <div
-                  className="flex flex-col items-start gap-4 rounded-3xl p-5 active:scale-[0.97] transition-all min-h-[160px] shadow-sm hover:shadow-xl hover:-translate-y-1 relative overflow-hidden bg-surface-container-lowest border border-outline-variant/10"
+                  className="flex flex-col items-start gap-4 rounded-3xl p-5 active:scale-[0.97] transition-all min-h-[160px] shadow-sm hover:shadow-xl hover:-translate-y-1 relative overflow-hidden bg-surface-container-lowest dark:bg-white/5 border border-outline-variant/10 dark:border-white/5"
                 >
                   {/* Decoration */}
                   <span className="material-symbols-outlined absolute -right-3 -bottom-3 text-[80px] opacity-[0.03] rotate-12 transition-transform group-hover:scale-110 group-hover:rotate-6" style={{ color: cat.iconColor }}>
@@ -118,18 +128,18 @@ export default function HelpPage() {
                         {cat.icon}
                       </span>
                     </div>
-                    <span className={`text-[9px] font-extrabold px-2 py-1 rounded-full leading-tight text-center ${cat.badgeBg} ${cat.badgeText} shadow-sm`}>
+                    <span className={`text-[9px] font-extrabold px-2 py-1 rounded-full leading-tight text-center ${cat.badgeBg} ${cat.badgeText} dark:bg-white/10 dark:text-white shadow-sm`}>
                       {cat.badge}
                     </span>
                   </div>
 
                   <div className="flex-1 relative z-10">
-                    <p className="font-extrabold text-on-surface font-headline text-sm leading-tight group-hover:text-primary transition-colors">{cat.label}</p>
-                    <p className="text-on-surface-variant font-medium text-[10px] mt-2 leading-relaxed line-clamp-2">{cat.description}</p>
+                    <p className="font-extrabold text-on-surface dark:text-white font-headline text-sm leading-tight group-hover:text-primary transition-colors">{cat.label}</p>
+                    <p className="text-on-surface-variant dark:text-slate-400 font-medium text-[10px] mt-2 leading-relaxed line-clamp-2">{cat.description}</p>
                   </div>
 
                   <div className="w-full flex justify-end relative z-10 pt-2">
-                    <div className="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center border border-slate-100 transition-all group-hover:bg-primary group-hover:text-white group-hover:border-primary shadow-sm">
+                    <div className="w-8 h-8 rounded-full bg-slate-50 dark:bg-white/10 flex items-center justify-center border border-slate-100 dark:border-white/10 transition-all group-hover:bg-primary group-hover:text-white group-hover:border-primary shadow-sm">
                       <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
                     </div>
                   </div>

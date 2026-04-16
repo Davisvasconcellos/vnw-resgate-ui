@@ -8,24 +8,19 @@
 
 html,
 body {
-  @apply bg-surface text-on-surface;
+  @apply bg-surface dark:bg-[#0a1628] text-on-surface dark:text-white transition-colors duration-300;
 }
 
 .glass-card {
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
+  @apply bg-white/70 dark:bg-black/30 backdrop-blur-3xl;
 }
 
 .glass-effect {
-  backdrop-filter: blur(30px);
-  -webkit-backdrop-filter: blur(30px);
+  @apply backdrop-blur-[30px];
 }
 
 .glass-header {
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(30px);
-  -webkit-backdrop-filter: blur(30px);
+  @apply bg-white/70 dark:bg-[#0a1628]/80 backdrop-blur-[30px] border-b border-outline-variant/10 dark:border-white/5 shadow-sm;
 }
 
 .material-symbols-outlined {
