@@ -167,5 +167,155 @@
     "title": "Useful Phones",
     "subtitle": "Emergency contacts",
     "tapToCall": "Tap to call"
+  },
+  "assistPage": {
+    "title": "I can help",
+    "subtitle": "Select how you can contribute",
+    "loginAlert": "Volunteers need to log in to access the request dashboard and start serving.",
+    "missingBanner": "Missing Pesons",
+    "missingDesc": "Consult or report family members and missing people",
+    "statVolunteers": "Active volunteers",
+    "statOpen": "Open requests",
+    "statToday": "Served today",
+    "types": {
+      "shelter": "Shelter",
+      "shelterDesc": "I have space at home to welcome people",
+      "transport": "Transport",
+      "transportDesc": "I can transport people to shelters or safe locations",
+      "boat": "Boat / Speedboat",
+      "boatDesc": "I have a vessel to rescue people in flooded areas",
+      "volunteer": "Volunteer",
+      "volunteerDesc": "I want to help as a volunteer in shelters or in the field"
+    }
+  },
+  "onboarding": {
+    "title": "Registration",
+    "submit": "Finish Registration",
+    "submitting": "Processing...",
+    "titles": {
+      "shelter": "Register your Shelter",
+      "transport": "Register Vehicle",
+      "boat": "Register Vessel",
+      "volunteer": "Volunteer Profile"
+    },
+    "descs": {
+      "shelter": "Fill in the information of the location that will receive families.",
+      "transport": "Inform your vehicle details to help with transport.",
+      "boat": "Inform the vessel details to support rescues.",
+      "volunteer": "Tell us how you can help."
+    },
+    "shelterForm": {
+      "name": "Location Name",
+      "namePlace": "Ex: Municipal Gym, My House",
+      "address": "Full Address",
+      "addressPlace": "Street, number, neighborhood",
+      "useLocation": "Use current location",
+      "capacity": "Total capacity",
+      "capacityPlace": "Ex: 50",
+      "structure": "Available Structure",
+      "water": "Drinking Water",
+      "food": "Food",
+      "bath": "Bathrooms",
+      "energy": "Power / Generator",
+      "pet": "Pets Welcome",
+      "medical": "First Aid"
+    },
+    "transportForm": {
+      "type": "Vehicle Type",
+      "select": "Select...",
+      "car": "Passenger Car",
+      "pickup": "Pickup Truck (4x4)",
+      "van": "Van",
+      "bus": "Bus / Minibus",
+      "truck": "Truck",
+      "seats": "Number of Seats",
+      "region": "Base action region",
+      "regionPlace": "Neighborhood or city",
+      "offroad": "4x4 / Off-road drive",
+      "offroadDesc": "Can access difficult or muddy areas"
+    },
+    "boatForm": {
+      "type": "Vessel Type",
+      "motor": "Powerboat / Speedboat",
+      "jet": "Jet Ski",
+      "row": "Rowboat / Lifeboat",
+      "kayak": "Kayak / Stand-up",
+      "spots": "Rescue spots",
+      "region": "Main region",
+      "regionPlace": "Where the boat is",
+      "vests": "I have extra life jackets",
+      "vestsDesc": "Important for rescuing those who can't swim"
+    },
+    "volunteerForm": {
+      "action": "How do you want to act?",
+      "sort": "Sorting and organizing (clothes/food)",
+      "clean": "Labor and Cleaning",
+      "health": "Nursing / Health / Psychological",
+      "rescue": "Tactical support in rescues (swimmer)",
+      "cook": "Cooking and meals for homeless",
+      "availability": "Availability",
+      "full": "Full time",
+      "morning": "Morning",
+      "afternoon": "Afternoon",
+      "night": "Night / Dawn"
+    }
+  },
+  "shelterManage": {
+    "title": "Shelter Management",
+    "labelCapacity": "Occupation (Check-ins)",
+    "available": "Available",
+    "slots": "slots",
+    "isFull": "Shelter full",
+    "manualCheckin": "Manual Local Check-in",
+    "tabs": {
+      "request": "Requests",
+      "incoming": "Waiting",
+      "present": "Checked-in",
+      "left": "Check-outs"
+    },
+    "search": "Search by name or phone...",
+    "empty": "No records found in this tab.",
+    "people": "{count} people",
+    "person": "1 person",
+    "assumeBtn": "Assume (Notice way)",
+    "assumeMsg": "Message for family (Optional)",
+    "assumePlace": "Ex: We arrive in 15 minutes.",
+    "confirmBtn": "Confirm Responsibility",
+    "checkinBtn": "Perform Entry Check-in",
+    "checkoutBtn": "Register Check-out",
+    "undo": "Undo or move to waiting"
+  },
+  "routesPage": {
+    "title": "My Rescues",
+    "subtitle": "Manage people in your vehicle",
+    "tabOngoing": "In transit",
+    "tabFinished": "Finished",
+    "empty": "No rescues in this tab.",
+    "origin": "Origin: {loc}",
+    "rescued": "{count} rescued",
+    "dropoff": "Drop off",
+    "finished": "Done",
+    "modalTitle": "Register Drop-off",
+    "modalDesc": "Where did you leave {name}?",
+    "toShelter": "Transfer to Shelter",
+    "toShelterDesc": "Alert a shelter about the arrival",
+    "toSafe": "Leave free / Safe Local",
+    "toSafeDesc": "Relative's house, no shelter registration"
+  },
+  "profilePage": {
+    "title": "Your Profile",
+    "settings": "Settings",
+    "language": "Language",
+    "theme": "Economy Mode (Dark)",
+    "themeDesc": "Saves battery on OLED screens, crucial in power-off areas.",
+    "light": "Light",
+    "dark": "Dark",
+    "roles": {
+      "civilian": "Citizen",
+      "shelter": "Shelter Admin",
+      "transport": "Volunteer Driver",
+      "boat": "Vessel Operator",
+      "volunteer": "Volunteer"
+    }
   }
 }

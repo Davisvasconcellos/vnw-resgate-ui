@@ -7,6 +7,7 @@ import BottomNavShelter from '@/components/BottomNavShelter'
 import BottomNavTransport from '@/components/BottomNavTransport'
 import BottomNavVolunteer from '@/components/BottomNavVolunteer'
 import BottomNavPublic from '@/components/BottomNavPublic'
+import BottomNavAssist from '@/components/BottomNavAssist'
 
 
 type Role = 'civilian' | 'shelter' | 'transport' | 'boat' | 'volunteer' | null
@@ -26,8 +27,13 @@ export default function BottomNavWrapper() {
   }, [pathname])
 
   // Ocultar nav bar totalmente nestas rotas (telas cheias)
-  const HIDDEN_ROUTES = ['/', '/login', '/onboarding']
+  const HIDDEN_ROUTES = ['/', '/login', '/onboarding', '/missing', '/shelter/manage', '/nearby']
   if (HIDDEN_ROUTES.includes(pathname)) return null
+
+  // Barra de assistência (KPIs + Opções)
+  if (pathname === '/assist') {
+    return <BottomNavAssist />
+  }
 
   // Rotas Públicas (Ajuda, Desaparecidos, etc) — Usam a nova barra pública
   const PUBLIC_ROUTES = ['/help', '/missing', '/help/shelters', '/help/phones', '/request']

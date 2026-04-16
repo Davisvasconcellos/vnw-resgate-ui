@@ -2,6 +2,8 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import { useI18n } from '@/components/i18n/I18nProvider'
+import AppHeader from '@/components/headers/AppHeader'
 
 interface RouteEntry {
   id: string
@@ -17,6 +19,7 @@ const INITIAL_ROUTES: RouteEntry[] = [
 ]
 
 export default function RoutesPage() {
+  const { t } = useI18n()
   const [routes, setRoutes] = useState<RouteEntry[]>(INITIAL_ROUTES)
   const [activeTab, setActiveTab] = useState<'ongoing'|'finished'>('ongoing')
   const [showCheckout, setShowCheckout] = useState(false)
@@ -32,53 +35,62 @@ export default function RoutesPage() {
   const filtered = routes.filter(r => r.status === activeTab)
 
   return (
-    <main className="min-h-screen bg-slate-50 flex flex-col pb-28">
-      {/* Header */}
-      <div className="bg-white/90 backdrop-blur-xl border-b border-slate-100 px-4 py-4 sticky top-0 z-20">
-        <div className="flex items-center gap-3">
-          <Link href="/dashboard" className="flex items-center justify-center w-10 h-10 rounded-xl bg-slate-100 text-slate-600 active:scale-95 transition-transform">
-            <span className="material-symbols-outlined text-[22px]">arrow_back</span>
-          </Link>
-          <div className="flex-1">
-            <h1 className="text-xl font-bold text-slate-800 font-headline">Meus Resgates</h1>
-            <p className="text-xs text-slate-400">Gerencie quem está no seu veículo</p>
-          </div>
-        </div>
+    <main className="min-h-screen bg-surface flex flex-col pb-28 pt-16">
+      <AppHeader />
+
+      <div className="px-4 pt-8">
+        <section className="mb-6">
+          <h1 className="text-3xl font-extrabold font-headline text-on-surface tracking-tight leading-tight">
+            {t('routesPage.title')}
+          </h1>
+          <p className="mt-2 text-on-surface-variant font-body">
+            {t('routesPage.subtitle')}
+          </p>
+        </section>
         
         {/* Tabs */}
-        <div className="flex gap-2 mt-4">
+        <div className="flex bg-surface-container-low p-1.5 rounded-2xl mb-8 shadow-sm border border-outline-variant/10">
           <button
             onClick={() => setActiveTab('ongoing')}
-            className={`flex-1 py-2 text-sm font-bold rounded-xl transition-colors ${activeTab === 'ongoing' ? 'bg-orange-100 text-orange-700' : 'bg-slate-100 text-slate-500'}`}
+            className={`flex-1 py-3 text-xs font-bold rounded-xl transition-all ${activeTab === 'ongoing' ? 'bg-white text-primary shadow-sm' : 'text-on-surface-variant hover:bg-white/50'}`}
           >
-            Em trânsito ({routes.filter(r => r.status === 'ongoing').length})
+            {t('routesPage.tabOngoing')} ({routes.filter(r => r.status === 'ongoing').length})
           </button>
           <button
             onClick={() => setActiveTab('finished')}
-            className={`flex-1 py-2 text-sm font-bold rounded-xl transition-colors ${activeTab === 'finished' ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-500'}`}
+            className={`flex-1 py-3 text-xs font-bold rounded-xl transition-all ${activeTab === 'finished' ? 'bg-white text-secondary shadow-sm' : 'text-on-surface-variant hover:bg-white/50'}`}
           >
-            Finalizados ({routes.filter(r => r.status === 'finished').length})
+            {t('routesPage.tabFinished')} ({routes.filter(r => r.status === 'finished').length})
           </button>
         </div>
       </div>
 
-      <div className="px-4 pt-4 space-y-3">
+      <div className="px-4 space-y-4 max-w-2xl mx-auto w-full">
         {filtered.length === 0 ? (
-          <p className="text-center text-slate-400 py-10 text-sm">Nenhum resgate nesta aba.</p>
+          <div className="text-center py-20 bg-surface-container-lowest rounded-3xl border border-dashed border-outline-variant/30">
+            <span className="material-symbols-outlined text-[48px] text-outline-variant/50 mb-3">auto_stories</span>
+            <p className="text-on-surface-variant font-medium text-sm">{t('routesPage.empty')}</p>
+          </div>
         ) : (
           filtered.map(route => (
-            <div key={route.id} className="bg-white rounded-2xl p-4 shadow-sm border border-slate-100">
+            <div key={route.id} className="bg-surface-container-lowest rounded-[2rem] p-6 shadow-sm border border-outline-variant/10 hover:shadow-md transition-all">
               <div className="flex justify-between items-start">
-                <div>
-                  <h3 className="font-bold text-slate-800 text-base">{route.name}</h3>
-                  <p className="text-xs text-slate-500 mt-1 flex items-center gap-1">
-                    <span className="material-symbols-outlined text-[14px]">location_on</span>
-                    Origem: {route.location}
-                  </p>
-                  <p className="text-xs text-slate-500 mt-0.5 flex items-center gap-1">
-                    <span className="material-symbols-outlined text-[14px]">group</span>
-                    {route.people} resgatados
-                  </p>
+                <div className="flex-1 min-w-0 pr-4">
+                  <h3 className="font-extrabold text-on-surface text-lg font-headline">{route.name}</h3>
+                  <div className="mt-3 space-y-2">
+                    <p className="text-xs text-on-surface-variant font-medium flex items-center gap-2">
+                      <div className="w-6 h-6 rounded-lg bg-primary/5 flex items-center justify-center text-primary">
+                        <span className="material-symbols-outlined text-[14px]">location_on</span>
+                      </div>
+                      {t('routesPage.origin').replace('{loc}', route.location)}
+                    </p>
+                    <p className="text-xs text-on-surface-variant font-medium flex items-center gap-2">
+                      <div className="w-6 h-6 rounded-lg bg-secondary/5 flex items-center justify-center text-secondary">
+                        <span className="material-symbols-outlined text-[14px]">group</span>
+                      </div>
+                      {route.people === 1 ? t('shelterManage.person') : t('routesPage.rescued').replace('{count}', route.people.toString())}
+                    </p>
+                  </div>
                 </div>
                 {route.status === 'ongoing' && (
                   <button
@@ -86,13 +98,16 @@ export default function RoutesPage() {
                       setSelectedRoute(route)
                       setShowCheckout(true)
                     }}
-                    className="shrink-0 bg-emerald-50 text-emerald-700 font-bold px-3 py-2 rounded-xl text-xs active:scale-95 transition-transform"
+                    className="shrink-0 bg-primary text-on-primary font-bold px-5 py-3 rounded-2xl text-xs active:scale-95 transition-all shadow-lg shadow-primary/10"
                   >
-                    Desembarcar
+                    {t('routesPage.dropoff')}
                   </button>
                 )}
                 {route.status === 'finished' && (
-                  <span className="text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-lg">Realizado</span>
+                  <span className="text-xs font-bold text-secondary bg-secondary/10 px-4 py-2 rounded-xl flex items-center gap-1">
+                    <span className="material-symbols-outlined text-[14px]">check_circle</span>
+                    {t('routesPage.finished')}
+                  </span>
                 )}
               </div>
             </div>
@@ -102,12 +117,12 @@ export default function RoutesPage() {
 
       {/* Checkout Modal */}
       {showCheckout && selectedRoute && (
-        <div className="fixed inset-0 z-50 flex flex-col justify-end">
+        <div className="fixed inset-0 z-[100] flex flex-col justify-end">
           <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setShowCheckout(false)} />
-          <div className="relative z-10 bg-white rounded-t-[2rem] px-5 pt-4 pb-10 reveal-pop">
-            <div className="w-10 h-1 rounded-full bg-slate-200 mx-auto mb-5" />
-            <h2 className="text-xl font-bold text-slate-800 font-headline mb-1">Registrar Desembarque</h2>
-            <p className="text-sm text-slate-500 mb-6">Onde você deixou <strong>{selectedRoute.name}</strong>?</p>
+          <div className="relative z-10 bg-white rounded-t-[2rem] px-5 pt-4 pb-32 reveal-pop">
+            <div className="w-10 h-1 rounded-full bg-slate-200 mx-auto mb-5 shrink-0" />
+            <h2 className="text-xl font-bold text-slate-800 font-headline mb-1">{t('routesPage.modalTitle')}</h2>
+            <p className="text-sm text-slate-500 mb-6">{t('routesPage.modalDesc').replace('{name}', selectedRoute.name)}</p>
 
             <div className="space-y-3">
               <button
@@ -118,8 +133,8 @@ export default function RoutesPage() {
                   <span className="material-symbols-outlined text-blue-600">house</span>
                 </div>
                 <div className="text-left flex-1">
-                  <p className="font-bold text-slate-800 text-sm">Transferir para Abrigo</p>
-                  <p className="text-xs text-slate-500">Alerte um abrigo sobre a chegada</p>
+                  <p className="font-bold text-slate-800 text-sm">{t('routesPage.toShelter')}</p>
+                  <p className="text-xs text-slate-500">{t('routesPage.toShelterDesc')}</p>
                 </div>
                 <span className="material-symbols-outlined text-slate-400">chevron_right</span>
               </button>
@@ -132,8 +147,8 @@ export default function RoutesPage() {
                   <span className="material-symbols-outlined text-emerald-600">check_circle</span>
                 </div>
                 <div className="text-left flex-1">
-                  <p className="font-bold text-slate-800 text-sm">Deixar livre / Local Seguro</p>
-                  <p className="text-xs text-slate-500">Casa de parentes, sem registro em abrigo</p>
+                  <p className="font-bold text-slate-800 text-sm">{t('routesPage.toSafe')}</p>
+                  <p className="text-xs text-slate-500">{t('routesPage.toSafeDesc')}</p>
                 </div>
               </button>
             </div>

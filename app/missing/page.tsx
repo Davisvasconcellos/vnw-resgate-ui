@@ -3,6 +3,8 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { useI18n } from '@/components/i18n/I18nProvider'
+import AppHeader from '@/components/headers/AppHeader'
+import BottomNavMissing from '@/components/BottomNavMissing'
 
 interface MissingPerson {
   id: string
@@ -61,45 +63,39 @@ export default function MissingPage() {
   const filtered = MOCK_DATA.filter(p => p.status === activeTab && p.name.toLowerCase().includes(search.toLowerCase()))
 
   return (
-    <main className="min-h-screen bg-slate-50 flex flex-col pb-28">
-      {/* Header */}
-      <div className="bg-white/90 backdrop-blur-xl border-b border-slate-100 px-4 py-4 sticky top-0 z-20">
-        <div className="flex items-center gap-3">
-          <button onClick={() => window.history.back()} className="flex items-center justify-center w-10 h-10 rounded-xl bg-slate-100 text-slate-600 active:scale-95 transition-transform">
-            <span className="material-symbols-outlined text-[22px]">arrow_back</span>
-          </button>
-          <div className="flex-1">
-            <h1 className="text-xl font-bold text-slate-800 font-headline leading-tight">{t('missingPage.title')}</h1>
-            <p className="text-xs text-slate-400">{t('missingPage.subtitle')}</p>
-          </div>
-          <button 
-            onClick={() => setShowAddModal(true)}
-            className="flex items-center justify-center w-10 h-10 rounded-xl bg-blue-50 text-blue-600 active:scale-95 transition-transform shrink-0"
-          >
-            <span className="material-symbols-outlined text-[22px]">add</span>
-          </button>
-        </div>
+    <main className="min-h-screen bg-surface flex flex-col pb-40 pt-16">
+      <AppHeader />
+
+      <div className="px-5 pt-10 shrink-0 max-w-2xl mx-auto w-full">
+        <section className="mb-8">
+          <h1 className="text-4xl font-extrabold font-headline text-on-surface tracking-tight leading-tight">
+            {t('missingPage.title')}
+          </h1>
+          <p className="mt-2 text-on-surface-variant font-body text-base">
+            {t('missingPage.subtitle')}
+          </p>
+        </section>
       </div>
 
-      <div className="px-4 pt-5 pb-6 space-y-4">
+      <div className="px-4 pb-6 space-y-6 max-w-2xl mx-auto w-full">
         {/* Toggle Tabs */}
-        <div className="flex bg-slate-200/50 p-1 rounded-2xl">
+        <div className="flex bg-surface-container-low p-1.5 rounded-2xl shadow-sm border border-outline-variant/10">
           <button
             onClick={() => setActiveTab('missing')}
-            className={`flex-1 py-3 text-sm font-bold rounded-xl transition-all ${
+            className={`flex-1 py-3 text-xs font-bold rounded-xl transition-all ${
               activeTab === 'missing' 
-                ? 'bg-white text-red-600 shadow-sm' 
-                : 'text-slate-500 hover:text-slate-700'
+                ? 'bg-white text-error shadow-sm' 
+                : 'text-on-surface-variant hover:bg-white/50'
             }`}
           >
             {t('missingPage.tabMissing')}
           </button>
           <button
             onClick={() => setActiveTab('found')}
-            className={`flex-1 py-3 text-sm font-bold rounded-xl transition-all ${
+            className={`flex-1 py-3 text-xs font-bold rounded-xl transition-all ${
               activeTab === 'found' 
-                ? 'bg-white text-emerald-600 shadow-sm' 
-                : 'text-slate-500 hover:text-slate-700'
+                ? 'bg-white text-secondary shadow-sm' 
+                : 'text-on-surface-variant hover:bg-white/50'
             }`}
           >
             {t('missingPage.tabFound')}
@@ -107,14 +103,14 @@ export default function MissingPage() {
         </div>
 
         {/* Search Bar */}
-        <div className="relative">
-          <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-[20px]">search</span>
+        <div className="relative group">
+          <span className="material-symbols-outlined absolute left-5 top-1/2 -translate-y-1/2 text-outline group-focus-within:text-primary transition-colors">search</span>
           <input
             type="search"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder={t('missingPage.searchPlace')}
-            className="w-full bg-white border border-slate-200 pl-11 pr-4 py-3.5 rounded-2xl text-sm font-semibold text-slate-800 outline-none focus:border-blue-400 transition-colors shadow-sm"
+            className="w-full bg-surface-container-highest border-none pl-14 pr-6 py-4 rounded-2xl text-sm font-semibold text-on-surface placeholder:text-outline/70 focus:ring-2 focus:ring-primary/20 transition-all shadow-sm"
           />
         </div>
 
@@ -128,42 +124,60 @@ export default function MissingPage() {
             </div>
           ) : (
             filtered.map(person => (
-              <div key={person.id} className="bg-white rounded-3xl p-5 border border-slate-100 shadow-sm relative overflow-hidden">
-                <div className={`absolute top-0 left-0 w-1.5 h-full ${person.status === 'missing' ? 'bg-red-500' : 'bg-emerald-500'}`} />
-                <div className="flex gap-4">
-                  <div className="w-16 h-16 rounded-2xl bg-slate-100 shrink-0 flex items-center justify-center">
-                    <span className="material-symbols-outlined text-[32px] text-slate-300">person</span>
+              <div key={person.id} className="bg-surface-container-lowest rounded-[2rem] p-5 border border-outline-variant/10 shadow-sm hover:shadow-xl transition-all group overflow-hidden">
+                <div className="flex items-center gap-5">
+                  <div className="relative shrink-0">
+                    <div className="w-24 h-24 rounded-2xl bg-surface-container-low flex items-center justify-center text-outline group-hover:bg-primary/5 group-hover:text-primary transition-colors overflow-hidden">
+                       <span className="material-symbols-outlined text-[48px]">person</span>
+                    </div>
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <h2 className="font-bold text-slate-800 font-headline text-[17px] leading-tight flex items-center gap-2">
-                      {person.name}
-                      <span className="text-xs font-semibold text-slate-400 font-sans tracking-wide">
-                        {t('missingPage.age').replace('{age}', person.age.toString())}
-                      </span>
-                    </h2>
-                    <p className="text-xs text-slate-500 mt-2 flex items-start gap-1 leading-relaxed">
-                      <span className="material-symbols-outlined text-[14px] shrink-0 translate-y-[2px]">location_on</span>
-                      <span>
-                        <strong className="text-slate-700">{t('missingPage.lastSeen')}</strong><br/>
-                        {person.lastSeen}
-                      </span>
-                    </p>
+                  
+                  <div className="flex-1 min-w-0 py-1">
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <h2 className="font-extrabold text-on-surface font-headline text-2xl tracking-tight">
+                          {person.name}
+                        </h2>
+                        <div className="mt-2 flex items-center gap-3">
+                          <span className="bg-surface-container-high text-on-surface-variant text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-widest border border-outline-variant/5">
+                            {t('missingPage.age').replace('{age}', person.age.toString())}
+                          </span>
+                          <div className="flex items-center gap-1.5 text-secondary">
+                             <span className={`w-2 h-2 rounded-full ${person.status === 'missing' ? 'bg-error' : 'bg-secondary animate-pulse'}`} />
+                             <span className="text-[10px] font-extrabold uppercase tracking-widest leading-none translate-y-[0.5px]">
+                              {person.status === 'missing' ? 'Missing' : 'Found'}
+                             </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="mt-5 flex items-start gap-2.5">
+                      <div className="w-8 h-8 rounded-full bg-primary/5 flex items-center justify-center text-primary shrink-0 border border-primary/10">
+                        <span className="material-symbols-outlined text-[16px]">location_on</span>
+                      </div>
+                      <div className="text-xs">
+                        <p className="text-outline uppercase text-[9px] font-extrabold tracking-widest mb-0.5">{t('missingPage.lastSeen')}</p>
+                        <p className="text-on-surface font-semibold leading-tight">{person.lastSeen}</p>
+                      </div>
+                    </div>
                   </div>
                 </div>
 
-                <div className="mt-4 pt-4 border-t border-slate-100 space-y-3">
-                  <p className="text-xs text-slate-600 bg-slate-50 p-3 rounded-xl italic">
-                    "{person.description}"
-                  </p>
-                  <div className="flex flex-col gap-1">
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{t('missingPage.reporter')}</p>
-                    <div className="flex items-center justify-between">
-                      <p className="text-xs font-semibold text-slate-700">{person.reporterName}</p>
-                      <a href={`tel:${person.reporterPhone}`} className="flex items-center gap-1.5 text-blue-600 bg-blue-50 px-2.5 py-1.5 rounded-lg active:scale-95 transition-transform">
-                        <span className="material-symbols-outlined text-[14px]">call</span>
-                        <span className="text-xs font-bold">{person.reporterPhone}</span>
-                      </a>
+                <div className="mt-6 space-y-4">
+                  <div className="relative p-4 rounded-xl bg-surface-container-low/50 italic text-on-surface-variant text-[13px] leading-relaxed border border-outline-variant/5">
+                     "{person.description}"
+                  </div>
+                  
+                  <div className="flex items-center justify-between pt-2 border-t border-outline-variant/10 bg-surface-container-low/20 -mx-5 -mb-5 px-5 py-4">
+                    <div className="flex-1">
+                      <p className="text-[9px] font-extrabold text-outline uppercase tracking-widest mb-0.5">{t('missingPage.reporter')}</p>
+                      <p className="text-xs font-extrabold text-on-surface-variant">{person.reporterName}</p>
                     </div>
+                    <a href={`tel:${person.reporterPhone}`} className="flex items-center gap-2.5 text-on-primary bg-primary px-6 py-3.5 rounded-[1.25rem] active:scale-95 transition-all shadow-lg shadow-primary/20">
+                      <span className="material-symbols-outlined text-[20px]">call</span>
+                      <span className="text-sm font-extrabold tracking-tight">{person.reporterPhone}</span>
+                    </a>
                   </div>
                 </div>
               </div>
@@ -174,9 +188,9 @@ export default function MissingPage() {
 
       {/* Add Missing Person Modal Placeholder */}
       {showAddModal && (
-        <div className="fixed inset-0 z-50 flex flex-col justify-end">
-          <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setShowAddModal(false)} />
-          <div className="relative z-10 bg-white rounded-t-[2rem] px-5 pt-4 pb-10 reveal-pop max-h-[85vh] overflow-y-auto w-full">
+        <div className="fixed inset-0 z-[100] flex flex-col justify-end">
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-md" onClick={() => setShowAddModal(false)} />
+          <div className="relative z-10 bg-white rounded-t-[3rem] px-6 pt-5 pb-40 reveal-pop max-h-[92vh] overflow-y-auto w-full shadow-2xl">
             <div className="w-10 h-1 rounded-full bg-slate-200 mx-auto mb-5 shrink-0" />
             <h2 className="text-xl font-bold text-slate-800 font-headline mb-1">{t('missingPage.modalTitle')}</h2>
             <p className="text-sm text-slate-500 mb-6">{t('missingPage.modalDesc')}</p>
@@ -233,6 +247,8 @@ export default function MissingPage() {
           </div>
         </div>
       )}
+      {/* Substituída a barra global pela barra exclusiva de Desaparecidos */}
+      <BottomNavMissing onAddClick={() => setShowAddModal(true)} />
     </main>
   )
 }

@@ -4,6 +4,9 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import CapacityBar from '@/components/ui/CapacityBar'
 import { useSearchParams } from 'next/navigation'
+import { useI18n } from '@/components/i18n/I18nProvider'
+import AppHeader from '@/components/headers/AppHeader'
+import BottomNavShelterManage from '@/components/BottomNavShelterManage'
 
 const INITIAL = {
   name: 'Ginásio Municipal Lauro Linhares',
@@ -34,6 +37,7 @@ const INITIAL_ENTRIES: Entry[] = [
 ]
 
 export default function ShelterManagePage() {
+  const { t, language } = useI18n()
   const [shelter, setShelter] = useState(INITIAL)
   const [entries, setEntries] = useState<Entry[]>(INITIAL_ENTRIES)
   
@@ -72,7 +76,7 @@ export default function ShelterManagePage() {
     return () => window.removeEventListener('open-manual-checkin', handleOpenCheckin)
   }, [searchParams])
 
-  const getTime = () => new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
+  const getTime = () => new Date().toLocaleTimeString(language === 'pt-BR' ? 'pt-BR' : 'en-US', { hour: '2-digit', minute: '2-digit' })
 
   const handleManualCheckin = () => {
     if (!name.trim()) return
@@ -119,62 +123,56 @@ export default function ShelterManagePage() {
   const countByStatus = (status: EntryStatus) => entries.filter((e) => e.status === status).length
 
   return (
-    <>
-      <main className="min-h-screen bg-slate-50 flex flex-col pb-36">
-        {/* Header */}
-        <div className="sticky top-0 z-20 bg-white/90 backdrop-blur-xl border-b border-slate-100 px-4 py-4">
-          <div className="flex items-center gap-3">
-            <Link href="/dashboard" className="flex items-center justify-center w-10 h-10 rounded-xl bg-slate-100 text-slate-600 active:scale-95 transition-transform">
-              <span className="material-symbols-outlined text-[22px]">arrow_back</span>
-            </Link>
-            <div className="flex-1 min-w-0">
-              <h1 className="text-base font-bold text-slate-800 font-headline leading-tight">Gestão do Abrigo</h1>
-              <p className="text-xs text-slate-400 truncate">{shelter.name}</p>
+    <main className="min-h-screen bg-surface flex flex-col pb-44 pt-16">
+      <AppHeader />
+
+      <div className="px-5 pt-8 shrink-0 max-w-2xl mx-auto w-full">
+        <section className="mb-8">
+          <h1 className="text-4xl font-extrabold font-headline text-on-surface tracking-tight leading-tight">
+            {t('shelterManage.title')}
+          </h1>
+          <p className="mt-2 text-on-surface-variant font-body text-base">
+            {shelter.name}
+          </p>
+        </section>
+      </div>
+
+      <div className="px-5 pb-8 space-y-6 max-w-2xl mx-auto w-full">
+        {/* Capacity dashboard element */}
+        <div className="bg-surface-container-lowest rounded-[2.5rem] p-8 shadow-sm border border-outline-variant/10 relative overflow-hidden group">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -mr-16 -mt-16 transition-transform group-hover:scale-110" />
+          
+          <div className="flex justify-between items-end relative z-10">
+            <div>
+              <p className="text-[10px] font-extrabold text-outline uppercase tracking-[0.2em] mb-2">{t('shelterManage.labelCapacity')}</p>
+              <div className="flex items-baseline gap-2">
+                <span className="text-6xl font-black text-on-surface font-headline tracking-tighter">{shelter.occupied}</span>
+                <span className="text-outline text-2xl font-bold">/ {shelter.capacity}</span>
+              </div>
             </div>
-            {/* Removido o icone person_add daqui conforme solicitado */}
+            <div className="text-right">
+              <div className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-extrabold uppercase tracking-widest border ${available <= 10 ? 'bg-error/10 text-error border-error/20' : 'bg-secondary/10 text-secondary border-secondary/20'}`}>
+                <span className={`w-2 h-2 rounded-full ${available <= 10 ? 'bg-error animate-pulse' : 'bg-secondary'}`} />
+                {available} {t('shelterManage.slots')}
+              </div>
+              <p className="text-[10px] text-outline-variant font-bold mt-2 uppercase tracking-wider">{t('shelterManage.available')}</p>
+            </div>
+          </div>
+          
+          <div className="mt-8">
+            <CapacityBar current={shelter.occupied} total={shelter.capacity} />
           </div>
         </div>
 
-        <div className="px-4 pt-5 pb-6 space-y-5 flex-1">
-          {/* Capacity dashboard element */}
-          <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-100">
-            <div className="flex justify-between items-start mb-4">
-              <div>
-                <p className="text-xs text-slate-400 font-semibold uppercase tracking-wide">Ocupação (Check-ins)</p>
-                <div className="flex items-baseline gap-1 mt-1">
-                  <span className="text-4xl font-bold text-slate-800 font-headline">{shelter.occupied}</span>
-                  <span className="text-slate-400 text-lg">/ {shelter.capacity}</span>
-                </div>
-              </div>
-              <div className="text-right">
-                <p className="text-xs text-slate-400 font-semibold">Disponível</p>
-                <p className={`text-2xl font-bold font-headline ${available <= 10 ? 'text-red-600' : 'text-emerald-600'}`}>
-                  {available}
-                </p>
-                <p className="text-xs text-slate-400">vagas</p>
-              </div>
-            </div>
-            <CapacityBar current={shelter.occupied} total={shelter.capacity} />
-          </div>
 
-          {/* Big Check-in Manual Button Below Card */}
-          <button
-            onClick={() => setShowCheckinModal(true)}
-            disabled={available === 0}
-            className="w-full flex items-center justify-center gap-2 rounded-2xl py-4 font-bold text-white text-base font-headline transition-all active:scale-[0.97] disabled:opacity-50"
-            style={{ background: available === 0 ? '#9E9E9E' : 'linear-gradient(135deg, #1B5E20, #2E7D32)', boxShadow: available === 0 ? 'none' : '0 8px 24px -6px rgba(27,94,32,0.5)' }}
-          >
-            <span className="material-symbols-outlined text-[22px]" style={{ fontVariationSettings: `'FILL' 1` }}>fact_check</span>
-            {available === 0 ? 'Abrigo lotado' : 'Fazer Check-in Manual Local'}
-          </button>
 
           {/* Tab Badges */}
           <div className="flex overflow-x-auto gap-2 pb-2 -mx-4 px-4 scrollbar-hide shrink-0">
             {[
-              { id: 'request', label: 'Pedidos', icon: 'notifications_active', count: countByStatus('request'), color: 'text-orange-600', bg: 'bg-orange-50', border: 'border-orange-200' },
-              { id: 'incoming', label: 'Aguardando', icon: 'directions_walk', count: countByStatus('incoming'), color: 'text-blue-600', bg: 'bg-blue-50', border: 'border-blue-200' },
-              { id: 'present', label: 'Em Check-in', icon: 'house', count: countByStatus('present'), color: 'text-emerald-600', bg: 'bg-emerald-50', border: 'border-emerald-200' },
-              { id: 'left', label: 'Saídas (Check-out)', icon: 'logout', count: countByStatus('left'), color: 'text-slate-500', bg: 'bg-slate-100', border: 'border-slate-200' },
+              { id: 'request', label: t('shelterManage.tabs.request'), icon: 'notifications_active', count: countByStatus('request'), color: 'text-orange-600', bg: 'bg-orange-50', border: 'border-orange-200' },
+              { id: 'incoming', label: t('shelterManage.tabs.incoming'), icon: 'directions_walk', count: countByStatus('incoming'), color: 'text-blue-600', bg: 'bg-blue-50', border: 'border-blue-200' },
+              { id: 'present', label: t('shelterManage.tabs.present'), icon: 'house', count: countByStatus('present'), color: 'text-emerald-600', bg: 'bg-emerald-50', border: 'border-emerald-200' },
+              { id: 'left', label: t('shelterManage.tabs.left'), icon: 'logout', count: countByStatus('left'), color: 'text-slate-500', bg: 'bg-slate-100', border: 'border-slate-200' },
             ].map((tab) => {
               const isActive = activeTab === tab.id
               return (
@@ -203,7 +201,7 @@ export default function ShelterManagePage() {
               type="search"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Buscar por nome ou telefone..."
+              placeholder={t('shelterManage.search')}
               className="w-full bg-white border border-slate-200 pl-10 pr-4 py-3 rounded-xl text-sm outline-none focus:border-blue-500 transition-colors"
             />
           </div>
@@ -211,7 +209,7 @@ export default function ShelterManagePage() {
           {/* List */}
           <div className="space-y-3">
             {filteredEntries.length === 0 ? (
-              <p className="text-center text-slate-400 text-sm py-10">Nenhum registro encontrado nesta aba.</p>
+              <p className="text-center text-slate-400 text-sm py-10">{t('shelterManage.empty')}</p>
             ) : (
               filteredEntries.map((entry) => (
                 <button
@@ -242,7 +240,7 @@ export default function ShelterManagePage() {
                     </p>
                     <div className="mt-2 inline-flex items-center gap-1 bg-slate-50 px-2 py-0.5 rounded-md text-[11px] font-semibold text-slate-600 border border-slate-100">
                       <span className="material-symbols-outlined text-[12px]">group</span>
-                      {entry.people} {entry.people === 1 ? 'pessoa' : 'pessoas'}
+                      {entry.people === 1 ? t('shelterManage.person') : t('shelterManage.people').replace('{count}', entry.people.toString())}
                     </div>
                     {entry.assumeMessage && (
                       <p className="text-[11px] text-blue-600 mt-2 bg-blue-50 p-2 rounded-lg italic">"{entry.assumeMessage}"</p>
@@ -265,7 +263,7 @@ export default function ShelterManagePage() {
               <div className="mb-6">
                 <h2 className="text-xl font-bold text-slate-800 font-headline">{selectedEntry.name}</h2>
                 <p className="text-sm text-slate-500 mt-1">{selectedEntry.phone}</p>
-                <p className="text-sm text-slate-500 mt-0.5">{selectedEntry.people} pessoas — Atualizado às {selectedEntry.updatedAt}</p>
+                <p className="text-sm text-slate-500 mt-0.5">{selectedEntry.people === 1 ? t('shelterManage.person') : t('shelterManage.people').replace('{count}', selectedEntry.people.toString())} — {selectedEntry.updatedAt}</p>
               </div>
 
               <div className="space-y-4">
@@ -275,17 +273,17 @@ export default function ShelterManagePage() {
                     className="w-full flex items-center justify-center gap-2 rounded-2xl py-4 font-bold text-white text-base active:scale-[0.97] transition-all bg-blue-600 shadow-[0_8px_20px_-6px_rgba(37,99,235,0.5)]"
                   >
                     <span className="material-symbols-outlined text-[20px]">directions_walk</span>
-                    Assumir (Avisar que está a caminho)
+                    {t('shelterManage.assumeBtn')}
                   </button>
                 )}
 
                 {assuming && (
                   <div className="bg-slate-50 p-4 rounded-3xl border border-slate-200 space-y-4">
-                    <label className="text-xs font-bold uppercase tracking-wide text-slate-400 block">Mensagem para a família (Opcional)</label>
+                    <label className="text-xs font-bold uppercase tracking-wide text-slate-400 block">{t('shelterManage.assumeMsg')}</label>
                     <textarea 
                       value={assumeMessage}
                       onChange={(e) => setAssumeMessage(e.target.value)}
-                      placeholder="Ex: O barco de resgate chegará em cerca de 15 minutos."
+                      placeholder={t('shelterManage.assumePlace')}
                       className="w-full bg-white border border-slate-200 rounded-xl p-3 text-sm focus:border-blue-500 outline-none resize-none h-20"
                     />
                     <button
@@ -293,7 +291,7 @@ export default function ShelterManagePage() {
                       className="w-full flex items-center justify-center gap-2 rounded-2xl py-3.5 font-bold text-white text-base active:scale-[0.97] transition-all bg-blue-600"
                     >
                       <span className="material-symbols-outlined text-[20px]">send</span>
-                      Confirmar Responsabilidade
+                      {t('shelterManage.confirmBtn')}
                     </button>
                   </div>
                 )}
@@ -307,7 +305,7 @@ export default function ShelterManagePage() {
                     style={{ background: 'linear-gradient(135deg, #1B5E20, #2E7D32)', boxShadow: '0 8px 24px -6px rgba(27,94,32,0.4)' }}
                   >
                     <span className="material-symbols-outlined text-[20px]">login</span>
-                    Realizar Check-in de Entrada
+                    {t('shelterManage.checkinBtn')}
                   </button>
                 )}
 
@@ -317,7 +315,7 @@ export default function ShelterManagePage() {
                     className="w-full flex items-center justify-center gap-2 rounded-2xl py-4 font-bold text-slate-700 bg-slate-100 text-base active:scale-[0.97] transition-all border border-slate-200"
                   >
                     <span className="material-symbols-outlined text-[20px]">logout</span>
-                    Registrar Check-out (Saída)
+                    {t('shelterManage.checkoutBtn')}
                   </button>
                 )}
 
@@ -327,7 +325,7 @@ export default function ShelterManagePage() {
                     className="w-full flex items-center justify-center gap-2 rounded-2xl py-3 font-semibold text-slate-500 bg-transparent text-sm active:opacity-70 transition-all"
                   >
                     <span className="material-symbols-outlined text-[16px]">undo</span>
-                    Desfazer ou mover para aguardando
+                    {t('shelterManage.undo')}
                   </button>
                 )}
               </div>
@@ -341,22 +339,22 @@ export default function ShelterManagePage() {
             <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setShowCheckinModal(false)} />
             <div className="relative z-10 bg-white rounded-t-[2rem] px-5 pt-4 pb-14 reveal-pop max-h-[90vh] overflow-y-auto">
               <div className="w-10 h-1 rounded-full bg-slate-200 mx-auto mb-5 shrink-0" />
-              <h2 className="text-xl font-bold text-slate-800 font-headline mb-5">Novo Check-in Manual</h2>
+              <h2 className="text-xl font-bold text-slate-800 font-headline mb-5">{t('shelterManage.manualCheckin')}</h2>
 
               <div className="space-y-4">
                 <div>
-                  <label className="text-xs font-bold uppercase tracking-wide text-slate-400 mb-1.5 block">Nome do Responsável / Família</label>
+                  <label className="text-xs font-bold uppercase tracking-wide text-slate-400 mb-1.5 block">{t('onboarding.shelterForm.name')}</label>
                   <input
                     type="text"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    placeholder="Ex: Família Souza"
+                    placeholder={t('onboarding.shelterForm.namePlace')}
                     className="w-full rounded-xl bg-slate-50 border border-slate-200 px-4 py-3.5 text-slate-800 font-semibold text-sm outline-none focus:border-blue-400 transition-colors"
                   />
                 </div>
 
                 <div>
-                  <label className="text-xs font-bold uppercase tracking-wide text-slate-400 mb-1.5 block">Telefone de Contato (Opcional)</label>
+                  <label className="text-xs font-bold uppercase tracking-wide text-slate-400 mb-1.5 block">{t('request.phone')}</label>
                   <input
                     type="tel"
                     value={phone}
@@ -367,12 +365,12 @@ export default function ShelterManagePage() {
                 </div>
 
                 <div>
-                  <label className="text-xs font-bold uppercase tracking-wide text-slate-400 mb-1.5 block">Número de Pessoas</label>
+                  <label className="text-xs font-bold uppercase tracking-wide text-slate-400 mb-1.5 block">{t('onboarding.boatForm.spots')}</label>
                   <div className="flex items-center gap-4 bg-slate-50 rounded-xl p-3 border border-slate-200">
                     <button type="button" onClick={() => setPeople(Math.max(1, people - 1))} className="w-12 h-12 rounded-xl bg-white border border-slate-200 font-bold text-slate-700 text-2xl active:scale-95 transition-transform shrink-0">−</button>
                     <div className="flex-1 text-center flex flex-col">
                       <span className="text-3xl font-bold text-slate-800 font-headline leading-none">{people}</span>
-                      <span className="text-[10px] text-slate-400 mt-1">{people === 1 ? 'pessoa' : 'pessoas'}</span>
+                      <span className="text-[10px] text-slate-400 mt-1">{people === 1 ? t('shelterManage.person') : t('shelterManage.people').replace('{count}', people.toString())}</span>
                     </div>
                     <button type="button" onClick={() => setPeople(Math.min(available, people + 1))} className="w-12 h-12 rounded-xl bg-white border border-slate-200 font-bold text-slate-700 text-2xl active:scale-95 transition-transform shrink-0">+</button>
                   </div>
@@ -386,15 +384,14 @@ export default function ShelterManagePage() {
                     style={{ background: 'linear-gradient(135deg, #1B5E20, #2E7D32)', boxShadow: '0 8px 24px -6px rgba(27,94,32,0.4)' }}
                   >
                     <span className="material-symbols-outlined text-[22px]" style={{ fontVariationSettings: `'FILL' 1` }}>fact_check</span>
-                    Salvar entrada
+                    {t('onboarding.submit')}
                   </button>
                 </div>
               </div>
             </div>
           </div>
         )}
-      </main>
-      
-    </>
+      <BottomNavShelterManage onCheckinClick={() => setShowCheckinModal(true)} />
+    </main>
   )
 }

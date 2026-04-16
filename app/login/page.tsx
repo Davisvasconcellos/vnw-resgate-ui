@@ -3,8 +3,10 @@
 import { Suspense, useState } from 'react'
 import Link from 'next/link'
 import { useSearchParams, useRouter } from 'next/navigation'
+import { useI18n } from '@/components/i18n/I18nProvider'
 
 function LoginContent() {
+  const { t } = useI18n()
   const searchParams = useSearchParams()
   const router = useRouter()
   const role = searchParams.get('role') ?? 'volunteer'
@@ -26,7 +28,7 @@ function LoginContent() {
     // Telefone curinga de teste
     if (phoneDigits === '5521123456789' || phoneDigits === '21123456789') {
       setTimeout(() => {
-        router.push(`/onboarding?offer=${offer}`)
+        router.push('/assist')
       }, 500)
     } else {
       setTimeout(() => {
@@ -39,7 +41,7 @@ function LoginContent() {
   const handleGoogleLogin = () => {
     setLoading(true)
     setTimeout(() => {
-      router.push(`/onboarding?offer=${offer}`)
+      router.push('/assist')
     }, 600)
   }
 
@@ -56,7 +58,7 @@ function LoginContent() {
 
       {/* Header */}
       <div className="relative z-10 flex items-center gap-3 px-4 pt-14 pb-6">
-        <Link href="/assist" className="flex items-center justify-center w-10 h-10 rounded-xl bg-white/10 text-white active:scale-95 transition-transform">
+        <Link href="/" className="flex items-center justify-center w-10 h-10 rounded-xl bg-white/10 text-white active:scale-95 transition-transform">
           <span className="material-symbols-outlined text-[22px]">arrow_back</span>
         </Link>
       </div>
@@ -69,7 +71,7 @@ function LoginContent() {
           </div>
           <h1 className="text-2xl font-bold text-white font-headline">Acesse como voluntário</h1>
           <p className="text-white/60 text-sm mt-1 leading-snug">
-            {offer ? `Para oferecer ${offerLabels[offer] ?? offer}, você precisa fazer login.` : 'Para oferecer ajuda, faça login.'}
+            {t('assistPage.loginAlert')}
           </p>
         </div>
 

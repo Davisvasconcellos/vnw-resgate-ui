@@ -2,47 +2,64 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { useI18n } from '@/components/i18n/I18nProvider'
 
 export default function BottomNavTransport() {
   const pathname = usePathname()
+  const { t } = useI18n()
+
+  const isNearby = pathname === '/nearby'
+  const isRoutes = pathname === '/routes'
 
   return (
-    <div className="fixed bottom-0 left-0 w-full z-40 bg-white border-t border-slate-100 flex items-center justify-around pb-safe">
-      <Link
-        href="/nearby"
-        className={`flex flex-col items-center gap-1.5 p-3 w-20 transition-colors ${
-          pathname === '/nearby' ? 'text-blue-600' : 'text-slate-400'
-        }`}
-      >
-        <span className="material-symbols-outlined text-[26px]" style={{ fontVariationSettings: `'FILL' ${pathname === '/nearby' ? 1 : 0}` }}>
-          map
-        </span>
-        <span className="text-[10px] font-bold">Mapa</span>
-      </Link>
-
-      <div className="relative -top-5">
+    <nav className="fixed bottom-0 left-0 w-full z-50 bg-white/95 backdrop-blur-xl border-t border-slate-100 shadow-[0_-8px_32px_rgba(0,0,0,0.06)]">
+      <div className="flex items-center justify-around px-4 py-3 pb-safe max-w-lg mx-auto relative">
+        
+        {/* Home Button */}
         <Link
-          href="/routes"
-          className="flex flex-col items-center justify-center w-16 h-16 rounded-full text-white shadow-lg active:scale-95 transition-transform"
-          style={{ background: 'linear-gradient(135deg, #FF8F00, #EF6C00)', boxShadow: '0 8px 20px -6px rgba(239,108,0,0.6)' }}
+          href="/assist"
+          className="flex flex-col items-center gap-1.5 p-2 min-w-[70px] transition-all active:scale-90 text-on-surface-variant group"
         >
-          <span className="material-symbols-outlined text-[32px]" style={{ fontVariationSettings: `'FILL' 1` }}>
-            directions_car
-          </span>
+          <div className="w-10 h-10 rounded-2xl group-hover:bg-primary/5 flex items-center justify-center transition-colors">
+            <span className="material-symbols-outlined text-[24px]">home</span>
+          </div>
+          <span className="text-[10px] font-extrabold uppercase tracking-widest">{t('navPublic.home')}</span>
         </Link>
-      </div>
 
-      <Link
-        href="/profile"
-        className={`flex flex-col items-center gap-1.5 p-3 w-20 transition-colors ${
-          pathname === '/profile' ? 'text-blue-600' : 'text-slate-400'
-        }`}
-      >
-        <span className="material-symbols-outlined text-[26px]" style={{ fontVariationSettings: `'FILL' ${pathname === '/profile' ? 1 : 0}` }}>
-          person
-        </span>
-        <span className="text-[10px] font-bold">Perfil</span>
-      </Link>
-    </div>
+        {/* Center Floating Routes Button */}
+        <div className="relative -top-10">
+          <Link
+            href="/routes"
+            className={`w-16 h-16 rounded-full flex items-center justify-center active:scale-90 transition-all border-4 border-white shadow-xl ${
+              isRoutes ? 'bg-primary text-on-primary shadow-primary/40' : 'bg-surface-container-highest text-on-surface shadow-black/10 hover:bg-primary/10'
+            }`}
+          >
+            <span className="material-symbols-outlined text-[32px] font-bold">directions_car</span>
+          </Link>
+          <div className="absolute top-0 right-0 w-5 h-5 bg-error text-white text-[10px] font-black rounded-full border-2 border-white flex items-center justify-center shadow-sm">2</div>
+        </div>
+
+        {/* Maps/Nearby Button */}
+        <Link
+          href="/nearby"
+          className={`flex flex-col items-center gap-1.5 p-2 min-w-[70px] transition-all active:scale-90 group ${
+            isNearby ? 'text-primary' : 'text-on-surface-variant'
+          }`}
+        >
+          <div className={`w-10 h-10 rounded-2xl flex items-center justify-center transition-colors ${
+            isNearby ? 'bg-primary/10' : 'group-hover:bg-primary/5'
+          }`}>
+            <span 
+              className="material-symbols-outlined text-[24px]"
+              style={{ fontVariationSettings: `'FILL' ${isNearby ? 1 : 0}` }}
+            >
+              map
+            </span>
+          </div>
+          <span className="text-[10px] font-extrabold uppercase tracking-widest">Mapa</span>
+        </Link>
+
+      </div>
+    </nav>
   )
 }

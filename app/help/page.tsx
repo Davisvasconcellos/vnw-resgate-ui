@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { useI18n } from '@/components/i18n/I18nProvider'
+import AppHeader from '@/components/headers/AppHeader'
 
 export default function HelpPage() {
   const { t } = useI18n()
@@ -58,78 +59,84 @@ export default function HelpPage() {
   ]
 
   return (
-    <main className="min-h-screen bg-slate-50 pb-24 transition-colors">
-      {/* Header */}
-      <div className="sticky top-0 z-20 bg-white/90 backdrop-blur-xl border-b border-slate-100 px-4 py-4">
-        <div className="flex items-center gap-3">
-          <Link
-            href="/"
-            className="flex items-center justify-center w-10 h-10 rounded-xl bg-slate-100 text-slate-600 active:scale-95 transition-transform"
-          >
-            <span className="material-symbols-outlined text-[22px]">arrow_back</span>
-          </Link>
-          <div>
-            <h1 className="text-lg font-bold text-slate-800 font-headline">{t('help.title')}</h1>
-            <p className="text-xs text-slate-400">{t('help.subtitle')}</p>
-          </div>
-        </div>
-      </div>
+    <main className="min-h-screen bg-surface pb-28 pt-16">
+      <AppHeader />
 
-      <div className="px-4 pt-5 pb-8 space-y-3">
-        {/* Quick action banner */}
-        <Link href="/request?type=rescue">
-          <div
-            className="flex items-center gap-3 rounded-2xl px-4 py-3.5 mb-5 active:scale-[0.98] transition-all"
-            style={{ background: 'linear-gradient(135deg, #C62828, #E53935)', boxShadow: '0 8px 24px -6px rgba(198,40,40,0.4)' }}
-          >
-            <span className="material-symbols-outlined text-white text-[26px]" style={{ fontVariationSettings: `'FILL' 1` }}>
-              sos
-            </span>
-            <div className="flex-1">
-              <p className="text-white font-bold font-headline text-base">{t('help.requestNow')}</p>
-              <p className="text-white/70 text-xs">{t('help.requestNowDesc')}</p>
+      <div className="px-4 pt-8 space-y-8 max-w-2xl mx-auto">
+        {/* Intro */}
+        <section>
+          <h1 className="text-3xl font-extrabold font-headline text-on-surface tracking-tight leading-tight">
+            {t('help.title')}
+          </h1>
+          <p className="mt-2 text-on-surface-variant font-body">
+            {t('help.subtitle')}
+          </p>
+        </section>
+
+        <div className="space-y-6">
+          {/* Quick action banner */}
+          <Link href="/request?type=rescue">
+            <div
+              className="flex items-center gap-4 rounded-3xl p-5 active:scale-[0.98] transition-all relative overflow-hidden group shadow-lg"
+              style={{ background: 'linear-gradient(135deg, #ba1a1a, #ff5449)' }}
+            >
+              <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 blur-2xl group-hover:bg-white/20 transition-all duration-700" />
+              <div className="w-12 h-12 rounded-2xl bg-white/20 flex items-center justify-center text-white backdrop-blur-md">
+                <span className="material-symbols-outlined text-[32px]" style={{ fontVariationSettings: `'FILL' 1` }}>sos</span>
+              </div>
+              <div className="flex-1 relative z-10">
+                <p className="text-white font-extrabold font-headline text-lg">{t('help.requestNow')}</p>
+                <p className="text-white/80 text-xs font-medium">{t('help.requestNowDesc')}</p>
+              </div>
+              <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center text-white">
+                <span className="material-symbols-outlined text-[20px]">arrow_forward</span>
+              </div>
             </div>
-            <span className="material-symbols-outlined text-white/60">chevron_right</span>
-          </div>
-        </Link>
+          </Link>
 
-        {/* Categories — 2 por linha */}
-        <div className="grid grid-cols-2 gap-3">
-          {categories.map((cat) => (
-            <Link key={cat.href} href={cat.href}>
-              <div
-                className="flex flex-col items-start gap-3 rounded-2xl p-4 active:scale-[0.97] transition-all min-h-[140px]"
-                style={{ background: cat.color, border: `1.5px solid ${cat.border}` }}
-              >
-                {/* Icon + badge row */}
-                <div className="flex items-start justify-between w-full">
-                  <div
-                    className="flex items-center justify-center w-11 h-11 rounded-xl"
-                    style={{ background: cat.color, border: `1.5px solid ${cat.border}` }}
-                  >
-                    <span
-                      className="material-symbols-outlined text-[24px]"
-                      style={{ color: cat.iconColor, fontVariationSettings: `'FILL' 1` }}
+          {/* Categories Grid */}
+          <div className="grid grid-cols-2 gap-4">
+            {categories.map((cat) => (
+              <Link key={cat.href} href={cat.href} className="group">
+                <div
+                  className="flex flex-col items-start gap-4 rounded-3xl p-5 active:scale-[0.97] transition-all min-h-[160px] shadow-sm hover:shadow-xl hover:-translate-y-1 relative overflow-hidden bg-surface-container-lowest border border-outline-variant/10"
+                >
+                  {/* Decoration */}
+                  <span className="material-symbols-outlined absolute -right-3 -bottom-3 text-[80px] opacity-[0.03] rotate-12 transition-transform group-hover:scale-110 group-hover:rotate-6" style={{ color: cat.iconColor }}>
+                    {cat.icon}
+                  </span>
+
+                  <div className="flex items-start justify-between w-full relative z-10">
+                    <div
+                      className="flex items-center justify-center w-12 h-12 rounded-2xl shadow-sm transition-transform group-hover:scale-110"
+                      style={{ background: cat.color, border: `1px solid ${cat.border}` }}
                     >
-                      {cat.icon}
+                      <span
+                        className="material-symbols-outlined text-[24px]"
+                        style={{ color: cat.iconColor, fontVariationSettings: `'FILL' 1` }}
+                      >
+                        {cat.icon}
+                      </span>
+                    </div>
+                    <span className={`text-[9px] font-extrabold px-2 py-1 rounded-full leading-tight text-center ${cat.badgeBg} ${cat.badgeText} shadow-sm`}>
+                      {cat.badge}
                     </span>
                   </div>
-                  <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded-full leading-tight text-center ${cat.badgeBg} ${cat.badgeText}`}>
-                    {cat.badge}
-                  </span>
-                </div>
 
-                {/* Text */}
-                <div className="flex-1">
-                  <p className="font-bold text-slate-800 font-headline text-sm leading-tight">{cat.label}</p>
-                  <p className="text-slate-500 text-[11px] mt-1 leading-snug">{cat.description}</p>
-                </div>
+                  <div className="flex-1 relative z-10">
+                    <p className="font-extrabold text-on-surface font-headline text-sm leading-tight group-hover:text-primary transition-colors">{cat.label}</p>
+                    <p className="text-on-surface-variant font-medium text-[10px] mt-2 leading-relaxed line-clamp-2">{cat.description}</p>
+                  </div>
 
-                {/* Arrow */}
-                <span className="material-symbols-outlined text-slate-400 text-[16px]">arrow_forward</span>
-              </div>
-            </Link>
-          ))}
+                  <div className="w-full flex justify-end relative z-10 pt-2">
+                    <div className="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center border border-slate-100 transition-all group-hover:bg-primary group-hover:text-white group-hover:border-primary shadow-sm">
+                      <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
+                    </div>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
         </div>
       </div>
     </main>

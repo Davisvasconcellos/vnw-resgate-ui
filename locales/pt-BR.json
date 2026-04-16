@@ -167,5 +167,155 @@
     "title": "Telefones úteis",
     "subtitle": "Contatos de emergência",
     "tapToCall": "Toque para ligar"
+  },
+  "assistPage": {
+    "title": "Posso ajudar",
+    "subtitle": "Selecione como você pode contribuir",
+    "loginAlert": "Voluntários precisam fazer login para acessar o dashboard de pedidos e dar início ao atendimento.",
+    "missingBanner": "Pessoas Desaparecidas",
+    "missingDesc": "Consulte ou informe familiares e perdidos",
+    "statVolunteers": "Voluntários ativos",
+    "statOpen": "Pedidos em aberto",
+    "statToday": "Atendidos hoje",
+    "types": {
+      "shelter": "Abrigo",
+      "shelterDesc": "Tenho espaço em casa para acolher pessoas",
+      "transport": "Transporte",
+      "transportDesc": "Posso transportar pessoas para abrigos ou locais seguros",
+      "boat": "Barco / Lancha",
+      "boatDesc": "Tenho embarcação para resgatar pessoas em áreas alagadas",
+      "volunteer": "Voluntário",
+      "volunteerDesc": "Quero ajudar como voluntário em abrigos ou no campo"
+    }
+  },
+  "onboarding": {
+    "title": "Cadastro",
+    "submit": "Concluir Cadastro",
+    "submitting": "Processando...",
+    "titles": {
+      "shelter": "Cadastrar seu Abrigo",
+      "transport": "Cadastrar Veículo",
+      "boat": "Cadastrar Embarcação",
+      "volunteer": "Perfil de Voluntário"
+    },
+    "descs": {
+      "shelter": "Preencha as informações do local que irá receber as famílias.",
+      "transport": "Informe os dados do seu veículo para ajudar no transporte.",
+      "boat": "Informe os dados da embarcação para apoiar em resgates.",
+      "volunteer": "Conte-nos como você pode ajudar."
+    },
+    "shelterForm": {
+      "name": "Nome do Local",
+      "namePlace": "Ex: Ginásio Municipal, Minha Casa",
+      "address": "Endereço Completo",
+      "addressPlace": "Rua, número, bairro",
+      "useLocation": "Usar localização atual",
+      "capacity": "Capacidade total",
+      "capacityPlace": "Ex: 50",
+      "structure": "Estrutura Disponível",
+      "water": "Água Potável",
+      "food": "Alimentação",
+      "bath": "Banheiros",
+      "energy": "Energia / Gerador",
+      "pet": "Aceita Pets",
+      "medical": "Primeiros Socorros"
+    },
+    "transportForm": {
+      "type": "Tipo de Veículo",
+      "select": "Selecione...",
+      "car": "Carro de passeio",
+      "pickup": "Caminhonete (4x4)",
+      "van": "Van",
+      "bus": "Ônibus / Micro-ônibus",
+      "truck": "Caminhão",
+      "seats": "Nº de Lugares",
+      "region": "Região de atuação base",
+      "regionPlace": "Bairro ou cidade",
+      "offroad": "Veículo com tração 4x4 / Off-road",
+      "offroadDesc": "Consegue acessar áreas difíceis ou com lama"
+    },
+    "boatForm": {
+      "type": "Tipo de Embarcação",
+      "motor": "Barco a Motor / Lancha",
+      "jet": "Jet Ski",
+      "row": "Barco a remo / Bote salva-vidas",
+      "kayak": "Caiaque / Stand-up",
+      "spots": "Vagas para resgate",
+      "region": "Região principal",
+      "regionPlace": "Onde o barco está",
+      "vests": "Tenho coletes salva-vidas extras",
+      "vestsDesc": "Importante para resgatar quem não sabe nadar"
+    },
+    "volunteerForm": {
+      "action": "Como você deseja atuar?",
+      "sort": "Triagem e organização (roupas/alimentos)",
+      "clean": "Força braçal e Limpeza",
+      "health": "Enfermagem / Saúde / Psicológico",
+      "rescue": "Apoio tático em resgates (nadador)",
+      "cook": "Cozinha e refeições para desabrigados",
+      "availability": "Disponibilidade",
+      "full": "Integral",
+      "morning": "Manhã",
+      "afternoon": "Tarde",
+      "night": "Noite / Madrugada"
+    }
+  },
+  "shelterManage": {
+    "title": "Gestão do Abrigo",
+    "labelCapacity": "Ocupação (Check-ins)",
+    "available": "Disponível",
+    "slots": "vagas",
+    "isFull": "Abrigo lotado",
+    "manualCheckin": "Fazer Check-in Manual Local",
+    "tabs": {
+      "request": "Pedidos",
+      "incoming": "Aguardando",
+      "present": "Em Check-in",
+      "left": "Saídas"
+    },
+    "search": "Buscar por nome ou telefone...",
+    "empty": "Nenhum registro encontrado nesta aba.",
+    "people": "{count} pessoas",
+    "person": "1 pessoa",
+    "assumeBtn": "Assumir (Avisar caminho)",
+    "assumeMsg": "Mensagem para a família (Opcional)",
+    "assumePlace": "Ex: Chegamos em 15 minutos.",
+    "confirmBtn": "Confirmar Responsabilidade",
+    "checkinBtn": "Realizar Check-in de Entrada",
+    "checkoutBtn": "Registrar Check-out (Saída)",
+    "undo": "Desfazer ou mover para aguardando"
+  },
+  "routesPage": {
+    "title": "Meus Resgates",
+    "subtitle": "Gerencie quem está no seu veículo",
+    "tabOngoing": "Em trânsito",
+    "tabFinished": "Finalizados",
+    "empty": "Nenhum resgate nesta aba.",
+    "origin": "Origem: {loc}",
+    "rescued": "{count} resgatados",
+    "dropoff": "Desembarcar",
+    "finished": "Realizado",
+    "modalTitle": "Registrar Desembarque",
+    "modalDesc": "Onde você deixou {name}?",
+    "toShelter": "Transferir para Abrigo",
+    "toShelterDesc": "Alerte um abrigo sobre a chegada",
+    "toSafe": "Deixar livre / Local Seguro",
+    "toSafeDesc": "Casa de parentes, sem registro em abrigo"
+  },
+  "profilePage": {
+    "title": "Seu Perfil",
+    "settings": "Configurações",
+    "language": "Idioma",
+    "theme": "Modo Econômico (Dark)",
+    "themeDesc": "Economiza bateria em telas OLED, crucial em áreas sem energia.",
+    "light": "Claro",
+    "dark": "Escuro",
+    "roles": {
+      "civilian": "Cidadão",
+      "shelter": "Administrador de Abrigo",
+      "transport": "Motorista Voluntário",
+      "boat": "Condutor de Embarcação",
+      "volunteer": "Voluntário"
+    }
   }
 }

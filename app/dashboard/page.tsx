@@ -4,6 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import StatusBadge from '@/components/ui/StatusBadge'
 import InteractiveMap from '@/components/ui/InteractiveMap'
+import AppHeader from '@/components/headers/AppHeader'
 import { HELP_REQUESTS, HELP_TYPE_LABELS } from '@/app/mock-data'
 import type { HelpRequest, HelpStatus } from '@/app/mock-data'
 
@@ -21,36 +22,30 @@ export default function DashboardPage() {
   const filtered = filter === 'all' ? HELP_REQUESTS : HELP_REQUESTS.filter((r) => r.status === filter)
 
   return (
-    <main className="min-h-screen bg-slate-50 relative pb-24 overflow-hidden h-screen flex flex-col">
-      {/* Header Overlay */}
-      <div className="absolute top-0 w-full z-20 bg-white/95 backdrop-blur-xl border-b border-slate-100 shadow-sm translate-z-0">
-        <div className="flex items-center gap-3 px-4 pt-4 pb-3">
-          <Link href="/profile" className="flex items-center justify-center w-10 h-10 rounded-xl bg-slate-100 text-slate-600 active:scale-95 transition-transform">
-            <span className="material-symbols-outlined text-[22px]">menu</span>
-          </Link>
-          <div className="flex-1">
-            <h1 className="text-xl font-bold text-slate-800 font-headline">Mapa em Tempo Real</h1>
-          </div>
-          <div className="bg-red-50 text-red-600 px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap border border-red-100 shadow-sm">
-            {HELP_REQUESTS.filter((r) => r.urgency === 'high').length} urgentes
-          </div>
-        </div>
+    <main className="min-h-screen bg-surface relative pb-24 overflow-hidden h-screen flex flex-col pt-16">
+      <AppHeader />
 
-        {/* Filters */}
-        <div className="flex gap-2 overflow-x-auto px-4 pb-3 no-scrollbar">
+      {/* Stats/Filters Overlay */}
+      <div className="absolute top-20 left-4 right-4 z-20 flex flex-col gap-3 pointer-events-none">
+        <div className="flex gap-2 overflow-x-auto no-scrollbar pointer-events-auto">
           {FILTERS.map((f) => (
             <button
               key={f.value}
               onClick={() => setFilter(f.value)}
-              className={`whitespace-nowrap px-4 py-2 rounded-full text-xs font-bold transition-all ${
+              className={`whitespace-nowrap px-5 py-2.5 rounded-2xl text-xs font-bold transition-all border backdrop-blur-md ${
                 filter === f.value
-                  ? 'bg-blue-600 text-white shadow-md'
-                  : 'bg-slate-100 text-slate-600 active:bg-slate-200'
+                  ? 'bg-primary text-on-primary border-primary shadow-lg shadow-primary/20'
+                  : 'bg-white/90 text-on-surface-variant border-outline-variant/20 shadow-sm'
               }`}
             >
               {f.label}
             </button>
           ))}
+        </div>
+
+        <div className="bg-error/90 backdrop-blur-md text-on-error px-4 py-2 rounded-2xl text-[10px] font-bold self-start shadow-lg border border-error/20 flex items-center gap-2 pointer-events-auto">
+          <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+          {HELP_REQUESTS.filter((r) => r.urgency === 'high').length} pedidos urgentes
         </div>
       </div>
 

@@ -7,8 +7,9 @@ import LocationIndicator from '@/components/ui/LocationIndicator'
 import CameraInput from '@/components/ui/CameraInput'
 import { useI18n } from '@/components/i18n/I18nProvider'
 import TextInput from '@/components/ui/TextInput'
+import AppHeader from '@/components/headers/AppHeader'
 
-type HelpType = 'rescue' | 'shelter' | 'medical' | 'food'
+type HelpType = 'rescue' | 'shelter' | 'medical' | 'food' | 'transport' | 'boat'
 
 function RequestForm() {
   const router = useRouter()
@@ -20,6 +21,8 @@ function RequestForm() {
     { value: 'shelter', label: t('request.shelter'), icon: 'house', description: t('request.shelterDesc') },
     { value: 'medical', label: t('request.medical'), icon: 'medical_services', description: t('request.medicalDesc') },
     { value: 'food', label: t('request.food'), icon: 'restaurant', description: t('request.foodDesc') },
+    { value: 'transport', label: 'Transporte', icon: 'directions_car', description: 'Ajuda com transporte para local seguro' },
+    { value: 'boat', label: 'Barco', icon: 'directions_boat', description: 'Resgate ou transporte via água' },
   ]
 
   const initialType = (searchParams.get('type') as HelpType) ?? 'rescue'
@@ -104,18 +107,18 @@ function RequestForm() {
   }
 
   return (
-    <main className="min-h-screen bg-slate-50">
-      {/* Header */}
-      <div className="sticky top-0 z-40 bg-white/90 backdrop-blur-xl border-b border-slate-100 px-4 py-4">
-        <div className="flex items-center gap-3">
-          <Link href="/help" className="flex items-center justify-center w-10 h-10 rounded-xl bg-slate-100 text-slate-600 active:scale-95 transition-transform">
-            <span className="material-symbols-outlined text-[22px]">arrow_back</span>
-          </Link>
-          <div>
-            <h1 className="text-lg font-bold text-slate-800 font-headline">{t('request.title')}</h1>
-            <p className="text-xs text-slate-400">{t('request.noLogin')}</p>
-          </div>
-        </div>
+    <main className="min-h-screen bg-surface pt-16 pb-[120px]">
+      <AppHeader />
+
+      <div className="px-4 pt-8 shrink-0 max-w-2xl mx-auto">
+        <section className="mb-8">
+          <h1 className="text-3xl font-extrabold font-headline text-on-surface tracking-tight leading-tight">
+            {t('request.title')}
+          </h1>
+          <p className="mt-2 text-on-surface-variant font-body">
+            {t('request.noLogin')}
+          </p>
+        </section>
       </div>
 
       <form onSubmit={handleSubmit} className="px-4 pt-5 pb-[220px] space-y-6">
@@ -166,83 +169,93 @@ function RequestForm() {
         </section>
 
         {/* Contact info form */}
-        <section className="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm space-y-4">
-          <div className="flex items-center gap-2 mb-1">
-            <span className="material-symbols-outlined text-blue-600 text-[20px]">contact_phone</span>
-            <p className="text-xs font-bold uppercase tracking-wide text-slate-400 leading-none">{t('request.contactInfo')}</p>
+        <section className="bg-surface-container-lowest rounded-[2rem] p-6 border border-outline-variant/10 shadow-sm space-y-5">
+          <div className="flex items-center gap-3 mb-1">
+            <div className="w-10 h-10 rounded-xl bg-primary/5 flex items-center justify-center text-primary border border-primary/10">
+              <span className="material-symbols-outlined text-[22px]">contact_phone</span>
+            </div>
+            <p className="text-sm font-extrabold text-on-surface uppercase tracking-widest">{t('request.contactInfo')}</p>
           </div>
           
           <div className="space-y-4">
             <div>
-              <p className="text-[11px] font-bold text-slate-400 mb-1.5 ml-1 uppercase">{t('request.name')}</p>
+              <p className="text-[11px] font-bold text-on-surface-variant mb-1.5 ml-1 uppercase tracking-wider">{t('request.name')}</p>
               <TextInput 
                 placeholder="Ex: João Silva" 
                 value={name} 
                 onChange={(e) => setName(e.target.value)} 
+                className="bg-surface-container-low border-none rounded-2xl"
               />
             </div>
             <div>
-              <p className="text-[11px] font-bold text-slate-400 mb-1.5 ml-1 uppercase">{t('request.phone')}</p>
+              <p className="text-[11px] font-bold text-on-surface-variant mb-1.5 ml-1 uppercase tracking-wider">{t('request.phone')}</p>
               <TextInput 
                 placeholder="(00) 00000-0000" 
                 value={phone} 
                 onChange={(e) => setPhone(e.target.value)} 
                 type="tel"
+                className="bg-surface-container-low border-none rounded-2xl"
               />
             </div>
           </div>
 
-          <div className="flex items-start gap-2 pt-1 bg-slate-50 p-3 rounded-xl border border-slate-100">
-            <span className="material-symbols-outlined text-blue-500 text-[18px]">verified_user</span>
-            <p className="text-[10px] text-slate-500 leading-tight">
+          <div className="flex items-start gap-4 p-4 bg-primary/5 rounded-2xl border border-primary/10">
+            <span className="material-symbols-outlined text-primary text-[20px]">verified_user</span>
+            <p className="text-[11px] text-on-primary-fixed-variant leading-relaxed font-medium">
               {t('request.verifiedTip')}
             </p>
           </div>
         </section>
 
         {/* People count */}
-        <section>
-          <p className="text-xs font-bold uppercase tracking-wide text-slate-400 mb-3">{t('request.peopleCount')}</p>
-          <div className="flex items-center gap-4 bg-white rounded-2xl p-4 border border-slate-200 shadow-sm">
+        <section className="bg-surface-container-lowest rounded-[2rem] p-6 border border-outline-variant/10 shadow-sm">
+          <p className="text-sm font-extrabold text-on-surface uppercase tracking-widest mb-6 flex items-center gap-3">
+             <div className="w-10 h-10 rounded-xl bg-secondary/5 flex items-center justify-center text-secondary border border-secondary/10">
+              <span className="material-symbols-outlined text-[22px]">diversity_3</span>
+            </div>
+            {t('request.peopleCount')}
+          </p>
+          <div className="flex items-center gap-4 bg-surface-container-low rounded-3xl p-3 border border-outline-variant/5">
             <button
               type="button"
               onClick={() => setPeople(Math.max(1, people - 1))}
-              className="flex items-center justify-center w-12 h-12 rounded-xl bg-slate-100 text-slate-600 text-2xl font-bold active:scale-95 transition-transform shadow-inner"
+              className="flex items-center justify-center w-14 h-14 rounded-2xl bg-white text-on-surface text-2xl font-bold active:scale-95 transition-all shadow-sm border border-outline-variant/10"
             >
-              −
+              <span className="material-symbols-outlined">remove</span>
             </button>
             <div className="flex-1 text-center">
-              <span className="text-5xl font-bold text-slate-800 font-headline leading-none">{people}</span>
-              <p className="text-[10px] font-bold uppercase text-slate-400 mt-1">{people === 1 ? t('request.person') : t('request.people')}</p>
+              <span className="text-5xl font-extrabold text-on-surface font-headline leading-none block">{people}</span>
+              <p className="text-[10px] font-bold uppercase text-on-surface-variant tracking-widest mt-2">{people === 1 ? t('request.person') : t('request.people')}</p>
             </div>
             <button
               type="button"
               onClick={() => setPeople(Math.min(99, people + 1))}
-              className="flex items-center justify-center w-12 h-12 rounded-xl bg-slate-100 text-slate-600 text-2xl font-bold active:scale-95 transition-transform shadow-inner"
+              className="flex items-center justify-center w-14 h-14 rounded-2xl bg-primary text-on-primary text-2xl font-bold active:scale-95 transition-all shadow-lg shadow-primary/20"
             >
-              +
+              <span className="material-symbols-outlined">add</span>
             </button>
           </div>
         </section>
       </form>
 
-      {/* Fixed submit button with improved spacing to avoid overlapping cards */}
-      <div className="fixed bottom-0 left-0 w-full px-4 pt-12 pb-8 bg-gradient-to-t from-slate-50 via-slate-50 to-transparent pointer-events-none z-50">
-        <div className="h-4 bg-gradient-to-t from-slate-50 to-transparent mb-2" />
-        <button
-          type="submit"
-          disabled={submitting}
-          onClick={handleSubmit}
-          className="w-full flex items-center justify-center gap-3 rounded-2xl py-5 font-bold text-white text-xl font-headline transition-all active:scale-[0.97] disabled:opacity-60 pointer-events-auto shadow-2xl"
-          style={{ background: 'linear-gradient(135deg, #C62828, #E53935)', boxShadow: '0 8px 32px -8px rgba(198,40,40,0.6)' }}
-        >
-          {submitting ? (
-            <div className="h-6 w-6 animate-spin rounded-full border-2 border-white border-t-transparent" />
-          ) : (
-            <span className="material-symbols-outlined text-[26px]" style={{ fontVariationSettings: `'FILL' 1` }}>send</span>
-          )}
-          {submitting ? t('request.submitting') : t('request.submit')}
-        </button>
+      {/* Fixed submit button - positioned higher to clear bottom nav */}
+      <div className="fixed bottom-24 left-0 w-full px-4 pt-16 pb-2 bg-gradient-to-t from-surface via-surface/80 to-transparent pointer-events-none z-50">
+        <div className="max-w-2xl mx-auto pointer-events-auto">
+          <button
+            type="submit"
+            disabled={submitting}
+            onClick={handleSubmit}
+            className="w-full flex items-center justify-center gap-4 rounded-[2rem] py-5 font-bold text-on-primary text-xl font-headline transition-all active:scale-[0.97] disabled:opacity-60 shadow-2xl shadow-error/30"
+            style={{ background: 'linear-gradient(135deg, #ba1a1a, #ff5449)' }}
+          >
+            {submitting ? (
+              <div className="h-6 w-6 animate-spin rounded-full border-2 border-white border-t-transparent" />
+            ) : (
+              <span className="material-symbols-outlined text-[28px]" style={{ fontVariationSettings: `'FILL' 1` }}>send</span>
+            )}
+            <span className="tracking-tight">{submitting ? t('request.submitting') : t('request.submit')}</span>
+          </button>
+        </div>
       </div>
     </main>
   )

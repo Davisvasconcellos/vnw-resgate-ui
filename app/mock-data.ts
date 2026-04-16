@@ -1,7 +1,7 @@
 // ─── Mock de dados para simulação ────────────────────────────────────────────
 
 export type HelpStatus = 'pending' | 'viewed' | 'attending' | 'resolved'
-export type HelpType = 'rescue' | 'shelter' | 'medical' | 'food'
+export type HelpType = 'rescue' | 'shelter' | 'medical' | 'food' | 'transport' | 'boat'
 
 export interface Shelter {
   id: string
@@ -156,8 +156,10 @@ export const USEFUL_PHONES: UsefulPhone[] = [
 
 // ─── Label helpers ────────────────────────────────────────────────────────────
 export const HELP_TYPE_LABELS: Record<HelpType, { label: string; icon: string }> = {
-  rescue: { label: 'Resgate', icon: 'rescue' },
+  rescue: { label: 'Resgate', icon: 'sos' },
   shelter: { label: 'Abrigo', icon: 'house' },
   medical: { label: 'Médico', icon: 'medical_services' },
   food: { label: 'Alimento', icon: 'restaurant' },
+  transport: { label: 'Transporte', icon: 'directions_car' },
+  boat: { label: 'Barco', icon: 'directions_boat' },
 }

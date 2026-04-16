@@ -45,14 +45,14 @@ export default function AppHeader({
   return (
     <header className="fixed top-0 w-full z-50 glass-header">
       <div className="flex justify-between items-center px-4 h-16 w-full max-w-7xl mx-auto relative">
-        <div className="flex items-center gap-4">
-          <Image
-            src={logo}
-            alt="CONCIERGO"
-            priority
-            className="h-6 w-auto"
-          />
-          <span className="text-outline-variant/30 px-2">|</span>
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-white shadow-lg shadow-primary/20">
+              <span className="material-symbols-outlined text-[20px]" style={{ fontVariationSettings: `'FILL' 1` }}>sos</span>
+            </div>
+            <span className="font-headline font-extrabold text-lg tracking-tighter text-primary">VNW-RESCUE</span>
+          </div>
+          <span className="text-outline-variant/30 px-2 font-light">|</span>
         </div>
         <div className="flex items-center gap-3">
           <div className="p-2 hover:bg-slate-100/50 rounded-full transition-colors cursor-pointer relative">

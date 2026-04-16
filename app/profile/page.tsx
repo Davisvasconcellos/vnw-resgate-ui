@@ -2,9 +2,11 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import { useI18n, Language } from '@/components/i18n/I18nProvider'
+import AppHeader from '@/components/headers/AppHeader'
 
 export default function ProfilePage() {
-  const [lang, setLang] = useState<'pt'|'en'>('pt')
+  const { t, language, setLanguage } = useI18n()
   const [theme, setTheme] = useState<'light'|'dark'>('light')
   const [role, setRole] = useState<string | null>('civilian')
 
@@ -26,94 +28,95 @@ export default function ProfilePage() {
     }
   }
 
-  const roleNameMap: Record<string, string> = {
-    shelter: 'Administrador de Abrigo',
-    transport: 'Motorista Voluntário',
-    boat: 'Condutor de Embarcação',
-    volunteer: 'Voluntário'
-  }
-
   return (
-    <main className="min-h-screen bg-slate-50 dark:bg-slate-900 pb-28 transition-colors">
-      <div className="bg-white/90 dark:bg-slate-800/90 backdrop-blur-xl border-b border-slate-100 dark:border-slate-700 px-4 py-4 sticky top-0 z-20">
-        <div className="flex items-center gap-3">
-          <Link href="/dashboard" className="flex items-center justify-center w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 active:scale-95 transition-transform">
-            <span className="material-symbols-outlined text-[22px]">arrow_back</span>
-          </Link>
-          <div className="flex-1">
-            <h1 className="text-xl font-bold text-slate-800 dark:text-white font-headline">Seu Perfil</h1>
-          </div>
-        </div>
-      </div>
+    <main className="min-h-screen bg-surface dark:bg-inverse-surface pb-28 pt-16 transition-colors">
+      <AppHeader />
 
-      <div className="px-4 pt-6 space-y-6">
-        
+      <div className="px-4 pt-8 space-y-8 max-w-2xl mx-auto w-full">
+        <section>
+          <h1 className="text-3xl font-extrabold font-headline text-on-surface dark:text-inverse-on-surface tracking-tight leading-tight">
+            {t('profilePage.title')}
+          </h1>
+        </section>
+
         {/* User Card */}
-        <div className="bg-white dark:bg-slate-800 rounded-2xl p-5 border border-slate-100 dark:border-slate-700 shadow-sm flex items-center gap-4">
-          <div className="w-16 h-16 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center shrink-0">
-            <span className="material-symbols-outlined text-[32px]">person</span>
+        <div className="bg-surface-container-lowest dark:bg-surface-container-highest rounded-[2.5rem] p-6 border border-outline-variant/10 shadow-sm flex items-center gap-6">
+          <div className="relative group">
+            <div className="w-20 h-20 rounded-[1.5rem] bg-primary/10 text-primary flex items-center justify-center shrink-0 border border-primary/20 overflow-hidden shadow-inner group-hover:scale-105 transition-transform">
+              <span className="material-symbols-outlined text-[44px]">person</span>
+            </div>
+            <div className="absolute -bottom-1 -right-1 w-7 h-7 bg-white dark:bg-surface-container-lowest rounded-full shadow-lg border-4 border-surface-container-lowest dark:border-surface-container-highest flex items-center justify-center">
+               <span className="material-symbols-outlined text-[14px] text-primary">edit</span>
+            </div>
           </div>
           <div>
-            <h2 className="font-bold text-lg text-slate-800 dark:text-white">Seu Nome</h2>
-            <p className="text-sm text-slate-500 dark:text-slate-400">+55 (48) 99999-9999</p>
-            {role && role !== 'civilian' && (
-              <span className="inline-block mt-2 bg-blue-50 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 text-[10px] font-bold px-2 py-1 rounded-md">
-                {roleNameMap[role] || role}
+            <h2 className="font-extrabold text-xl text-on-surface dark:text-inverse-on-surface font-headline leading-none">Davis Vasconcellos</h2>
+            <p className="text-sm text-on-surface-variant dark:text-outline-variant font-medium mt-1">+55 (48) 99999-9999</p>
+            {role && (
+              <span className="inline-block mt-3 bg-secondary/10 dark:bg-secondary/20 text-secondary dark:text-secondary-fixed text-[10px] font-extrabold px-3 py-1.5 rounded-xl uppercase tracking-widest border border-secondary/10 shadow-sm">
+                {t(`profilePage.roles.${role}`)}
               </span>
             )}
           </div>
         </div>
 
         {/* Settings */}
-        <div>
-          <h3 className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-2 px-1">Configurações</h3>
+        <div className="space-y-6">
+          <h3 className="text-sm font-extrabold text-on-surface uppercase tracking-widest px-1 flex items-center gap-2">
+             <span className="w-1.5 h-1.5 rounded-full bg-primary" />
+             {t('profilePage.settings')}
+          </h3>
           
-          <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm overflow-hidden">
+          <div className="bg-surface-container-lowest dark:bg-surface-container-highest rounded-[2rem] border border-outline-variant/10 shadow-sm overflow-hidden p-2 space-y-2">
             
-            <div className="flex items-center justify-between p-4 border-b border-slate-100 dark:border-slate-700">
-              <div className="flex items-center gap-3">
-                <span className="material-symbols-outlined text-slate-400">language</span>
+            <div className="flex items-center justify-between p-4 bg-surface-container-low/30 dark:bg-surface/5 rounded-2xl border border-outline-variant/5">
+              <div className="flex items-center gap-4">
+                <div className="w-10 h-10 rounded-xl bg-primary/5 flex items-center justify-center text-primary shrink-0 border border-primary/5">
+                   <span className="material-symbols-outlined text-[20px]">language</span>
+                </div>
                 <div>
-                  <p className="text-sm font-bold text-slate-800 dark:text-white">Idioma</p>
-                  <p className="text-xs text-slate-400">Language preference</p>
+                  <p className="text-sm font-extrabold text-on-surface font-headline">{t('profilePage.language')}</p>
+                  <p className="text-[10px] text-on-surface-variant font-medium uppercase tracking-wider">Language selection</p>
                 </div>
               </div>
-              <div className="flex bg-slate-100 dark:bg-slate-700 p-1 rounded-lg">
+              <div className="flex bg-surface-container-low p-1.5 rounded-2xl shadow-inner border border-outline-variant/5">
                 <button 
-                  onClick={() => setLang('pt')} 
-                  className={`px-3 py-1 text-xs font-bold rounded-md transition-all ${lang === 'pt' ? 'bg-white dark:bg-slate-600 text-slate-800 dark:text-white shadow-sm' : 'text-slate-400'}`}
+                  onClick={() => setLanguage('pt-BR')} 
+                  className={`px-5 py-2 text-xs font-extrabold rounded-xl transition-all ${language === 'pt-BR' ? 'bg-primary text-on-primary shadow-lg shadow-primary/20' : 'text-on-surface-variant'}`}
                 >
                   PT
                 </button>
                 <button 
-                  onClick={() => setLang('en')} 
-                  className={`px-3 py-1 text-xs font-bold rounded-md transition-all ${lang === 'en' ? 'bg-white dark:bg-slate-600 text-slate-800 dark:text-white shadow-sm' : 'text-slate-400'}`}
+                  onClick={() => setLanguage('en')} 
+                  className={`px-5 py-2 text-xs font-extrabold rounded-xl transition-all ${language === 'en' ? 'bg-primary text-on-primary shadow-lg shadow-primary/20' : 'text-on-surface-variant'}`}
                 >
                   EN
                 </button>
               </div>
             </div>
 
-            <div className="flex items-center justify-between p-4 flex-wrap gap-2">
-              <div className="flex items-center gap-3 w-full sm:w-auto">
-                <span className="material-symbols-outlined text-slate-400">palette</span>
+            <div className="flex items-center justify-between p-4 bg-surface-container-low/30 dark:bg-surface/5 rounded-2xl border border-outline-variant/5">
+              <div className="flex items-center gap-4 w-full sm:w-auto">
+                <div className="w-10 h-10 rounded-xl bg-secondary/5 flex items-center justify-center text-secondary shrink-0 border border-secondary/5">
+                   <span className="material-symbols-outlined text-[20px]">palette</span>
+                </div>
                 <div>
-                  <p className="text-sm font-bold text-slate-800 dark:text-white">Modo Econômico (Dark)</p>
-                  <p className="text-[10px] text-slate-400 leading-tight mt-0.5 max-w-[200px]">Economiza bateria em telas OLED, crucial em áreas sem energia.</p>
+                  <p className="text-sm font-extrabold text-on-surface font-headline">{t('profilePage.theme')}</p>
+                  <p className="text-[10px] text-on-surface-variant font-medium uppercase tracking-wider">{t('profilePage.themeDesc')}</p>
                 </div>
               </div>
-              <div className="flex bg-slate-100 dark:bg-slate-700 p-1 rounded-lg ml-auto">
+              <div className="flex bg-surface-container-low p-1.5 rounded-2xl shadow-inner border border-outline-variant/5">
                 <button 
                   onClick={() => toggleTheme('light')} 
-                  className={`px-3 py-1 text-xs font-bold rounded-md transition-all flex items-center gap-1 ${theme === 'light' ? 'bg-white dark:bg-slate-600 text-slate-800 dark:text-white shadow-sm' : 'text-slate-400'}`}
+                  className={`px-4 py-2 text-xs font-extrabold rounded-xl transition-all flex items-center gap-2 ${theme === 'light' ? 'bg-white text-on-surface shadow-md border border-outline-variant/10' : 'text-on-surface-variant'}`}
                 >
-                  <span className="material-symbols-outlined text-[16px]">light_mode</span> Claro
+                  <span className="material-symbols-outlined text-[16px]">light_mode</span> {t('profilePage.light')}
                 </button>
                 <button 
                   onClick={() => toggleTheme('dark')} 
-                  className={`px-3 py-1 text-xs font-bold rounded-md transition-all flex items-center gap-1 ${theme === 'dark' ? 'bg-slate-800 text-white shadow-sm' : 'text-slate-400'}`}
+                  className={`px-4 py-2 text-xs font-extrabold rounded-xl transition-all flex items-center gap-2 ${theme === 'dark' ? 'bg-inverse-surface text-inverse-on-surface shadow-md border border-outline-variant/10' : 'text-on-surface-variant'}`}
                 >
-                  <span className="material-symbols-outlined text-[16px]">dark_mode</span> Escuro
+                  <span className="material-symbols-outlined text-[16px]">dark_mode</span> {t('profilePage.dark')}
                 </button>
               </div>
             </div>

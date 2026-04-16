@@ -3,28 +3,15 @@
 import { useState, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
+import { useI18n } from '@/components/i18n/I18nProvider'
 
 function OnboardingContent() {
+  const { t } = useI18n()
   const router = useRouter()
   const searchParams = useSearchParams()
-  const offer = searchParams.get('offer') ?? 'volunteer'
+  const offer = (searchParams.get('offer') ?? 'volunteer') as 'shelter' | 'transport' | 'boat' | 'volunteer'
 
   const [submitting, setSubmitting] = useState(false)
-
-  // Labels for the header
-  const titleMap: Record<string, string> = {
-    shelter: 'Cadastrar seu Abrigo',
-    transport: 'Cadastrar Veículo',
-    boat: 'Cadastrar Embarcação',
-    volunteer: 'Perfil de Voluntário',
-  }
-
-  const descMap: Record<string, string> = {
-    shelter: 'Preencha as informações do local que irá receber as famílias.',
-    transport: 'Informe os dados do seu veículo para ajudar no transporte.',
-    boat: 'Informe os dados da embarcação para apoiar em resgates.',
-    volunteer: 'Conte-nos como você pode ajudar.',
-  }
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -34,12 +21,11 @@ function OnboardingContent() {
     localStorage.setItem('vnw_role', offer)
 
     setTimeout(() => {
-      // Goes to either manage shelter or dashboard based on type
+      // Redireciona para gestão de abrigo ou para o mapa (nearby) baseado no tipo
       if (offer === 'shelter') {
         router.push('/shelter/manage')
       } else if (offer === 'transport' || offer === 'boat') {
-        // Redirecionamento futuro para aba "Meus Resgates" (Embarque)
-        router.push('/dashboard')
+        router.push('/nearby')
       } else {
         router.push('/dashboard')
       }
@@ -56,9 +42,9 @@ function OnboardingContent() {
           </Link>
           <div>
             <h1 className="text-xl font-bold text-slate-800 font-headline">
-              {titleMap[offer] ?? 'Cadastro'}
+              {t(`onboarding.titles.${offer}`)}
             </h1>
-            <p className="text-xs text-slate-400 mt-0.5">{descMap[offer]}</p>
+            <p className="text-xs text-slate-400 mt-0.5">{t(`onboarding.descs.${offer}`)}</p>
           </div>
         </div>
       </div>
@@ -70,32 +56,32 @@ function OnboardingContent() {
         {offer === 'shelter' && (
           <div className="space-y-4">
             <div>
-              <label className="text-xs font-bold uppercase tracking-wide text-slate-400 mb-1.5 block">Nome do Local</label>
-              <input required type="text" placeholder="Ex: Ginásio Municipal, Minha Casa" className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3.5 text-sm font-semibold text-slate-800 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all" />
+              <label className="text-xs font-bold uppercase tracking-wide text-slate-400 mb-1.5 block">{t('onboarding.shelterForm.name')}</label>
+              <input required type="text" placeholder={t('onboarding.shelterForm.namePlace')} className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3.5 text-sm font-semibold text-slate-800 outline-none focus:border-blue-500 transition-all" />
             </div>
             <div>
-              <label className="text-xs font-bold uppercase tracking-wide text-slate-400 mb-1.5 block">Endereço Completo</label>
-              <input required type="text" placeholder="Rua, número, bairro" className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3.5 text-sm font-semibold text-slate-800 outline-none focus:border-blue-500 transition-all" />
+              <label className="text-xs font-bold uppercase tracking-wide text-slate-400 mb-1.5 block">{t('onboarding.shelterForm.address')}</label>
+              <input required type="text" placeholder={t('onboarding.shelterForm.addressPlace')} className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3.5 text-sm font-semibold text-slate-800 outline-none focus:border-blue-500 transition-all" />
               <button type="button" className="flex items-center gap-1.5 mt-2 text-blue-600 text-xs font-bold">
-                <span className="material-symbols-outlined text-[16px]">my_location</span> Usar localização atual
+                <span className="material-symbols-outlined text-[16px]">my_location</span> {t('onboarding.shelterForm.useLocation')}
               </button>
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="text-xs font-bold uppercase tracking-wide text-slate-400 mb-1.5 block">Capacidade total</label>
-                <input required type="number" placeholder="Ex: 50" className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3.5 text-sm font-semibold text-slate-800 outline-none focus:border-blue-500 transition-all" />
+                <label className="text-xs font-bold uppercase tracking-wide text-slate-400 mb-1.5 block">{t('onboarding.shelterForm.capacity')}</label>
+                <input required type="number" placeholder={t('onboarding.shelterForm.capacityPlace')} className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3.5 text-sm font-semibold text-slate-800 outline-none focus:border-blue-500 transition-all" />
               </div>
             </div>
             <div>
-              <label className="text-xs font-bold uppercase tracking-wide text-slate-400 mb-2 block">Estrutura Disponível</label>
+              <label className="text-xs font-bold uppercase tracking-wide text-slate-400 mb-2 block">{t('onboarding.shelterForm.structure')}</label>
               <div className="grid grid-cols-2 gap-2">
                 {[
-                  { id: 'water', label: 'Água Potável' },
-                  { id: 'food', label: 'Alimentação' },
-                  { id: 'bath', label: 'Banheiros' },
-                  { id: 'energy', label: 'Energia / Gerador' },
-                  { id: 'pet', label: 'Aceita Pets' },
-                  { id: 'medical', label: 'Primeiros Socorros' },
+                  { id: 'water', label: t('onboarding.shelterForm.water') },
+                  { id: 'food', label: t('onboarding.shelterForm.food') },
+                  { id: 'bath', label: t('onboarding.shelterForm.bath') },
+                  { id: 'energy', label: t('onboarding.shelterForm.energy') },
+                  { id: 'pet', label: t('onboarding.shelterForm.pet') },
+                  { id: 'medical', label: t('onboarding.shelterForm.medical') },
                 ].map(item => (
                   <label key={item.id} className="flex items-center gap-2.5 bg-white border border-slate-200 rounded-xl px-3 py-3 active:bg-slate-50 transition-colors">
                     <input type="checkbox" className="w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500" />
@@ -111,31 +97,31 @@ function OnboardingContent() {
         {offer === 'transport' && (
           <div className="space-y-4">
             <div>
-              <label className="text-xs font-bold uppercase tracking-wide text-slate-400 mb-1.5 block">Tipo de Veículo</label>
+              <label className="text-xs font-bold uppercase tracking-wide text-slate-400 mb-1.5 block">{t('onboarding.transportForm.type')}</label>
               <select required className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3.5 text-sm font-semibold text-slate-800 outline-none focus:border-blue-500 transition-all appearance-none">
-                <option value="">Selecione...</option>
-                <option value="car">Carro de passeio</option>
-                <option value="pickup">Caminhonete (4x4)</option>
-                <option value="van">Van</option>
-                <option value="bus">Ônibus / Micro-ônibus</option>
-                <option value="truck">Caminhão</option>
+                <option value="">{t('onboarding.transportForm.select')}</option>
+                <option value="car">{t('onboarding.transportForm.car')}</option>
+                <option value="pickup">{t('onboarding.transportForm.pickup')}</option>
+                <option value="van">{t('onboarding.transportForm.van')}</option>
+                <option value="bus">{t('onboarding.transportForm.bus')}</option>
+                <option value="truck">{t('onboarding.transportForm.truck')}</option>
               </select>
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="text-xs font-bold uppercase tracking-wide text-slate-400 mb-1.5 block">Nº de Lugares</label>
+                <label className="text-xs font-bold uppercase tracking-wide text-slate-400 mb-1.5 block">{t('onboarding.transportForm.seats')}</label>
                 <input required type="number" placeholder="Ex: 4" className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3.5 text-sm font-semibold text-slate-800 outline-none focus:border-blue-500 transition-all" />
               </div>
             </div>
             <div>
-              <label className="text-xs font-bold uppercase tracking-wide text-slate-400 mb-1.5 block">Região de atuação base</label>
-              <input required type="text" placeholder="Bairro ou cidade" className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3.5 text-sm font-semibold text-slate-800 outline-none focus:border-blue-500 transition-all" />
+              <label className="text-xs font-bold uppercase tracking-wide text-slate-400 mb-1.5 block">{t('onboarding.transportForm.region')}</label>
+              <input required type="text" placeholder={t('onboarding.transportForm.regionPlace')} className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3.5 text-sm font-semibold text-slate-800 outline-none focus:border-blue-500 transition-all" />
             </div>
             <label className="flex items-center gap-3 bg-white border border-slate-200 rounded-xl p-4 mt-2">
               <input type="checkbox" className="w-5 h-5 rounded border-slate-300 text-blue-600 focus:ring-blue-500" />
               <div>
-                <p className="text-sm font-bold text-slate-800">Veículo com tração 4x4 / Off-road</p>
-                <p className="text-[10px] text-slate-500 mt-0.5">Consegue acessar áreas difíceis ou com lama</p>
+                <p className="text-sm font-bold text-slate-800">{t('onboarding.transportForm.offroad')}</p>
+                <p className="text-[10px] text-slate-500 mt-0.5">{t('onboarding.transportForm.offroadDesc')}</p>
               </div>
             </label>
           </div>
@@ -145,30 +131,30 @@ function OnboardingContent() {
         {offer === 'boat' && (
           <div className="space-y-4">
             <div>
-              <label className="text-xs font-bold uppercase tracking-wide text-slate-400 mb-1.5 block">Tipo de Embarcação</label>
+              <label className="text-xs font-bold uppercase tracking-wide text-slate-400 mb-1.5 block">{t('onboarding.boatForm.type')}</label>
               <select required className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3.5 text-sm font-semibold text-slate-800 outline-none focus:border-blue-500 transition-all appearance-none">
-                <option value="">Selecione...</option>
-                <option value="motor">Barco a Motor / Lancha</option>
-                <option value="jet">Jet Ski</option>
-                <option value="row">Barco a remo / Bote salva-vidas</option>
-                <option value="kayak">Caiaque / Stand-up</option>
+                <option value="">{t('onboarding.transportForm.select')}</option>
+                <option value="motor">{t('onboarding.boatForm.motor')}</option>
+                <option value="jet">{t('onboarding.boatForm.jet')}</option>
+                <option value="row">{t('onboarding.boatForm.row')}</option>
+                <option value="kayak">{t('onboarding.boatForm.kayak')}</option>
               </select>
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="text-xs font-bold uppercase tracking-wide text-slate-400 mb-1.5 block">Vagas para resgate</label>
+                <label className="text-xs font-bold uppercase tracking-wide text-slate-400 mb-1.5 block">{t('onboarding.boatForm.spots')}</label>
                 <input required type="number" placeholder="Ex: 5" className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3.5 text-sm font-semibold text-slate-800 outline-none focus:border-blue-500 transition-all" />
               </div>
             </div>
             <div>
-              <label className="text-xs font-bold uppercase tracking-wide text-slate-400 mb-1.5 block">Região principal</label>
-              <input required type="text" placeholder="Onde o barco está" className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3.5 text-sm font-semibold text-slate-800 outline-none focus:border-blue-500 transition-all" />
+              <label className="text-xs font-bold uppercase tracking-wide text-slate-400 mb-1.5 block">{t('onboarding.boatForm.region')}</label>
+              <input required type="text" placeholder={t('onboarding.boatForm.regionPlace')} className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3.5 text-sm font-semibold text-slate-800 outline-none focus:border-blue-500 transition-all" />
             </div>
             <label className="flex items-center gap-3 bg-white border border-slate-200 rounded-xl p-4 mt-2">
               <input type="checkbox" className="w-5 h-5 rounded border-slate-300 text-blue-600 focus:ring-blue-500" />
               <div>
-                <p className="text-sm font-bold text-slate-800">Tenho coletes salva-vidas extras</p>
-                <p className="text-[10px] text-slate-500 mt-0.5">Importante para resgatar quem não sabe nadar</p>
+                <p className="text-sm font-bold text-slate-800">{t('onboarding.boatForm.vests')}</p>
+                <p className="text-[10px] text-slate-500 mt-0.5">{t('onboarding.boatForm.vestsDesc')}</p>
               </div>
             </label>
           </div>
@@ -178,14 +164,14 @@ function OnboardingContent() {
         {offer === 'volunteer' && (
           <div className="space-y-4">
             <div>
-              <label className="text-xs font-bold uppercase tracking-wide text-slate-400 mb-2 block">Como você deseja atuar?</label>
+              <label className="text-xs font-bold uppercase tracking-wide text-slate-400 mb-2 block">{t('onboarding.volunteerForm.action')}</label>
               <div className="grid grid-cols-1 gap-2">
                 {[
-                  { id: 'sort', label: 'Triagem e organização (roupas/alimentos)' },
-                  { id: 'clean', label: 'Força braçal e Limpeza' },
-                  { id: 'health', label: 'Enfermagem / Saúde / Psicológico' },
-                  { id: 'rescue', label: 'Apoio tático em resgates (nadador)' },
-                  { id: 'cook', label: 'Cozinha e refeições para desabrigados' },
+                  { id: 'sort', label: t('onboarding.volunteerForm.sort') },
+                  { id: 'clean', label: t('onboarding.volunteerForm.clean') },
+                  { id: 'health', label: t('onboarding.volunteerForm.health') },
+                  { id: 'rescue', label: t('onboarding.volunteerForm.rescue') },
+                  { id: 'cook', label: t('onboarding.volunteerForm.cook') },
                 ].map(item => (
                   <label key={item.id} className="flex items-center gap-3 bg-white border border-slate-200 rounded-xl px-3 py-3 active:bg-slate-50 transition-colors">
                     <input type="checkbox" className="w-5 h-5 rounded border-slate-300 text-blue-600 focus:ring-blue-500" />
@@ -195,13 +181,13 @@ function OnboardingContent() {
               </div>
             </div>
             <div>
-              <label className="text-xs font-bold uppercase tracking-wide text-slate-400 mb-1.5 block">Disponibilidade</label>
+              <label className="text-xs font-bold uppercase tracking-wide text-slate-400 mb-1.5 block">{t('onboarding.volunteerForm.availability')}</label>
               <select required className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3.5 text-sm font-semibold text-slate-800 outline-none focus:border-blue-500 transition-all appearance-none">
-                <option value="">Selecione...</option>
-                <option value="full">Integral</option>
-                <option value="morning">Manhã</option>
-                <option value="afternoon">Tarde</option>
-                <option value="night">Noite / Madrugada</option>
+                <option value="">{t('onboarding.transportForm.select')}</option>
+                <option value="full">{t('onboarding.volunteerForm.full')}</option>
+                <option value="morning">{t('onboarding.volunteerForm.morning')}</option>
+                <option value="afternoon">{t('onboarding.volunteerForm.afternoon')}</option>
+                <option value="night">{t('onboarding.volunteerForm.night')}</option>
               </select>
             </div>
           </div>
@@ -220,7 +206,7 @@ function OnboardingContent() {
           {submitting ? (
             <div className="h-6 w-6 animate-spin rounded-full border-2 border-white border-t-transparent" />
           ) : (
-            <>Concluir Cadastro</>
+            <>{t('onboarding.submit')}</>
           )}
         </button>
       </div>

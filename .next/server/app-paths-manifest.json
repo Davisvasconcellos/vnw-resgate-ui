@@ -1,9 +1,8 @@
 {
+  "/_not-found/page": "app/_not-found/page.js",
   "/dashboard/page": "app/dashboard/page.js",
-  "/missing/page": "app/missing/page.js",
-  "/help/shelters/page": "app/help/shelters/page.js",
   "/assist/page": "app/assist/page.js",
-  "/help/page": "app/help/page.js",
-  "/help/phones/page": "app/help/phones/page.js",
+  "/nearby/page": "app/nearby/page.js",
+  "/onboarding/page": "app/onboarding/page.js",
   "/page": "app/page.js"
 }

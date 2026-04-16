@@ -110,7 +110,7 @@ export default function HomePage() {
           </div>
         </Link>
 
-        <Link href="/assist" className="block group">
+        <Link href="/login?role=volunteer" className="block group">
           <div className="flex items-center gap-4 rounded-2xl p-5 transition-all active:scale-[0.97] bg-white dark:bg-blue-800/90 backdrop-blur-md shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_12px_32px_-8px_rgba(21,101,192,0.5)] border border-slate-100 dark:border-white/10 overflow-hidden relative">
             <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent dark:hidden" />
             
