@@ -23,38 +23,38 @@ export default function BottomNavVolunteer() {
           <div className="w-10 h-10 rounded-2xl group-hover:bg-primary/5 dark:group-hover:bg-white/5 flex items-center justify-center transition-colors">
             <span className="material-symbols-outlined text-[24px]">home</span>
           </div>
-          <span className="text-[10px] font-extrabold uppercase tracking-widest">{t('navPublic.home')}</span>
+          <span className="text-[10px] font-extrabold uppercase tracking-widest leading-none">Início</span>
         </Link>
 
-        {/* Center Floating Opportunities Button (Volunteer Exclusive) */}
-        <div className="relative -top-10">
-          <Link
-            href="/volunteer"
-            className="w-16 h-16 rounded-full flex items-center justify-center active:scale-90 transition-all border-4 border-white dark:border-[#0a1628] shadow-xl bg-[#2E7D32] text-white shadow-[#2E7D32]/40"
-          >
+        {/* Center Floating Opportunities Button - Voluntariado */}
+        <Link
+          href="/volunteer"
+          className="flex flex-col items-center gap-2 -mt-10"
+        >
+          <div className="w-16 h-16 rounded-full flex items-center justify-center active:scale-90 transition-all border-4 border-white dark:border-[#0a1628] shadow-xl bg-primary text-white shadow-primary/40">
             <span className="material-symbols-outlined text-[32px] font-bold">volunteer_activism</span>
-          </Link>
-          <div className="absolute top-0 right-0 w-5 h-5 bg-[#1B5E20] text-white text-[10px] font-black rounded-full border-2 border-white dark:border-[#0a1628] flex items-center justify-center shadow-sm">3</div>
-        </div>
+          </div>
+          <span className="text-[10px] font-black uppercase tracking-widest text-primary leading-none">Sou Voluntário</span>
+        </Link>
 
-        {/* My Tasks Button */}
+        {/* My Missions Button */}
         <Link
           href="/volunteer/tasks"
           className={`flex flex-col items-center gap-1.5 p-2 min-w-[70px] transition-all active:scale-90 group ${
-            isMyTasks ? 'text-[#2E7D32] dark:text-green-400' : 'text-on-surface-variant dark:text-slate-400'
+            isMyTasks ? 'text-primary' : 'text-on-surface-variant dark:text-slate-400'
           }`}
         >
           <div className={`w-10 h-10 rounded-2xl flex items-center justify-center transition-colors ${
-            isMyTasks ? 'bg-green-50 dark:bg-green-900/20 text-[#2E7D32] dark:text-green-400' : 'group-hover:bg-green-50/50 dark:group-hover:bg-white/5'
+            isMyTasks ? 'bg-primary/10 text-primary' : 'group-hover:bg-primary/5'
           }`}>
             <span 
               className="material-symbols-outlined text-[24px]"
               style={{ fontVariationSettings: `'FILL' ${isMyTasks ? 1 : 0}` }}
             >
-              task_alt
+              rocket_launch
             </span>
           </div>
-          <span className="text-[10px] font-extrabold uppercase tracking-widest">{t('navVolunteer.myTasks') || 'Minhas Tarefas'}</span>
+          <span className="text-[10px] font-extrabold uppercase tracking-widest leading-none">Minhas Missões</span>
         </Link>
 
       </div>

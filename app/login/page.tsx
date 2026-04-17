@@ -4,6 +4,8 @@ import { Suspense, useState } from 'react'
 import Link from 'next/link'
 import { useSearchParams, useRouter } from 'next/navigation'
 import { useI18n } from '@/components/i18n/I18nProvider'
+import { auth, googleProvider, signInWithPopup } from '@/services/firebase'
+import { api } from '@/services/api'
 
 function LoginContent() {
   const { t } = useI18n()
@@ -38,11 +40,27 @@ function LoginContent() {
     }
   }
 
-  const handleGoogleLogin = () => {
-    setLoading(true)
-    setTimeout(() => {
-      router.push('/assist')
-    }, 600)
+  const handleGoogleLogin = async () => {
+    setLoading(true);
+    try {
+      const result = await signInWithPopup(auth, googleProvider);
+      const idToken = await result.user.getIdToken();
+
+      const response = await api.post('/auth/google', { idToken });
+
+      if (response.data.success) {
+        localStorage.setItem('vnw_token', response.data.data.token);
+        localStorage.setItem('vnw_user', JSON.stringify(response.data.data.user));
+        router.push('/assist');
+      } else {
+        alert('Falha ao autenticar com a API.');
+      }
+    } catch (error: any) {
+      console.error('Erro no Google Login', error);
+      alert('Erro na autenticação: ' + error.message);
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (

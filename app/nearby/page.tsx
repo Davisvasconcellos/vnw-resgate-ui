@@ -3,10 +3,15 @@
 import { useState, useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
-import { SHELTERS, HELP_REQUESTS, HELP_TYPE_LABELS } from '@/app/mock-data'
+import { HELP_TYPE_LABELS } from '@/app/mock-data' // Vamos manter os enums que ajudam front
 import CapacityBar from '@/components/ui/CapacityBar'
 import StatusBadge from '@/components/ui/StatusBadge'
 import InteractiveMap from '@/components/ui/InteractiveMap'
+
+import { useDispatch, useSelector } from 'react-redux'
+import { RootState, AppDispatch } from '@/store'
+import { fetchShelters } from '@/store/slices/sheltersSlice'
+import { fetchRequests } from '@/store/slices/requestsSlice'
 
 type Tab = 'shelters' | 'requests'
 
@@ -29,6 +34,8 @@ function getRequestPinColor(urgency: string) {
   return '#2E7D32'
 }
 
+// O Haversine pode continuar frontend como uma checagem secondary,
+// mas confiaremos no raio do backend 
 function getDistanceFromLatLonInKm(lat1: number, lon1: number, lat2: number, lon2: number) {
   const R = 6371
   const dLat = (lat2 - lat1) * (Math.PI/180)
@@ -46,7 +53,11 @@ export default function NearbyPage() {
   const searchParams = useSearchParams()
   const moduleParam = searchParams.get('module')
 
-  const [tab, setTab] = useState<Tab>('shelters')
+  const dispatch = useDispatch<AppDispatch>()
+  const sheltersState = useSelector((state: RootState) => state.shelters)
+  const requestsState = useSelector((state: RootState) => state.requests)
+
+  const [tab, setTab] = useState<Tab>('requests')
   const [radius, setRadius] = useState(5)
   const [statusFilter, setStatusFilter] = useState('all')
   const [locationReady, setLocationReady] = useState(false)
@@ -55,26 +66,34 @@ export default function NearbyPage() {
   const [mapCenter, setMapCenter] = useState<[number, number]>([-27.4332, -48.4550])
 
   useEffect(() => {
-    const t = setTimeout(() => setLocationReady(true), 1600)
+    // Simula obter navegação nativa e dispara para Redux chamarem backend
+    const t = setTimeout(() => {
+       setLocationReady(true)
+       // Puxamos um raio de 5000km (ou muito largo) para o mapa enxergar TODO O BRASIL
+       dispatch(fetchShelters({ lat: mapCenter[0], lng: mapCenter[1], radiusKm: 5000 }))
+       dispatch(fetchRequests({ lat: mapCenter[0], lng: mapCenter[1], radiusKm: 5000 }))
+    }, 1600)
     return () => clearTimeout(t)
-  }, [])
+  }, [dispatch, mapCenter]) // Removido radius para evitar refetching agressivo
 
-  const filteredShelters = SHELTERS.map(s => ({
+  // 1. Processa TODOS os itens para apresentar no MAPA
+  const mapShelters = sheltersState.items.map((s: any) => ({
     ...s,
-    calcDistance: s.lat && s.lng ? getDistanceFromLatLonInKm(mapCenter[0], mapCenter[1], s.lat, s.lng) : s.distanceKm
-  })).filter(s => s.calcDistance <= radius)
+    calcDistance: s.distanceKm || (s.lat && s.lng ? getDistanceFromLatLonInKm(mapCenter[0], mapCenter[1], s.lat, s.lng) : 0)
+  }))
 
-  const filteredRequests = HELP_REQUESTS.map(r => ({
+  const mapRequests = requestsState.items.map((r: any) => ({
     ...r,
-    calcDistance: r.lat && r.lng ? getDistanceFromLatLonInKm(mapCenter[0], mapCenter[1], r.lat, r.lng) : r.distanceKm
-  })).filter(r => {
-    if (r.calcDistance > radius) return false
-    if (statusFilter !== 'all' && r.status !== statusFilter) return false
-    return true
-  })
+    calcDistance: r.distanceKm || (r.lat && r.lng ? getDistanceFromLatLonInKm(mapCenter[0], mapCenter[1], r.lat, r.lng) : 0)
+  })).filter((r: any) => statusFilter === 'all' || r.status === statusFilter)
 
-  const selectedShelter = SHELTERS.find((s) => s.id === selectedPin)
-  const selectedRequest = HELP_REQUESTS.find((r) => r.id === selectedPin)
+  // 2. Filtra rigidamente pelo Raio selecionado para a LISTA de Cards
+  const listShelters = mapShelters.filter((s: any) => s.calcDistance <= radius).sort((a: any, b: any) => a.calcDistance - b.calcDistance)
+  const listRequests = mapRequests.filter((r: any) => r.calcDistance <= radius).sort((a: any, b: any) => a.calcDistance - b.calcDistance)
+
+  // id_code compatibilidade com fallback mock.id
+  const selectedShelter = sheltersState.items.find((s: any) => (s.id_code === selectedPin || s.id === selectedPin))
+  const selectedRequest = requestsState.items.find((r: any) => (r.id_code === selectedPin || r.id === selectedPin))
 
   return (
     <main className="min-h-screen bg-surface dark:bg-[#0a1628] flex flex-col pb-44 transition-colors">
@@ -150,8 +169,8 @@ export default function NearbyPage() {
       <div className={`relative ${mapExpanded ? 'h-[36rem]' : 'h-72'} overflow-hidden mx-4 mt-2 rounded-3xl border border-slate-200 dark:border-white/10 transition-all duration-500 ease-in-out shadow-sm dark:shadow-none`}>
         {/* @ts-ignore */}
         <InteractiveMap 
-          shelters={filteredShelters}
-          requests={filteredRequests}
+          shelters={mapShelters}
+          requests={mapRequests}
           tab={tab}
           radius={radius}
           selectedPin={selectedPin}
@@ -200,8 +219,13 @@ export default function NearbyPage() {
                   <StatusBadge status={selectedRequest.status} />
                 </div>
                 <div className="space-y-4 mb-8 text-sm">
-                  <div className="flex items-center gap-3"><span className="material-symbols-outlined text-blue-600">location_on</span><span className="dark:text-white">{selectedRequest.address}</span></div>
-                  <div className="flex items-center gap-3"><span className="material-symbols-outlined text-emerald-600">group</span><span className="dark:text-white">{selectedRequest.people} pessoas</span></div>
+                  <div className="flex items-center gap-3"><span className="material-symbols-outlined text-blue-600">location_on</span><span className="dark:text-white">{(selectedRequest as any).address}</span></div>
+                  <div className="flex items-center gap-3"><span className="material-symbols-outlined text-emerald-600">group</span><span className="dark:text-white">{(selectedRequest as any).people_count || (selectedRequest as any).people || 1} pessoas aguardando</span></div>
+                  <div className="flex items-center gap-3"><span className="material-symbols-outlined text-orange-600">person</span><span className="dark:text-white font-medium">{(selectedRequest as any).reporter_name || (selectedRequest as any).name || 'Solicitante Desconhecido'}</span></div>
+                  <div className="flex items-center gap-3">
+                    <span className="material-symbols-outlined text-red-600">emergency</span>
+                    <span className="dark:text-white font-bold">{(selectedRequest as any).urgency === 'high' ? 'Risco: Emergência' : (selectedRequest as any).urgency === 'medium' ? 'Risco: Moderado' : 'Monitoramento'}</span>
+                  </div>
                 </div>
                 <button className="w-full bg-blue-600 text-white font-bold py-4 rounded-2xl flex items-center justify-center gap-2 shadow-lg active:scale-95 transition-transform"><span className="material-symbols-outlined">directions_car</span>Atender</button>
               </div>
@@ -212,20 +236,50 @@ export default function NearbyPage() {
 
       {/* Tabs */}
       <div className="flex gap-2 px-4 mt-4">
-        <button onClick={() => { setTab('shelters'); setSelectedPin(null) }} className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-2xl text-sm font-bold transition-all border ${tab === 'shelters' ? 'bg-blue-50 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-500/20' : 'bg-white dark:bg-white/5 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-white/5'}`}><span className="material-symbols-outlined text-[18px]">house</span>Abrigos</button>
         <button onClick={() => { setTab('requests'); setSelectedPin(null) }} className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-2xl text-sm font-bold transition-all border ${tab === 'requests' ? 'bg-red-50 dark:bg-red-900/40 text-red-700 dark:text-red-300 border-red-200 dark:border-red-500/20' : 'bg-white dark:bg-white/5 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-white/5'}`}><span className="material-symbols-outlined text-[18px]">sos</span>Pedidos</button>
+        <button onClick={() => { setTab('shelters'); setSelectedPin(null) }} className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-2xl text-sm font-bold transition-all border ${tab === 'shelters' ? 'bg-blue-50 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-500/20' : 'bg-white dark:bg-white/5 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-white/5'}`}><span className="material-symbols-outlined text-[18px]">house</span>Abrigos</button>
       </div>
 
       <div className="px-4 mt-3 space-y-2.5">
-        {(tab === 'shelters' ? filteredShelters : filteredRequests).map((item: any) => (
-          <button key={item.id} onClick={() => setSelectedPin(item.id)} className="w-full text-left rounded-2xl p-4 transition-all border bg-white dark:bg-white/5 border-slate-100 dark:border-white/10 shadow-sm">
-            <div className="flex items-center justify-between mb-2">
-              <p className="font-bold text-slate-800 dark:text-white text-sm leading-snug">{item.name || HELP_TYPE_LABELS[item.type as keyof typeof HELP_TYPE_LABELS]?.label || item.type}</p>
-              <span className="text-xs font-bold text-slate-400 dark:text-outline-variant">{item.calcDistance} km</span>
+        {(tab === 'requests' ? listRequests : listShelters).map((item: any) => (
+          <button key={item.id_code || Math.random()} onClick={() => setSelectedPin(item.id_code)} className="w-full text-left rounded-2xl p-4 transition-all border bg-white dark:bg-white/5 border-slate-100 dark:border-white/10 shadow-sm">
+            <div className="flex items-start justify-between mb-2">
+              <div>
+                <p className="font-bold text-slate-800 dark:text-white text-sm leading-snug mb-1">{item.name || HELP_TYPE_LABELS[item.type as keyof typeof HELP_TYPE_LABELS]?.label || item.type}</p>
+                {tab === 'requests' && (
+                  <p className="text-[11px] text-slate-500 font-medium truncate max-w-[200px]">{item.address || 'Localização no Mapa'}</p>
+                )}
+              </div>
+              <span className="text-xs font-bold text-slate-400 dark:text-outline-variant whitespace-nowrap ml-2">{item.calcDistance} km</span>
             </div>
-            {tab === 'shelters' ? <CapacityBar current={item.occupied} total={item.capacity} /> : <StatusBadge status={item.status} size="sm" />}
+            {tab === 'shelters' ? (
+              <CapacityBar current={item.occupied} total={item.capacity} />
+            ) : (
+              <div className="space-y-3 mt-3">
+                <div className="flex items-center gap-2">
+                  <StatusBadge status={item.status} size="sm" />
+                  <span className={`px-2 py-0.5 rounded-md text-[9px] font-bold uppercase tracking-wider ${item.urgency === 'high' ? 'text-red-700 bg-red-100 dark:bg-red-900/30 dark:text-red-400' : item.urgency === 'medium' ? 'text-orange-700 bg-orange-100 dark:bg-orange-900/30 dark:text-orange-400' : 'text-emerald-700 bg-emerald-100 dark:bg-emerald-900/30 dark:text-emerald-400'}`}>
+                    {item.urgency === 'high' ? 'Emergência' : item.urgency === 'medium' ? 'Moderado' : 'Monitorar'}
+                  </span>
+                </div>
+                <div className="flex items-center gap-4 text-[11px] text-slate-500 dark:text-slate-400 font-medium">
+                  <div className="flex items-center gap-1 bg-slate-50 dark:bg-white/5 px-2 py-1 rounded-lg">
+                    <span className="material-symbols-outlined text-[14px]">group</span>
+                    <span>{item.people_count || item.people || 1}</span>
+                  </div>
+                  <div className="flex items-center gap-1 bg-slate-50 dark:bg-white/5 px-2 py-1 rounded-lg truncate">
+                    <span className="material-symbols-outlined text-[14px]">person</span>
+                    <span className="truncate">{item.reporter_name || item.name || 'Desconhecido'}</span>
+                  </div>
+                </div>
+              </div>
+            )}
           </button>
         ))}
+        {/* Caso a lista fique vazia ao reduzir o raio */}
+        {(tab === 'requests' ? listRequests : listShelters).length === 0 && (
+           <p className="text-center text-xs text-slate-500 py-6">Nenhum registro encontrado num raio de {radius}km desta área</p>
+        )}
       </div>
 
     </main>

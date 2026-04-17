@@ -69,28 +69,28 @@ export default function MissingPage() {
   const filtered = MOCK_DATA.filter(p => p.status === activeTab && p.name.toLowerCase().includes(search.toLowerCase()))
 
   return (
-    <main className="min-h-screen bg-surface dark:bg-[#0a1628] flex flex-col pb-40 pt-16 transition-colors">
-      <AppHeader />
+    <main className="min-h-screen bg-surface dark:bg-[#0a1628] flex flex-col pb-40 transition-colors">
+      {/* Clean Header Pattern */}
+      <div className="bg-white/90 dark:bg-[#0a1628]/90 backdrop-blur-xl border-b border-slate-100 dark:border-white/5 px-6 pt-12 pb-8 sticky top-0 z-20">
+        <section className="flex items-start gap-4 relative max-w-2xl mx-auto">
+          <Link 
+            href="/assist"
+            className="w-11 h-11 rounded-full bg-white dark:bg-white/10 flex items-center justify-center text-slate-400 dark:text-slate-200 active:scale-95 transition-all shadow-sm shrink-0 border border-slate-100 dark:border-white/5"
+          >
+            <span className="material-symbols-outlined text-[20px]">close</span>
+          </Link>
+          <div>
+            <h1 className="text-3xl font-black text-slate-800 dark:text-white tracking-tight leading-tight font-headline">
+              {t('missingPage.title')}
+            </h1>
+            <p className="mt-1.5 text-slate-500 dark:text-slate-400 font-body text-base font-medium">
+              {t('missingPage.subtitle')}
+            </p>
+          </div>
+        </section>
+      </div>
 
       <div className="px-5 pt-6 shrink-0 max-w-2xl mx-auto w-full">
-        {/* Navigation / Back */}
-        <div className="flex items-center gap-2 mb-6">
-          <Link href="/help?module=help" className="flex items-center gap-2 text-slate-500 hover:text-primary transition-colors group">
-            <div className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-white/5 flex items-center justify-center group-hover:scale-110 transition-transform">
-              <span className="material-symbols-outlined text-[20px]">arrow_back</span>
-            </div>
-            <span className="text-xs font-bold uppercase tracking-widest">{t('onboarding.back') || 'Voltar'}</span>
-          </Link>
-        </div>
-
-        <section className="mb-8">
-          <h1 className="text-4xl font-extrabold font-headline text-on-surface dark:text-white tracking-tight leading-tight">
-            {t('missingPage.title')}
-          </h1>
-          <p className="mt-2 text-on-surface-variant dark:text-slate-400 font-body text-base">
-            {t('missingPage.subtitle')}
-          </p>
-        </section>
       </div>
 
       <div className="px-4 pb-6 space-y-6 max-w-2xl mx-auto w-full">

@@ -5,6 +5,10 @@ import Link from 'next/link'
 import logo from '@/assets/img/logo.png'
 import { useEffect, useRef, useState } from 'react'
 import { useI18n } from '@/components/i18n/I18nProvider'
+import { useRouter } from 'next/navigation'
+import { auth } from '@/services/firebase'
+import { signOut } from 'firebase/auth'
+import { api } from '@/services/api'
 
 type Props = {
   avatarSrc?: string
@@ -25,6 +29,43 @@ export default function AppHeader({
   const [menuOpen, setMenuOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement | null>(null)
   const buttonRef = useRef<HTMLButtonElement | null>(null)
+  const router = useRouter()
+  const [userAvatar, setUserAvatar] = useState(avatarSrc)
+
+  useEffect(() => {
+    try {
+      const storedUser = localStorage.getItem('vnw_user');
+      if (storedUser) {
+        const user = JSON.parse(storedUser);
+        if (user.avatar_url) setUserAvatar(user.avatar_url);
+      }
+    } catch (e) {
+      console.warn('Erro ao ler usuário no localStorage', e);
+    }
+  }, []);
+
+  const handleLogout = async () => {
+    try {
+      // 1. Deslogar do Firebase
+      await signOut(auth);
+      
+      // 2. Chamar a API de logout para invalidar o backend (Token Blacklist)
+      const token = localStorage.getItem('vnw_token');
+      if (token) {
+        await api.post('/auth/logout', {}, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+      }
+    } catch (e) {
+      console.error('Erro no logout da API', e);
+    } finally {
+      // 3. Limpar cliente
+      localStorage.removeItem('vnw_token');
+      localStorage.removeItem('vnw_user');
+      setMenuOpen(false);
+      router.push('/login');
+    }
+  }
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
@@ -71,7 +112,7 @@ export default function AppHeader({
           >
             <Image
               alt={avatarAlt}
-              src={avatarSrc}
+              src={userAvatar}
               width={40}
               height={40}
               className="w-10 h-10 rounded-full object-cover"
@@ -127,13 +168,13 @@ export default function AppHeader({
                   </button>
                 </div>
               </div>
-              <Link
-                href="/login"
-                className="flex items-center px-4 py-2.5 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/10 transition-colors"
-                onClick={() => setMenuOpen(false)}
+              <button
+                type="button"
+                onClick={handleLogout}
+                className="w-full flex items-center px-4 py-2.5 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/10 transition-colors"
               >
                 <span className="text-sm font-bold text-error dark:text-red-400 uppercase tracking-wider">{t('menu.exit')}</span>
-              </Link>
+              </button>
             </div>
           ) : null}
         </div>

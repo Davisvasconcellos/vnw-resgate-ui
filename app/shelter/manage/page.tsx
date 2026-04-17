@@ -7,38 +7,48 @@ import { useSearchParams } from 'next/navigation'
 import { useI18n } from '@/components/i18n/I18nProvider'
 import AppHeader from '@/components/headers/AppHeader'
 
-const INITIAL = {
-  name: 'Ginásio Municipal Lauro Linhares',
-  capacity: 300,
-  occupied: 241,
-  phone: '(48) 3251-9000',
-}
+import { useDispatch, useSelector } from 'react-redux'
+import { RootState, AppDispatch } from '@/store'
+import { fetchShelterEntries, processEntryStatus } from '@/store/slices/sheltersSlice'
+import { api } from '@/services/api'
 
 type EntryStatus = 'request' | 'incoming' | 'present' | 'left'
 
 interface Entry {
-  id: string
+  id_code: string
   name: string
   phone: string
   people: number
   status: EntryStatus
-  updatedAt: string
+  updatedAt?: string
   assumeMessage?: string
 }
 
-const INITIAL_ENTRIES: Entry[] = [
-  { id: 'req-1', name: 'Família Pereira (Enchente Centro)', phone: 'Desconhecido', people: 5, status: 'request', updatedAt: 'Agora' },
-  { id: 'req-2', name: 'João Carlos', phone: '(48) 98888-1111', people: 1, status: 'request', updatedAt: '5 min' },
-  { id: 'inc-1', name: 'Dona Maria e netos', phone: '(48) 97777-2222', people: 3, status: 'incoming', updatedAt: '10 min', assumeMessage: 'O resgate chegará em 10 minutos.' },
-  { id: 'pr-1', name: 'Família Silva', phone: '(48) 99999-0000', people: 4, status: 'present', updatedAt: '18:30' },
-  { id: 'pr-2', name: 'Ana Souza', phone: '(48) 91111-2222', people: 2, status: 'present', updatedAt: '19:05' },
-  { id: 'lf-1', name: 'Carlos e amigos', phone: 'Sem celular', people: 3, status: 'left', updatedAt: 'Ontem' },
-]
-
 export default function ShelterManagePage() {
   const { t, language } = useI18n()
-  const [shelter, setShelter] = useState(INITIAL)
-  const [entries, setEntries] = useState<Entry[]>(INITIAL_ENTRIES)
+  const dispatch = useDispatch<AppDispatch>()
+  
+  // Pegando id do shelter do manager logado (mockado ui-id caso nao exista db real)
+  const shelterIdCode = useSelector((state: RootState) => state.auth.id_code) || 'temp-ui'
+  
+  const entriesRaw = useSelector((state: RootState) => state.shelters.entries)
+  // Mapping entries for frontend compat e fallback
+  const entries: Entry[] = entriesRaw.map(e => ({
+    id_code: e.id_code || e.id,
+    name: e.name,
+    phone: e.phone,
+    people: e.people || e.people_count || 1,
+    status: e.status,
+    updatedAt: e.updatedAt || 'Recente',
+    assumeMessage: e.assume_message || e.assumeMessage
+  }))
+
+  const [shelter, setShelter] = useState({
+    name: 'Abrigo (Carregando...)',
+    capacity: 300,
+    occupied: 0,
+    phone: '(48) 3251-9000',
+  })
   
   // Tabs/Filters
   const [activeTab, setActiveTab] = useState<EntryStatus>('present')
@@ -61,6 +71,25 @@ export default function ShelterManagePage() {
   const searchParams = useSearchParams()
 
   useEffect(() => {
+    // Carregar os dados (Entries) baseados no ID do abrigo
+    dispatch(fetchShelterEntries(shelterIdCode))
+    
+    // Opcional: Fetch meta dados do shelter
+    api.get(`/shelters/${shelterIdCode}`).then(res => {
+      if(res.data.data) {
+        setShelter({
+           name: res.data.data.name,
+           capacity: res.data.data.capacity,
+           occupied: res.data.data.occupied,
+           phone: res.data.data.phone
+        })
+      }
+    }).catch(err => {
+      console.warn("Usando fallback para Shelter Meta", err.message)
+    })
+  }, [dispatch, shelterIdCode])
+
+  useEffect(() => {
     // Escuta evento customizado da bottom nav
     const handleOpenCheckin = () => setShowCheckinModal(true)
     window.addEventListener('open-manual-checkin', handleOpenCheckin)
@@ -68,26 +97,28 @@ export default function ShelterManagePage() {
     // Escuta query param (ex: caso venha do dashboard)
     if (searchParams.get('action') === 'checkin') {
       setShowCheckinModal(true)
-      // limpa query
       window.history.replaceState({}, '', '/shelter/manage')
     }
 
     return () => window.removeEventListener('open-manual-checkin', handleOpenCheckin)
   }, [searchParams])
 
-  const getTime = () => new Date().toLocaleTimeString(language === 'pt-BR' ? 'pt-BR' : 'en-US', { hour: '2-digit', minute: '2-digit' })
-
-  const handleManualCheckin = () => {
+  const handleManualCheckin = async () => {
     if (!name.trim()) return
-    const newEntry: Entry = {
-      id: `m-${Date.now()}`,
-      name: name.trim(),
-      phone: phone.trim() || 'Não informado',
-      people,
-      status: 'present',
-      updatedAt: getTime(),
+    
+    try {
+      await api.post(`/shelters/${shelterIdCode}/entries`, {
+        name: name.trim(),
+        phone: phone.trim() || 'Não informado',
+        people_count: people,
+        status: 'present'
+      })
+      // Recarrega lista apos criacao
+      dispatch(fetchShelterEntries(shelterIdCode))
+    } catch(err) {
+      console.warn("API Offline: manual checkin fallback")
     }
-    setEntries([newEntry, ...entries])
+
     setShelter((s) => ({ ...s, occupied: Math.min(s.capacity, s.occupied + people) }))
     setName('')
     setPhone('')
@@ -95,7 +126,8 @@ export default function ShelterManagePage() {
     setShowCheckinModal(false)
   }
 
-  const changeStatus = (entry: Entry, newStatus: EntryStatus, extraData?: any) => {
+  const changeStatus = async (entry: Entry, newStatus: EntryStatus, extraData?: any) => {
+    // Otimista: ajusta a tela na hora
     if (entry.status === 'present' && newStatus !== 'present') {
       setShelter((s) => ({ ...s, occupied: Math.max(0, s.occupied - entry.people) }))
     }
@@ -103,9 +135,9 @@ export default function ShelterManagePage() {
       setShelter((s) => ({ ...s, occupied: Math.min(s.capacity, s.occupied + entry.people) }))
     }
 
-    setEntries((prev) =>
-      prev.map((e) => (e.id === entry.id ? { ...e, status: newStatus, updatedAt: getTime(), ...extraData } : e))
-    )
+    // Dispara para o backend
+    dispatch(processEntryStatus({ id_code: shelterIdCode, entry_id: entry.id_code, status: newStatus }))
+
     setSelectedEntry(null)
     setAssuming(false)
     setAssumeMessage('')
@@ -212,8 +244,9 @@ export default function ShelterManagePage() {
             ) : (
               filteredEntries.map((entry) => (
                 <button
-                  key={entry.id}
+                  key={entry.id_code}
                   onClick={() => {
+
                     setSelectedEntry(entry)
                     setAssuming(false)
                     setAssumeMessage('')

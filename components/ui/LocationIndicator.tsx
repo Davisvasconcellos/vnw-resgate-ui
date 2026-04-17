@@ -1,13 +1,17 @@
 'use client'
 
+import { MouseEventHandler } from 'react'
+
 interface Props {
   address?: string
   status?: 'acquiring' | 'ready' | 'error'
+  onClick?: MouseEventHandler<HTMLDivElement>
 }
 
 export default function LocationIndicator({
   address = 'Obtendo localização...',
   status = 'acquiring',
+  onClick
 }: Props) {
   const colors = {
     acquiring: 'bg-yellow-50 border-yellow-200 text-yellow-700',
@@ -22,7 +26,10 @@ export default function LocationIndicator({
   }
 
   return (
-    <div className={`flex items-center gap-3 rounded-2xl border px-4 py-3 ${colors[status]}`}>
+    <div 
+      className={`flex items-center gap-3 rounded-2xl border px-4 py-3 transition-transform ${onClick ? 'cursor-pointer active:scale-95 hover:brightness-95' : ''} ${colors[status]}`}
+      onClick={onClick}
+    >
       <span className={`material-symbols-outlined text-[22px]`} style={{ fontVariationSettings: `'FILL' 1` }}>
         {icons[status]}
       </span>

@@ -24,23 +24,19 @@ export default function BottomNavWrapper() {
   )
 }
 
+import { useSelector } from 'react-redux'
+import { RootState } from '@/store'
+
+// Dentro de BottomNavContent:
+// ...
 function BottomNavContent() {
   const pathname = usePathname()
   const searchParams = useSearchParams()
-  const [role, setRole] = useState<Role>(null)
+  const role = useSelector((state: RootState) => state.auth.role) as typeof moduleParam
   const moduleParam = searchParams.get('module')
 
-  // Atualiza o state toda vez que muda de tela, caso o usuário tenha logado/trocado de perfil
-  useEffect(() => {
-    const savedRole = localStorage.getItem('vnw_role') as Role
-    if (savedRole) {
-      setRole(savedRole)
-    } else {
-      setRole('civilian')
-    }
-  }, [pathname])
-
   // Ocultar nav bar totalmente nestas rotas (telas cheias ou limpeza visual)
+
   const HIDDEN_ROUTES = [
     '/', 
     '/login', 
@@ -48,13 +44,20 @@ function BottomNavContent() {
   ]
   if (HIDDEN_ROUTES.includes(pathname)) return null
 
-  // Prioridade para o módulo de Ajuda via parâmetro (Persistência da navegação pública)
-  if (moduleParam === 'help') {
-    return <BottomNavPublic />
+  // Caso especial: Página de mapa (nearby) só exibe barra se houver módulo explícito
+  // Isso evita que um usuário veja a barra de gestão ao acessar o mapa de forma genérica
+  if (pathname === '/nearby' && !moduleParam) {
+    return null
   }
 
+  // Mapeamento direto de módulos via parâmetro (Prioridade Total)
+  if (moduleParam === 'help') return <BottomNavPublic />
+  if (moduleParam === 'shelter') return <BottomNavShelter />
+  if (moduleParam === 'transport') return <BottomNavTransport />
+  if (moduleParam === 'boat') return <BottomNavBoat />
+  if (moduleParam === 'volunteer') return <BottomNavVolunteer />
+
   // PRIORIDADE 1: Barra de assistência exclusiva para a tela /assist 
-  // Deve vir antes de qualquer lógica de Role para não 'vazar' a barra anterior
   if (pathname === '/assist') {
     return <BottomNavAssist />
   }
@@ -70,18 +73,18 @@ function BottomNavContent() {
     return <BottomNavPublic />
   }
 
-  // Se for abrigo
-  if (role === 'shelter' && (pathname.startsWith('/shelter') || pathname === '/nearby')) {
+  // Se for abrigo (Rotas privadas do abrigo)
+  if (role === 'shelter' && pathname.startsWith('/shelter')) {
     return <BottomNavShelter />
   }
 
-  // Se for transporte
-  if (role === 'transport' && (pathname.startsWith('/routes') || pathname === '/nearby')) {
+  // Se for transporte (Rotas privadas de rotas)
+  if (role === 'transport' && pathname.startsWith('/routes')) {
     return <BottomNavTransport />
   }
 
-  // Se for barco
-  if (role === 'boat' && (pathname.startsWith('/routes') || pathname === '/nearby')) {
+  // Se for barco (Rotas privadas de rotas)
+  if (role === 'boat' && pathname.startsWith('/routes')) {
     return <BottomNavBoat />
   }
 

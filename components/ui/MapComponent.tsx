@@ -42,6 +42,64 @@ const createCustomMarker = (color: string, isSelected: boolean, icon: string, is
   })
 }
 
+// Custom Zoom and Expand controls overlay
+function MapControls({ isExpanded, onToggleExpand }: { isExpanded?: boolean, onToggleExpand?: () => void }) {
+  const map = useMap()
+  
+  // Força o mapa a se readequar sempre que a altura (isExpanded) for alterada
+  useEffect(() => {
+    const wait = setTimeout(() => map.invalidateSize(), 350)
+    return () => clearTimeout(wait)
+  }, [map, isExpanded])
+
+  return (
+    <div className="absolute right-3 top-4 flex flex-col gap-2" style={{ zIndex: 400 }}>
+      <button
+        onClick={(e) => { e.preventDefault(); e.stopPropagation(); map.zoomIn() }}
+        className="w-10 h-10 bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-[0_4px_16px_rgba(0,0,0,0.12)] border border-slate-200 dark:border-white/10 active:scale-95 transition-all"
+      >
+        <span className="material-symbols-outlined text-slate-700 dark:text-white">add</span>
+      </button>
+      <button
+        onClick={(e) => { e.preventDefault(); e.stopPropagation(); map.zoomOut() }}
+        className="w-10 h-10 bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-[0_4px_16px_rgba(0,0,0,0.12)] border border-slate-200 dark:border-white/10 active:scale-95 transition-all"
+      >
+        <span className="material-symbols-outlined text-slate-700 dark:text-white">remove</span>
+      </button>
+      <button
+        onClick={(e) => { e.preventDefault(); e.stopPropagation(); onToggleExpand?.() }}
+        className="w-10 h-10 bg-blue-600/90 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-[0_4px_16px_rgba(37,99,235,0.4)] border border-blue-400/30 active:scale-95 transition-all mt-1"
+      >
+        <span className="material-symbols-outlined text-white" style={{ fontVariationSettings: `'FILL' 1` }}>
+          {isExpanded ? 'close_fullscreen' : 'open_in_full'}
+        </span>
+      </button>
+    </div>
+  )
+}
+
+function MapTracker({ setCurrentCenter, onUpdateCenter }: { setCurrentCenter: (c: [number, number]) => void, onUpdateCenter?: (c: [number, number]) => void }) {
+  useMapEvents({
+    move: (e) => {
+      const c = e.target.getCenter()
+      setCurrentCenter([c.lat, c.lng])
+    },
+    moveend: (e) => {
+      const c = e.target.getCenter()
+      if (onUpdateCenter) onUpdateCenter([c.lat, c.lng])
+    }
+  })
+  return null
+}
+
+function MapFlyTo({ center }: { center: [number, number] }) {
+  const map = useMap()
+  useEffect(() => {
+    if (center) map.flyTo(center, 15)
+  }, [center, map])
+  return null
+}
+
 export default function MapComponent({ 
   shelters = [],
   requests = [],
@@ -51,7 +109,8 @@ export default function MapComponent({
   onPinClick,
   onUpdateCenter,
   isExpanded,
-  onToggleExpand
+  onToggleExpand,
+  externalCenter = null
 }: {
   shelters?: any[]
   requests?: any[]
@@ -62,60 +121,11 @@ export default function MapComponent({
   onUpdateCenter?: (center: [number, number]) => void
   isExpanded?: boolean
   onToggleExpand?: () => void
+  externalCenter?: [number, number] | null
 }) {
   const [isDark, setIsDark] = useState(false)
   const [currentCenter, setCurrentCenter] = useState<[number, number]>([-27.4332, -48.4550])
-
-  // Custom Zoom and Expand controls overlay
-  function MapControls() {
-    const map = useMap()
-    
-    // Força o mapa a se readequar sempre que a altura (isExpanded) for alterada
-    useEffect(() => {
-      const wait = setTimeout(() => map.invalidateSize(), 350)
-      return () => clearTimeout(wait)
-    }, [map, isExpanded])
-
-    return (
-      <div className="absolute right-3 top-4 flex flex-col gap-2" style={{ zIndex: 400 }}>
-        <button
-          onClick={(e) => { e.preventDefault(); e.stopPropagation(); map.zoomIn() }}
-          className="w-10 h-10 bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-[0_4px_16px_rgba(0,0,0,0.12)] border border-slate-200 dark:border-white/10 active:scale-95 transition-all"
-        >
-          <span className="material-symbols-outlined text-slate-700 dark:text-white">add</span>
-        </button>
-        <button
-          onClick={(e) => { e.preventDefault(); e.stopPropagation(); map.zoomOut() }}
-          className="w-10 h-10 bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-[0_4px_16px_rgba(0,0,0,0.12)] border border-slate-200 dark:border-white/10 active:scale-95 transition-all"
-        >
-          <span className="material-symbols-outlined text-slate-700 dark:text-white">remove</span>
-        </button>
-        <button
-          onClick={(e) => { e.preventDefault(); e.stopPropagation(); onToggleExpand?.() }}
-          className="w-10 h-10 bg-blue-600/90 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-[0_4px_16px_rgba(37,99,235,0.4)] border border-blue-400/30 active:scale-95 transition-all mt-1"
-        >
-          <span className="material-symbols-outlined text-white" style={{ fontVariationSettings: `'FILL' 1` }}>
-            {isExpanded ? 'close_fullscreen' : 'open_in_full'}
-          </span>
-        </button>
-      </div>
-    )
-  }
-
-  // Componente filho para interceptar o arrasto e emitir as coordenadas ao vivo
-  function MapTracker() {
-    useMapEvents({
-      move: (e) => {
-        const c = e.target.getCenter()
-        setCurrentCenter([c.lat, c.lng])
-      },
-      moveend: (e) => {
-        const c = e.target.getCenter()
-        if (onUpdateCenter) onUpdateCenter([c.lat, c.lng])
-      }
-    })
-    return null
-  }
+  const [mapStableKey] = useState(`map-${Date.now()}-${Math.random()}`)
 
   useEffect(() => {
     // Initial check
@@ -148,9 +158,10 @@ export default function MapComponent({
   const center: [number, number] = [-27.4332, -48.4550] // Canasvieiras center mocked approx
 
   return (
-    <MapContainer center={currentCenter} zoom={14} style={{ height: '100%', width: '100%', zIndex: 1 }} zoomControl={false}>
-      <MapTracker />
-      <MapControls />
+    <MapContainer key={mapStableKey} center={currentCenter} zoom={14} style={{ height: '100%', width: '100%', zIndex: 1 }} zoomControl={false}>
+      {externalCenter && <MapFlyTo center={externalCenter} />}
+      <MapTracker setCurrentCenter={setCurrentCenter} onUpdateCenter={onUpdateCenter} />
+      <MapControls isExpanded={isExpanded} onToggleExpand={onToggleExpand} />
       <TileLayer
         key={isDark ? 'dark' : 'light'}
         url={isDark ? "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png" : "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"}

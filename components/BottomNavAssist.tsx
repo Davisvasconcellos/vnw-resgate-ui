@@ -35,11 +35,7 @@ export default function BottomNavAssist() {
         <div className="relative -top-10">
           <Link
             href="/nearby"
-            className={`w-16 h-16 rounded-full flex items-center justify-center active:scale-90 transition-all border-4 border-white dark:border-[#070d17] shadow-xl ${
-              isNearby 
-                ? 'bg-[#E65100] text-white shadow-[#E65100]/40' 
-                : 'bg-white dark:bg-[#2A2D31] text-on-surface dark:text-white shadow-black/10'
-            }`}
+            className="w-16 h-16 rounded-full flex items-center justify-center active:scale-90 transition-all border-4 border-white dark:border-[#070d17] shadow-xl bg-[#E65100] text-white shadow-[#E65100]/40"
           >
             <span className="material-symbols-outlined text-[32px] font-bold">map</span>
           </Link>

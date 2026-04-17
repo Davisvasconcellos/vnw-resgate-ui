@@ -4,6 +4,8 @@ import { Plus_Jakarta_Sans, Manrope } from 'next/font/google'
 import { I18nProvider } from '@/components/i18n/I18nProvider'
 import BottomNavWrapper from '@/components/BottomNavWrapper'
 
+import { ReduxProvider } from '@/store/Provider'
+
 const headline = Plus_Jakarta_Sans({
   subsets: ['latin'],
   weight: ['400', '500', '600', '700', '800'],
@@ -37,11 +39,14 @@ export default function RootLayout({
         />
       </head>
       <body className={`min-proto-h ${headline.variable} ${body.variable}`}>
-        <I18nProvider>
-          {children}
-          <BottomNavWrapper />
-        </I18nProvider>
+        <ReduxProvider>
+          <I18nProvider>
+            {children}
+            <BottomNavWrapper />
+          </I18nProvider>
+        </ReduxProvider>
       </body>
+
     </html>
   )
 }

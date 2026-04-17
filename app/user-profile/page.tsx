@@ -1,19 +1,37 @@
 'use client'
 
+import Link from 'next/link'
 import AppHeader from '@/components/headers/AppHeader'
 import BottomNavWrapper from '@/components/BottomNavWrapper'
 import Image from 'next/image'
 import { useI18n } from '@/components/i18n/I18nProvider'
 import { useState, useEffect } from 'react'
+import ProtectedRoute from '@/components/ProtectedRoute'
+import { useRouter } from 'next/navigation'
+import { auth } from '@/services/firebase'
+import { signOut } from 'firebase/auth'
+import { api } from '@/services/api'
 
 export default function UserProfile() {
   const { t, language, setLanguage } = useI18n()
+  const router = useRouter()
   const [theme, setTheme] = useState<'light'|'dark'>('light')
+  const [userName, setUserName] = useState('Novo Usuário do Resgate')
+  const [userAvatar, setUserAvatar] = useState('https://lh3.googleusercontent.com/aida-public/AB6AXuDQJ79SKRFNGsHEtAaYR6DNVPPVXT3K6HSObJlm7WAF59SoggYSgGr6lz4FC-9WnnXLgN-s65UMaouGhFYGvwetJlLYCsWrAis21-fje2ENCANB0SxA-cAagAGc6ZvKz_jU6uhud5b3yHlbLJ12fr1kKEam3Ul_8eUWMXzLxOy4O9bzTW19a4_Hzxa37eYCxaLBx_URSCGx4QsDlYp-6wQ7i76GgtmM03xwZlJJ4oCZ6Z-FPKadbVBlBwN4gpVlBs3CA-Jy1F55u0o')
 
   useEffect(() => {
     if (document.documentElement.classList.contains('dark')) {
       setTheme('dark')
     }
+
+    try {
+      const stored = localStorage.getItem('vnw_user')
+      if (stored) {
+        const user = JSON.parse(stored)
+        if (user.name) setUserName(user.name)
+        if (user.avatar_url) setUserAvatar(user.avatar_url)
+      }
+    } catch(e) {}
   }, [])
 
   const toggleTheme = (newTheme: 'light'|'dark') => {
@@ -25,7 +43,22 @@ export default function UserProfile() {
     }
   }
 
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      const token = localStorage.getItem('vnw_token');
+      if (token) await api.post('/auth/logout', {}, { headers: { Authorization: `Bearer ${token}` } });
+    } catch(e) {
+      console.error('Erro logout', e);
+    } finally {
+      localStorage.removeItem('vnw_token');
+      localStorage.removeItem('vnw_user');
+      router.push('/login');
+    }
+  }
+
   return (
+    <ProtectedRoute>
     <div className="bg-surface dark:bg-[#0a1628] text-on-surface dark:text-white min-h-screen pb-32 transition-colors">
       <AppHeader avatarAlt="User profile photo" />
       <main className="pt-24 px-4 max-w-3xl mx-auto">
@@ -33,16 +66,16 @@ export default function UserProfile() {
           <div className="relative mb-6">
             <div className="w-28 h-28 rounded-full overflow-hidden shadow-xl ring-4 ring-white dark:ring-white/10">
               <Image
-                alt="Alex Morgan"
+                alt={userName}
                 width={128}
                 height={128}
                 className="w-full h-full object-cover"
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuBHknwU8WUeEgmaMxkDFv1Im_6etFH0PzGo6RvcY453gGz24SYw2-s2dtx4NJCIw1X_xskiBFNRTVI9oLqtImZ8G01F1Kqbl78cZcJHQc3eoOZfsrGXTN7JsPSupVOvR4_7LEEwYo5zq7its8_fnqe8Y4nu233Rgy8ErMb9elzI9VJZR1YUvSSB-tKJSKLTjSQEB6kRE6IVdrGbh-bxDeHi7-f6KquD2a2KSvng_6t_y5bw39Atru-KPlsyS90Q_JOu3caZst1Ge9A"
+                src={userAvatar}
               />
             </div>
           </div>
           <h2 className="text-2xl font-extrabold font-headline tracking-tight text-on-surface dark:text-white mb-2">
-            Alex Morgan
+            {userName}
           </h2>
           <div className="flex items-center gap-2 bg-slate-100 dark:bg-white/5 px-4 py-2 rounded-full">
             <span className="material-symbols-outlined text-primary text-sm">
@@ -153,12 +186,26 @@ export default function UserProfile() {
             </div>
           </div>
           
-          <button className="w-full py-4 text-red-500 font-black uppercase tracking-[0.2em] text-xs">
-            Sair da conta
-          </button>
+          <div className="pt-4 space-y-4">
+            <Link
+              href="/assist"
+              className="w-full flex items-center justify-center gap-2 bg-[#1565C0] text-white font-black py-4 rounded-2xl active:scale-95 transition-transform text-xs uppercase tracking-[0.1em] shadow-lg shadow-blue-500/20"
+            >
+              <span className="material-symbols-outlined text-[18px]">home</span>
+              Voltar ao Início
+            </Link>
+
+            <button 
+              onClick={handleLogout} 
+              className="w-full py-4 text-red-500 font-extrabold uppercase tracking-[0.2em] text-[10px] hover:bg-red-50 dark:hover:bg-red-500/10 rounded-2xl transition-colors"
+            >
+              Sair da conta
+            </button>
+          </div>
         </section>
       </main>
       <BottomNavWrapper />
     </div>
+    </ProtectedRoute>
   )
 }
