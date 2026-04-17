@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+
+<html class="light" lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Manrope:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "surface-container": "#eceef0",
+              "on-tertiary-fixed": "#2a1700",
+              "outline": "#727785",
+              "inverse-primary": "#adc6ff",
+              "on-background": "#191c1e",
+              "tertiary-container": "#a36700",
+              "surface-container-lowest": "#ffffff",
+              "surface-bright": "#f7f9fb",
+              "secondary-container": "#6cf8bb",
+              "surface-dim": "#d8dadc",
+              "on-secondary-fixed": "#002113",
+              "primary-container": "#2170e4",
+              "outline-variant": "#c2c6d6",
+              "on-primary-fixed": "#001a42",
+              "on-primary": "#ffffff",
+              "on-secondary-fixed-variant": "#005236",
+              "primary": "#0058be",
+              "tertiary-fixed": "#ffddb8",
+              "inverse-on-surface": "#eff1f3",
+              "surface-container-high": "#e6e8ea",
+              "on-tertiary-fixed-variant": "#653e00",
+              "surface-container-highest": "#e0e3e5",
+              "on-primary-fixed-variant": "#004395",
+              "surface": "#f7f9fb",
+              "error-container": "#ffdad6",
+              "error": "#ba1a1a",
+              "surface-container-low": "#f2f4f6",
+              "secondary-fixed-dim": "#4edea3",
+              "secondary-fixed": "#6ffbbe",
+              "on-secondary": "#ffffff",
+              "on-surface-variant": "#424754",
+              "background": "#f7f9fb",
+              "secondary": "#006c49",
+              "on-surface": "#191c1e",
+              "tertiary-fixed-dim": "#ffb95f",
+              "surface-tint": "#005ac2",
+              "on-tertiary": "#ffffff",
+              "on-primary-container": "#fefcff",
+              "inverse-surface": "#2d3133",
+              "on-tertiary-container": "#fffbff",
+              "tertiary": "#825100",
+              "surface-variant": "#e0e3e5",
+              "primary-fixed": "#d8e2ff",
+              "on-error-container": "#93000a",
+              "on-secondary-container": "#00714d",
+              "primary-fixed-dim": "#adc6ff",
+              "on-error": "#ffffff"
+            },
+            fontFamily: {
+              "headline": ["Plus Jakarta Sans"],
+              "body": ["Manrope"],
+              "label": ["Manrope"]
+            },
+            borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-effect {
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+        body {
+            font-family: 'Manrope', sans-serif;
+            background-color: #f7f9fb;
+        }
+        h1, h2, h3 {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface pb-32">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl shadow-sm shadow-blue-900/5 flex justify-between items-center px-6 py-4 w-full">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center overflow-hidden">
+<img alt="User" class="w-full h-full object-cover" data-alt="Close-up professional portrait of a clean-cut client in a modern home setting, soft natural lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBHknwU8WUeEgmaMxkDFv1Im_6etFH0PzGo6RvcY453gGz24SYw2-s2dtx4NJCIw1X_xskiBFNRTVI9oLqtImZ8G01F1Kqbl78cZcJHQc3eoOZfsrGXTN7JsPSupVOvR4_7LEEwYo5zq7its8_fnqe8Y4nu233Rgy8ErMb9elzI9VJZR1YUvSSB-tKJSKLTjSQEB6kRE6IVdrGbh-bxDeHi7-f6KquD2a2KSvng_6t_y5bw39Atru-KPlsyS90Q_JOu3caZst1Ge9A"/>
+</div>
+<span class="font-['Plus_Jakarta_Sans'] font-bold tracking-tight text-2xl text-blue-600 dark:text-blue-400 tracking-tighter">LimpaJá</span>
+</div>
+<button class="text-slate-400 dark:text-slate-500 hover:opacity-80 transition-opacity active:scale-95 duration-200">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+</header>
+<main class="mt-24 px-6 max-w-2xl mx-auto">
+<!-- Search Header -->
+<section class="mb-8">
+<h1 class="text-3xl font-extrabold tracking-tight text-on-surface mb-6">Encontrar Profissional</h1>
+<!-- Search Bar -->
+<div class="relative group">
+<div class="absolute inset-y-0 left-5 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-outline">search</span>
+</div>
+<input class="w-full bg-surface-container-highest border-none rounded-xl py-4 pl-14 pr-6 focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-outline/70" placeholder="Qual serviço você precisa hoje?" type="text"/>
+</div>
+</section>
+<!-- Automatic Match Section (Bento Grid Style) -->
+<section class="mb-10">
+<div class="relative overflow-hidden rounded-lg bg-primary p-8 text-on-primary shadow-2xl shadow-primary/20 group">
+<!-- Background Decoration -->
+<div class="absolute -right-12 -top-12 w-64 h-64 bg-white/10 rounded-full blur-3xl group-hover:bg-white/20 transition-all duration-700"></div>
+<div class="relative z-10">
+<div class="flex items-start justify-between mb-6">
+<div class="bg-white/20 p-3 rounded-md backdrop-blur-md">
+<span class="material-symbols-outlined text-3xl" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+</div>
+<div class="flex items-center gap-2 bg-on-secondary-container/20 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
+<span class="w-2 h-2 rounded-full bg-secondary-container animate-pulse"></span>
+                            Match Automático
+                        </div>
+</div>
+<h2 class="text-2xl font-bold mb-2">Buscando o profissional ideal para você...</h2>
+<p class="text-on-primary/80 mb-8 max-w-md font-medium leading-relaxed">
+                        Nossa IA analisa sua localização e necessidades para conectar você ao melhor limpador disponível agora.
+                    </p>
+<button class="w-full md:w-auto bg-surface-container-lowest text-primary px-8 py-4 rounded-xl font-bold flex items-center justify-center gap-2 hover:opacity-90 active:scale-95 transition-all shadow-lg">
+                        Ativar Combinação Rápida
+                        <span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Manual Selection Section -->
+<section class="mb-12">
+<div class="flex items-center justify-between mb-8">
+<h3 class="text-xl font-bold tracking-tight">Seleção Manual</h3>
+<button class="text-primary font-bold text-sm flex items-center gap-1 hover:underline">
+<span class="material-symbols-outlined text-lg">tune</span>
+                    Filtros
+                </button>
+</div>
+<!-- List of Professionals (Asymmetric Cards) -->
+<div class="space-y-6">
+<!-- Cleaner 1 -->
+<div class="bg-surface-container-low rounded-lg p-5 flex items-center gap-5 hover:bg-surface-container-high transition-colors cursor-pointer group">
+<div class="relative">
+<img alt="Cleaner 1" class="w-20 h-20 rounded-md object-cover" data-alt="Portrait of a smiling professional female cleaner wearing a neat blue polo shirt, bright clean indoor environment background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDqtY8S7PpQeg_XnYtSY-BdhgVJC0YR5w_Ke7SW15bGmEUQvWtq00X_eKJBb-tofh8CkNmqug8BTqvqJbJxmlon43gr48-I_BkYfbHBaGdZ8Kku127VQKvBy6MMs_uxq3q2iCkeHIHb9oOw97-t1T_6pdCV9sIFPAfPYaL-6jt7vwDIMMFLiibSqhqVV0leiwWBBSfBfKTuNPtHe7O3VO5Cg02eneYzJ4gbVXfuL74yph6zYXcWuZVec7yrHRr3fmZHz0MqOaLDyjY"/>
+<div class="absolute -bottom-2 -right-2 bg-secondary text-on-secondary text-[10px] font-bold px-2 py-0.5 rounded-full border-4 border-surface-container-low">
+                            ONLINE
+                        </div>
+</div>
+<div class="flex-grow">
+<div class="flex justify-between items-start mb-1">
+<h4 class="font-bold text-lg leading-none">Mariana Silva</h4>
+<div class="flex items-center gap-1 text-tertiary">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-sm font-bold">4.9</span>
+</div>
+</div>
+<p class="text-on-surface-variant text-sm mb-3">Especialista em limpeza pesada</p>
+<div class="flex items-center justify-between">
+<span class="text-primary font-extrabold text-lg">R$ 45<small class="text-xs font-medium text-outline">/hr</small></span>
+<span class="text-outline text-xs font-semibold flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">schedule</span>
+                                Prox. 14:00
+                            </span>
+</div>
+</div>
+</div>
+<!-- Cleaner 2 (Highlight variant) -->
+<div class="bg-surface-container-lowest shadow-sm rounded-lg p-5 flex items-center gap-5 border border-primary/10 hover:shadow-md transition-all cursor-pointer">
+<div class="relative">
+<img alt="Cleaner 2" class="w-20 h-20 rounded-md object-cover" data-alt="Professional male cleaner smiling confidently, holding cleaning equipment, bright high-end apartment interior in soft focus" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBUmKxqeqsDAkBJ1oIeiaOASaXwD8LE4FCVMxYbS43_0KDos_H_L0rGL3mPh_I0x2t_-7BnC_cKmVwnQqQn-MJor8kCnlq6ZdussxzVJJTYzIRPPMKR3okNoTKl-JzGx_XlSVafw2Pg3_Hinbke0ipXijSSJ4UD3PEHPfEyQnjhNVYRysSiUk2SgIDalJgyG-KMhc9xhYK4pJa3BfpsrwuV9T8d2FSKKjZ9XU_dPAPskcUGGYYyK5j0-hHJqleJr8OC3eTFJ_KNPCU"/>
+</div>
+<div class="flex-grow">
+<div class="flex justify-between items-start mb-1">
+<h4 class="font-bold text-lg leading-none">Ricardo Oliveira</h4>
+<div class="flex items-center gap-1 text-tertiary">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-sm font-bold">4.7</span>
+</div>
+</div>
+<p class="text-on-surface-variant text-sm mb-3">Limpeza expressa &amp; vidros</p>
+<div class="flex items-center justify-between">
+<span class="text-primary font-extrabold text-lg">R$ 38<small class="text-xs font-medium text-outline">/hr</small></span>
+<span class="text-outline text-xs font-semibold flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">location_on</span>
+                                1.2km
+                            </span>
+</div>
+</div>
+</div>
+<!-- Cleaner 3 -->
+<div class="bg-surface-container-low rounded-lg p-5 flex items-center gap-5 hover:bg-surface-container-high transition-colors cursor-pointer">
+<div class="relative">
+<img alt="Cleaner 3" class="w-20 h-20 rounded-md object-cover" data-alt="Portrait of a friendly female cleaner in a modern minimalist workspace, bright daylight, high-quality photography" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDPapbHVW9kItQQJrArswHjki6yMsAnfR67me0_RN8cx9FszY_uHrWUEotD2ACjpGkowQMNnx9Qr6tPRRhLCRstu5htbTgPp16EjxoV8UanqNW6dhmWA8QeNXZOiiBG1hJRHbppjT49V8Yrvcsudzs0fiIKu8JC94BHpYH0tLUyV7JL7thMBpBRlh37XAynyQ3ZVVZxbfFOvjpWIlx9-sk98NJa47d_QCUBlw4z66drMFD5LLjBv33Q0AtAoAQK433HJZkTfSHnKA4"/>
+</div>
+<div class="flex-grow">
+<div class="flex justify-between items-start mb-1">
+<h4 class="font-bold text-lg leading-none">Beatriz Costa</h4>
+<div class="flex items-center gap-1 text-tertiary">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-sm font-bold">5.0</span>
+</div>
+</div>
+<p class="text-on-surface-variant text-sm mb-3">Organização &amp; Pós-obra</p>
+<div class="flex items-center justify-between">
+<span class="text-primary font-extrabold text-lg">R$ 52<small class="text-xs font-medium text-outline">/hr</small></span>
+<span class="text-outline text-xs font-semibold flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">history</span>
+                                120+ serviços
+                            </span>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pb-8 pt-4 bg-white/80 dark:bg-slate-900/80 backdrop-blur-2xl rounded-t-[32px] z-50 shadow-[0_-8px_30px_rgb(0,0,0,0.04)]">
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 px-5 py-2 hover:bg-slate-50 dark:hover:bg-slate-800/50 active:scale-90 transition-transform duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-['Manrope'] text-[11px] font-semibold">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-[24px] px-5 py-2 active:scale-90 transition-transform duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="handyman" style="font-variation-settings: 'FILL' 1;">handyman</span>
+<span class="font-['Manrope'] text-[11px] font-semibold">Offers</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 px-5 py-2 hover:bg-slate-50 dark:hover:bg-slate-800/50 active:scale-90 transition-transform duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="settings_accessibility">settings_accessibility</span>
+<span class="font-['Manrope'] text-[11px] font-semibold">Settings</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 px-5 py-2 hover:bg-slate-50 dark:hover:bg-slate-800/50 active:scale-90 transition-transform duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-['Manrope'] text-[11px] font-semibold">Profile</span>
+</a>
+</nav>
+</body></html>

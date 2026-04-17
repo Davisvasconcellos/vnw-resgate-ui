@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Admin Central | LimpaJá</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Manrope:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "surface-bright": "#f7f9fb",
+              "on-error-container": "#93000a",
+              "on-error": "#ffffff",
+              "surface-container-low": "#f2f4f6",
+              "on-secondary-container": "#00714d",
+              "inverse-on-surface": "#eff1f3",
+              "on-primary": "#ffffff",
+              "tertiary-fixed-dim": "#ffb95f",
+              "on-background": "#191c1e",
+              "inverse-surface": "#2d3133",
+              "on-tertiary": "#ffffff",
+              "surface-variant": "#e0e3e5",
+              "on-secondary-fixed-variant": "#005236",
+              "on-surface-variant": "#424754",
+              "on-tertiary-fixed": "#2a1700",
+              "error": "#ba1a1a",
+              "primary": "#0058be",
+              "error-container": "#ffdad6",
+              "on-primary-fixed": "#001a42",
+              "on-tertiary-fixed-variant": "#653e00",
+              "on-surface": "#191c1e",
+              "surface": "#f7f9fb",
+              "secondary-fixed-dim": "#4edea3",
+              "surface-container-high": "#e6e8ea",
+              "surface-container-highest": "#e0e3e5",
+              "surface-dim": "#d8dadc",
+              "secondary": "#006c49",
+              "on-secondary-fixed": "#002113",
+              "on-primary-container": "#fefcff",
+              "outline-variant": "#c2c6d6",
+              "on-secondary": "#ffffff",
+              "tertiary-container": "#a36700",
+              "tertiary": "#825100",
+              "primary-fixed-dim": "#adc6ff",
+              "on-primary-fixed-variant": "#004395",
+              "secondary-fixed": "#6ffbbe",
+              "surface-tint": "#005ac2",
+              "tertiary-fixed": "#ffddb8",
+              "background": "#f7f9fb",
+              "secondary-container": "#6cf8bb",
+              "inverse-primary": "#adc6ff",
+              "on-tertiary-container": "#fffbff",
+              "primary-fixed": "#d8e2ff",
+              "primary-container": "#2170e4",
+              "surface-container": "#eceef0",
+              "surface-container-lowest": "#ffffff",
+              "outline": "#727785"
+            },
+            fontFamily: {
+              "headline": ["Plus Jakarta Sans"],
+              "body": ["Manrope"],
+              "label": ["Manrope"]
+            },
+            borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .glass-header {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Manrope', sans-serif; }
+        h1, h2, h3 { font-family: 'Plus Jakarta Sans', sans-serif; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-background min-h-screen">
+<!-- Top Navigation Shell -->
+<header class="fixed top-0 w-full z-50 glass-header">
+<div class="flex justify-between items-center px-6 h-16 w-full max-w-7xl mx-auto">
+<div class="flex items-center gap-4">
+<span class="text-xl font-bold tracking-tight text-primary">LimpaJá</span>
+<span class="text-outline-variant/30 px-2">|</span>
+<span class="text-on-surface font-semibold">Admin Central</span>
+</div>
+<div class="flex items-center gap-3">
+<div class="p-2 hover:bg-slate-100/50 rounded-full transition-colors cursor-pointer relative">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="notifications">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full"></span>
+</div>
+<div class="flex items-center gap-3 pl-2">
+<img alt="Admin Profile" class="w-10 h-10 rounded-full object-cover" data-alt="Close up portrait of a professional male administrator in a light blue shirt with a clean modern office background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCNWLKG3KmBvcxb7wJkQ2HeqD1iANnIUOPWwFJ7O1cw215KloPHs3ehHUlgQoEZ5iiZMeumoFW20_CqaPK0OkxBL2IFiRRSwOn2ZjmEvCK5zeTX0dJSdv7Ejd--1MYN978tmkFaQb2Be94D6PLdp_keyQl--XIiikpVuiNhQ6wJRNPnYiPU-HRJl80eV42QE-WsMDmnUsXlYrrQE35eo2xa_Eez8YaYZPMhrX7IE-icou6vLMANesGdwmf-T2iJOliavtUzpa92OyU"/>
+</div>
+</div>
+</div>
+</header>
+<div class="flex pt-16 min-h-screen">
+<!-- Navigation Drawer (Sidebar) -->
+<aside class="hidden md:flex flex-col h-screen sticky top-16 w-72 py-8 bg-surface-container-low">
+<nav class="flex-1 space-y-2 px-4">
+<div class="bg-primary text-white rounded-2xl mx-2 shadow-lg shadow-primary/20 flex items-center gap-4 px-6 py-4 cursor-pointer transition-all active:scale-95 duration-200">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-bold tracking-tight">Dashboard</span>
+</div>
+<div class="text-slate-600 hover:bg-slate-200/50 rounded-2xl mx-2 flex items-center gap-4 px-6 py-4 cursor-pointer transition-all hover:translate-x-1 duration-300">
+<span class="material-symbols-outlined" data-icon="monitoring">monitoring</span>
+<span class="font-semibold">Analytics</span>
+</div>
+<div class="text-slate-600 hover:bg-slate-200/50 rounded-2xl mx-2 flex items-center gap-4 px-6 py-4 cursor-pointer transition-all hover:translate-x-1 duration-300">
+<span class="material-symbols-outlined" data-icon="payments">payments</span>
+<span class="font-semibold">Finance</span>
+</div>
+<div class="text-slate-600 hover:bg-slate-200/50 rounded-2xl mx-2 flex items-center gap-4 px-6 py-4 cursor-pointer transition-all hover:translate-x-1 duration-300">
+<span class="material-symbols-outlined" data-icon="map">map</span>
+<span class="font-semibold">Geography</span>
+</div>
+<div class="text-slate-600 hover:bg-slate-200/50 rounded-2xl mx-2 flex items-center gap-4 px-6 py-4 cursor-pointer transition-all hover:translate-x-1 duration-300">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-semibold">Settings</span>
+</div>
+</nav>
+<div class="px-8 mt-auto pb-12">
+<div class="bg-surface-container-highest p-6 rounded-lg">
+<p class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-2">System Status</p>
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 bg-secondary rounded-full"></span>
+<span class="text-xs font-semibold text-on-surface">Platform Optimal</span>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="flex-1 px-6 md:px-12 py-10 max-w-7xl mx-auto w-full">
+<header class="mb-10">
+<h1 class="text-4xl font-extrabold tracking-tighter text-on-surface">System Controller</h1>
+<p class="text-on-surface-variant mt-2 text-lg">Platform health and operational overview for today.</p>
+</header>
+<!-- KPI Bento Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+<!-- Total Revenue -->
+<div class="bg-surface-container-lowest p-8 rounded-lg shadow-sm group hover:shadow-md transition-shadow">
+<div class="flex justify-between items-start mb-6">
+<div class="p-3 bg-primary/10 rounded-xl">
+<span class="material-symbols-outlined text-primary" data-icon="payments">payments</span>
+</div>
+<span class="text-secondary font-bold text-sm">+12.5%</span>
+</div>
+<p class="text-on-surface-variant text-sm font-semibold uppercase tracking-wider mb-1">Total Revenue</p>
+<h3 class="text-3xl font-black text-on-surface">$24,000</h3>
+<div class="mt-4 h-8 flex items-end gap-1">
+<div class="w-full bg-primary/20 h-3 rounded-full overflow-hidden">
+<div class="bg-primary h-full w-[70%]"></div>
+</div>
+</div>
+</div>
+<!-- Active Cleaners -->
+<div class="bg-surface-container-lowest p-8 rounded-lg shadow-sm group hover:shadow-md transition-shadow">
+<div class="flex justify-between items-start mb-6">
+<div class="p-3 bg-secondary/10 rounded-xl">
+<span class="material-symbols-outlined text-secondary" data-icon="groups">groups</span>
+</div>
+<span class="text-secondary font-bold text-sm">+5</span>
+</div>
+<p class="text-on-surface-variant text-sm font-semibold uppercase tracking-wider mb-1">Active Cleaners</p>
+<h3 class="text-3xl font-black text-on-surface">120</h3>
+<div class="mt-4 flex items-end gap-1 h-8">
+<div class="flex-1 bg-surface-container rounded-sm h-4"></div>
+<div class="flex-1 bg-surface-container rounded-sm h-6"></div>
+<div class="flex-1 bg-secondary rounded-sm h-8"></div>
+<div class="flex-1 bg-secondary rounded-sm h-5"></div>
+<div class="flex-1 bg-secondary rounded-sm h-7"></div>
+</div>
+</div>
+<!-- Completed Jobs -->
+<div class="bg-surface-container-lowest p-8 rounded-lg shadow-sm group hover:shadow-md transition-shadow">
+<div class="flex justify-between items-start mb-6">
+<div class="p-3 bg-tertiary/10 rounded-xl">
+<span class="material-symbols-outlined text-tertiary" data-icon="check_circle">check_circle</span>
+</div>
+<span class="text-secondary font-bold text-sm">+8%</span>
+</div>
+<p class="text-on-surface-variant text-sm font-semibold uppercase tracking-wider mb-1">Completed Jobs</p>
+<h3 class="text-3xl font-black text-on-surface">845</h3>
+<div class="mt-4 h-8 flex items-center">
+<svg class="w-full h-full" viewbox="0 0 100 20">
+<path d="M0 15 Q 25 5, 50 15 T 100 5" fill="none" stroke="#825100" stroke-width="2"></path>
+</svg>
+</div>
+</div>
+<!-- Pending Disputes -->
+<div class="bg-surface-container-lowest p-8 rounded-lg shadow-sm group hover:shadow-md transition-shadow">
+<div class="flex justify-between items-start mb-6">
+<div class="p-3 bg-error/10 rounded-xl">
+<span class="material-symbols-outlined text-error" data-icon="gavel">gavel</span>
+</div>
+<span class="text-error font-bold text-sm">Critical</span>
+</div>
+<p class="text-on-surface-variant text-sm font-semibold uppercase tracking-wider mb-1">Pending Disputes</p>
+<h3 class="text-3xl font-black text-on-surface">3</h3>
+<div class="mt-4 flex gap-1">
+<span class="w-3 h-3 bg-error rounded-full"></span>
+<span class="w-3 h-3 bg-error/30 rounded-full"></span>
+<span class="w-3 h-3 bg-error/30 rounded-full"></span>
+</div>
+</div>
+</div>
+<!-- Secondary Layout: Maps and Rankings -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
+<!-- Service Heat Map -->
+<div class="lg:col-span-2 bg-surface-container-lowest rounded-lg p-8 shadow-sm">
+<div class="flex justify-between items-center mb-8">
+<div>
+<h2 class="text-2xl font-bold tracking-tight text-on-surface">Service Distribution</h2>
+<p class="text-sm text-on-surface-variant">Live demand intensity across the city.</p>
+</div>
+<button class="flex items-center gap-2 px-5 py-2.5 bg-surface-container-high rounded-full font-bold text-sm text-on-surface">
+<span class="material-symbols-outlined text-sm" data-icon="filter_list">filter_list</span>
+                            Filter Map
+                        </button>
+</div>
+<div class="relative w-full h-[400px] rounded-lg overflow-hidden bg-slate-200 group">
+<div class="absolute inset-0 bg-cover bg-center grayscale group-hover:grayscale-0 transition-all duration-700" data-alt="Modern satellite map view of a clean city urban layout with subtle streets and minimalist vector aesthetics" data-location="São Paulo" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAZ7trSeGDWN-PzI0emLhAe5BjPdy6t2O-A85MQGiizZGDQpEO8BDy-g_DG9uPGQk5v7BNYMRMXbvrwdSodV79i8nkLFR25AuHeMcai7dXgKMJEA0USzgZKyOP3fYKd8G8i2_Uc63UmPONnOh1ZA8GD1xdq17l7wdh4TmkV4vs5pu-SMgsHnHtI0SrZDCkkzr_tJvTWRb_ZRwJuy2g6XXMr6d2vjhF-mR_jP6mJsuAlUtb9FSbSpSfbwrzj_oCw-EZcaR-LqvVj2ug')">
+</div>
+<!-- Mock Heatmap overlays -->
+<div class="absolute top-1/3 left-1/4 w-32 h-32 bg-primary/30 blur-3xl rounded-full"></div>
+<div class="absolute bottom-1/4 right-1/3 w-48 h-48 bg-secondary/20 blur-3xl rounded-full"></div>
+<div class="absolute top-1/2 right-1/4 w-24 h-24 bg-primary/40 blur-2xl rounded-full"></div>
+<!-- Map Pin -->
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center">
+<div class="bg-primary text-white p-3 rounded-full shadow-xl animate-bounce">
+<span class="material-symbols-outlined" data-icon="location_on" data-weight="fill" style="font-variation-settings: 'FILL' 1;">location_on</span>
+</div>
+<div class="mt-2 bg-white/90 backdrop-blur-md px-4 py-2 rounded-xl text-xs font-bold text-on-surface shadow-lg">
+                                High Demand: Downtown
+                            </div>
+</div>
+</div>
+</div>
+<!-- Top Professional Ranking -->
+<div class="bg-surface-container-lowest rounded-lg p-8 shadow-sm">
+<h2 class="text-2xl font-bold tracking-tight text-on-surface mb-2">Top Performers</h2>
+<p class="text-sm text-on-surface-variant mb-8">Based on earnings and client ratings.</p>
+<div class="space-y-6">
+<!-- Pro 1 -->
+<div class="flex items-center gap-4 group">
+<div class="relative">
+<img alt="Top Pro 1" class="w-14 h-14 rounded-full object-cover" data-alt="Portrait of a smiling professional woman with hair tied back in a clean white work uniform" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCVbPutbsgLK4FNIoHPcb9Sk91DTGmXbqBmYFDHdI8AMyYV7C6TLVFOPRopG-eM9k9juIXCZWUFPlOyUqa2t989Us8saGs7niuB0IDg2NXadATKpHudCFZ5jVL_NvbEbXUID_wxmu5I4ec61ld6MLTRUsEc0KPVx3xSB4CXUSAjRB8p2ZiPh688h9yYqFKRl2UOOJKm8FnUnsWXiD6gLWnr8gGow1h9XhT_nMOgwqAuwIotzmoaFvV6NfuUd4Fa149RD-0gsWUdlmg"/>
+<div class="absolute -top-1 -right-1 bg-amber-400 text-white w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-black border-2 border-white">1</div>
+</div>
+<div class="flex-1">
+<h4 class="font-bold text-on-surface group-hover:text-primary transition-colors">Luciana Santos</h4>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-tertiary text-xs" data-icon="star" data-weight="fill" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-xs font-bold text-on-surface-variant">4.9 (124 reviews)</span>
+</div>
+</div>
+<div class="text-right">
+<span class="block font-black text-on-surface">$2,450</span>
+<span class="text-[10px] uppercase tracking-widest text-secondary font-bold">Top Earner</span>
+</div>
+</div>
+<!-- Pro 2 -->
+<div class="flex items-center gap-4 group">
+<div class="relative">
+<img alt="Top Pro 2" class="w-14 h-14 rounded-full object-cover" data-alt="Professional man with a friendly expression wearing a polo shirt in a studio setting with bright lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCicssnK_nBDBkIpMCnNvw45l2uG5WCX0Dvlfold9YFrCkRmTNGKFL4_0GJtkLxt_4x-NjuK5W-Hmq96pLl7wsziIqAj77u0Y3nWZWMHJjLSflz6Uv3cw64uMp5EjMSUxIk5ATAF9pCDnEz-PvHBEN12BVV7bQDFEn327ei93kDQFtIJVjdJ2xbSYrbv2nLC7QTHhCS1-qqQJ6EmA38c9YJ5hYHy0YNGWqwb_AjCp_nLw4iSB7mF46hxGOoNIwhR-jxQJbRmUFFShQ"/>
+<div class="absolute -top-1 -right-1 bg-slate-300 text-white w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-black border-2 border-white">2</div>
+</div>
+<div class="flex-1">
+<h4 class="font-bold text-on-surface group-hover:text-primary transition-colors">Ricardo Gomes</h4>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-tertiary text-xs" data-icon="star" data-weight="fill" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-xs font-bold text-on-surface-variant">4.8 (98 reviews)</span>
+</div>
+</div>
+<div class="text-right">
+<span class="block font-black text-on-surface">$1,920</span>
+</div>
+</div>
+<!-- Pro 3 -->
+<div class="flex items-center gap-4 group">
+<div class="relative">
+<img alt="Top Pro 3" class="w-14 h-14 rounded-full object-cover" data-alt="Young professional woman smiling warmly, wearing a professional navy blue shirt" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBMz8uAjrMic2TBuvFw9U2z0Qz9JN8oEvAWg4HSVXgk8ywRsfl1BlgoXp_W2OLpYBRcGKSmZeLHTfI88f3Pk8jkBR1toRb7vwzvHpRLqPvlPCueLtXb-MKdrY_ipoA9w20QmGbeB5EeL30E6lAloHVE0wJC9LZHtDvBMFFo_mvoRv1rYP6LPNhtRR3GKG9hO9jFa6K3pxVAyvnfuGjOjhOUCTMYC0Ea6NmCOVCn0KUyn0e2Gl_PQrOSwtQ_ozbrY15jcCqQJdSJZik"/>
+<div class="absolute -top-1 -right-1 bg-amber-700/50 text-white w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-black border-2 border-white">3</div>
+</div>
+<div class="flex-1">
+<h4 class="font-bold text-on-surface group-hover:text-primary transition-colors">Marina Silva</h4>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-tertiary text-xs" data-icon="star" data-weight="fill" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-xs font-bold text-on-surface-variant">4.7 (112 reviews)</span>
+</div>
+</div>
+<div class="text-right">
+<span class="block font-black text-on-surface">$1,780</span>
+</div>
+</div>
+</div>
+<button class="w-full mt-10 py-4 border-2 border-outline-variant/30 rounded-xl font-bold text-sm text-on-surface-variant hover:bg-surface-container-high hover:border-transparent transition-all">
+                        View Full Ranking
+                    </button>
+</div>
+</div>
+<!-- Transactions / Recent Activity -->
+<section class="bg-surface-container-lowest rounded-lg overflow-hidden shadow-sm">
+<div class="px-8 py-6 flex justify-between items-center bg-surface-container-low/50">
+<h2 class="text-xl font-bold text-on-surface">Recent Activity</h2>
+<span class="text-sm font-bold text-primary cursor-pointer hover:underline">See all activity</span>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead>
+<tr class="text-[10px] uppercase tracking-widest text-on-surface-variant bg-surface-container-low/30">
+<th class="px-8 py-4 font-bold">Transaction ID</th>
+<th class="px-8 py-4 font-bold">Service</th>
+<th class="px-8 py-4 font-bold">Professional</th>
+<th class="px-8 py-4 font-bold">Status</th>
+<th class="px-8 py-4 font-bold text-right">Amount</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/10">
+<tr class="hover:bg-slate-50 transition-colors">
+<td class="px-8 py-5 text-sm font-mono text-slate-500">#TRX-8291</td>
+<td class="px-8 py-5">
+<div class="flex flex-col">
+<span class="font-bold text-on-surface">Deep House Cleaning</span>
+<span class="text-xs text-on-surface-variant">Residential • 4h session</span>
+</div>
+</td>
+<td class="px-8 py-5 text-sm font-semibold text-on-surface">Luciana Santos</td>
+<td class="px-8 py-5">
+<span class="px-3 py-1 bg-secondary/10 text-secondary text-[11px] font-bold rounded-full uppercase tracking-tighter">Completed</span>
+</td>
+<td class="px-8 py-5 text-sm font-black text-on-surface text-right">$120.00</td>
+</tr>
+<tr class="hover:bg-slate-50 transition-colors">
+<td class="px-8 py-5 text-sm font-mono text-slate-500">#TRX-8290</td>
+<td class="px-8 py-5">
+<div class="flex flex-col">
+<span class="font-bold text-on-surface">Standard Window Cleaning</span>
+<span class="text-xs text-on-surface-variant">Office • Recurring</span>
+</div>
+</td>
+<td class="px-8 py-5 text-sm font-semibold text-on-surface">Ricardo Gomes</td>
+<td class="px-8 py-5">
+<span class="px-3 py-1 bg-primary/10 text-primary text-[11px] font-bold rounded-full uppercase tracking-tighter">In Progress</span>
+</td>
+<td class="px-8 py-5 text-sm font-black text-on-surface text-right">$85.50</td>
+</tr>
+<tr class="hover:bg-slate-50 transition-colors">
+<td class="px-8 py-5 text-sm font-mono text-slate-500">#TRX-8289</td>
+<td class="px-8 py-5">
+<div class="flex flex-col">
+<span class="font-bold text-on-surface">Post-Construction Cleanup</span>
+<span class="text-xs text-on-surface-variant">Commercial • Specialized</span>
+</div>
+</td>
+<td class="px-8 py-5 text-sm font-semibold text-on-surface">Marina Silva</td>
+<td class="px-8 py-5">
+<span class="px-3 py-1 bg-tertiary/10 text-tertiary text-[11px] font-bold rounded-full uppercase tracking-tighter">Disputed</span>
+</td>
+<td class="px-8 py-5 text-sm font-black text-on-surface text-right">$450.00</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</main>
+</div>
+<!-- Mobile Bottom Navigation Shell -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pb-6 pt-3 glass-header rounded-t-lg z-50">
+<div class="flex flex-col items-center justify-center bg-primary/10 text-primary rounded-full px-5 py-1.5 transition-transform duration-200">
+<span class="material-symbols-outlined text-[24px]" data-icon="home">home</span>
+<span class="text-[11px] font-semibold mt-0.5">Home</span>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-400 px-5 py-1.5 hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[24px]" data-icon="event_note">event_note</span>
+<span class="text-[11px] font-semibold mt-0.5">Bookings</span>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-400 px-5 py-1.5 hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[24px]" data-icon="calendar_month">calendar_month</span>
+<span class="text-[11px] font-semibold mt-0.5">Calendar</span>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-400 px-5 py-1.5 hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[24px]" data-icon="person">person</span>
+<span class="text-[11px] font-semibold mt-0.5">Profile</span>
+</div>
+</nav>
+</body></html>

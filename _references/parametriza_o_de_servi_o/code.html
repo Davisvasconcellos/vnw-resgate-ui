@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Configurar Tarifas - LimpaJá</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Manrope:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "surface-container": "#eceef0",
+                        "on-tertiary-fixed": "#2a1700",
+                        "outline": "#727785",
+                        "inverse-primary": "#adc6ff",
+                        "on-background": "#191c1e",
+                        "tertiary-container": "#a36700",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-bright": "#f7f9fb",
+                        "secondary-container": "#6cf8bb",
+                        "surface-dim": "#d8dadc",
+                        "on-secondary-fixed": "#002113",
+                        "primary-container": "#2170e4",
+                        "outline-variant": "#c2c6d6",
+                        "on-primary-fixed": "#001a42",
+                        "on-primary": "#ffffff",
+                        "on-secondary-fixed-variant": "#005236",
+                        "primary": "#0058be",
+                        "tertiary-fixed": "#ffddb8",
+                        "inverse-on-surface": "#eff1f3",
+                        "surface-container-high": "#e6e8ea",
+                        "on-tertiary-fixed-variant": "#653e00",
+                        "surface-container-highest": "#e0e3e5",
+                        "on-primary-fixed-variant": "#004395",
+                        "surface": "#f7f9fb",
+                        "error-container": "#ffdad6",
+                        "error": "#ba1a1a",
+                        "surface-container-low": "#f2f4f6",
+                        "secondary-fixed-dim": "#4edea3",
+                        "secondary-fixed": "#6ffbbe",
+                        "on-secondary": "#ffffff",
+                        "on-surface-variant": "#424754",
+                        "background": "#f7f9fb",
+                        "secondary": "#006c49",
+                        "on-surface": "#191c1e",
+                        "tertiary-fixed-dim": "#ffb95f",
+                        "surface-tint": "#005ac2",
+                        "on-tertiary": "#ffffff",
+                        "on-primary-container": "#fefcff",
+                        "inverse-surface": "#2d3133",
+                        "on-tertiary-container": "#fffbff",
+                        "tertiary": "#825100",
+                        "surface-variant": "#e0e3e5",
+                        "primary-fixed": "#d8e2ff",
+                        "on-error-container": "#93000a",
+                        "on-secondary-container": "#00714d",
+                        "primary-fixed-dim": "#adc6ff",
+                        "on-error": "#ffffff"
+                    },
+                    fontFamily: {
+                        "headline": ["Plus Jakarta Sans"],
+                        "body": ["Manrope"],
+                        "label": ["Manrope"]
+                    },
+                    borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            background: #0058be;
+            cursor: pointer;
+            border-radius: 50%;
+            border: 4px solid white;
+            box-shadow: 0 4px 12px rgba(0, 88, 190, 0.2);
+        }
+        .no-border { border: none !important; }
+        .tonal-shift { background-color: rgba(247, 249, 251, 0.8); }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface font-body text-on-surface antialiased pb-32">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl shadow-sm shadow-blue-900/5 flex justify-between items-center px-6 py-4 w-full">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Professional cleaner profile picture, friendly woman in blue uniform, bright studio lighting, high-end photography" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBDvtEA72M-xbN3yi1wFMemq1BckoY7jrqSaOOPcPPdasSvJKsnDc54ogkgcUq_ARmFA6any70eYRjb3f4sYN3RTrJ9ELCguot_JnKAO03pwS26srGETj-vOrs3n3W0LTQZ-N0dbMSz7tZKzfxIZufs4bgu607cF4v5Vd_K30MieDlhBta-Frd0pPWUVXPyZ9XOyYlP-x3tgM27MgvmJRU73jWZFrRmKwSnasbvkH9Pv69nqN5GZy-5kZQ_f8GiWCY3YhR6EbtQ21c"/>
+</div>
+<span class="text-2xl font-extrabold text-blue-600 dark:text-blue-400 tracking-tighter font-['Plus_Jakarta_Sans']">LimpaJá</span>
+</div>
+<button class="material-symbols-outlined text-slate-400 dark:text-slate-500 hover:opacity-80 transition-opacity active:scale-95 duration-200">
+            notifications
+        </button>
+</header>
+<main class="mt-24 px-6 max-w-2xl mx-auto">
+<!-- Title & Hero Section -->
+<div class="mb-10">
+<h1 class="font-headline text-4xl font-extrabold tracking-tight text-primary mb-2">Configurar Tarifas</h1>
+<p class="text-on-surface-variant font-medium">Defina seus valores e tempo estimado para cada serviço.</p>
+</div>
+<!-- Parameters Bento Grid -->
+<div class="grid grid-cols-1 gap-6">
+<!-- Quarto -->
+<div class="bg-surface-container-lowest rounded-lg p-6 flex flex-col gap-6 shadow-sm">
+<div class="flex justify-between items-center">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-md bg-primary-fixed flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-2xl">bed</span>
+</div>
+<h2 class="font-headline font-bold text-xl text-on-surface">Quarto</h2>
+</div>
+<span class="bg-secondary-container/20 text-on-secondary-container px-4 py-1 rounded-full text-sm font-bold">Ativo</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<div class="space-y-4">
+<label class="block text-sm font-bold uppercase tracking-wider text-outline">Preço por Unidade</label>
+<div class="relative flex items-center">
+<span class="absolute left-4 font-bold text-primary">R$</span>
+<input class="w-full pl-12 pr-4 py-4 bg-surface-container-highest border-none rounded-md focus:ring-2 focus:ring-primary/20 font-bold text-lg" type="number" value="45"/>
+</div>
+</div>
+<div class="space-y-4">
+<label class="block text-sm font-bold uppercase tracking-wider text-outline">Tempo Estimado</label>
+<div class="flex items-center gap-4">
+<input class="w-full h-2 bg-surface-container-high rounded-full appearance-none" max="120" min="15" step="5" type="range" value="40"/>
+<span class="min-w-[70px] font-bold text-secondary text-right">40 min</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Sala -->
+<div class="bg-surface-container-lowest rounded-lg p-6 flex flex-col gap-6 shadow-sm">
+<div class="flex justify-between items-center">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-md bg-primary-fixed flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-2xl">chair</span>
+</div>
+<h2 class="font-headline font-bold text-xl text-on-surface">Sala</h2>
+</div>
+<span class="bg-secondary-container/20 text-on-secondary-container px-4 py-1 rounded-full text-sm font-bold">Ativo</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<div class="space-y-4">
+<label class="block text-sm font-bold uppercase tracking-wider text-outline">Preço por Unidade</label>
+<div class="relative flex items-center">
+<span class="absolute left-4 font-bold text-primary">R$</span>
+<input class="w-full pl-12 pr-4 py-4 bg-surface-container-highest border-none rounded-md focus:ring-2 focus:ring-primary/20 font-bold text-lg" type="number" value="60"/>
+</div>
+</div>
+<div class="space-y-4">
+<label class="block text-sm font-bold uppercase tracking-wider text-outline">Tempo Estimado</label>
+<div class="flex items-center gap-4">
+<input class="w-full h-2 bg-surface-container-high rounded-full appearance-none" max="120" min="15" step="5" type="range" value="60"/>
+<span class="min-w-[70px] font-bold text-secondary text-right">60 min</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Tapete -->
+<div class="bg-surface-container-lowest rounded-lg p-6 flex flex-col gap-6 shadow-sm">
+<div class="flex justify-between items-center">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-md bg-primary-fixed flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-2xl">layers</span>
+</div>
+<h2 class="font-headline font-bold text-xl text-on-surface">Tapete</h2>
+</div>
+<span class="bg-surface-container-highest text-outline px-4 py-1 rounded-full text-sm font-bold">Opcional</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<div class="space-y-4">
+<label class="block text-sm font-bold uppercase tracking-wider text-outline">Preço por m²</label>
+<div class="relative flex items-center">
+<span class="absolute left-4 font-bold text-primary">R$</span>
+<input class="w-full pl-12 pr-4 py-4 bg-surface-container-highest border-none rounded-md focus:ring-2 focus:ring-primary/20 font-bold text-lg" type="number" value="15"/>
+</div>
+</div>
+<div class="space-y-4">
+<label class="block text-sm font-bold uppercase tracking-wider text-outline">Tempo Estimado</label>
+<div class="flex items-center gap-4">
+<input class="w-full h-2 bg-surface-container-high rounded-full appearance-none" max="60" min="5" step="5" type="range" value="20"/>
+<span class="min-w-[70px] font-bold text-secondary text-right">20 min</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Cozinha -->
+<div class="bg-surface-container-lowest rounded-lg p-6 flex flex-col gap-6 shadow-sm">
+<div class="flex justify-between items-center">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-md bg-primary-fixed flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-2xl">countertops</span>
+</div>
+<h2 class="font-headline font-bold text-xl text-on-surface">Cozinha</h2>
+</div>
+<span class="bg-secondary-container/20 text-on-secondary-container px-4 py-1 rounded-full text-sm font-bold">Ativo</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<div class="space-y-4">
+<label class="block text-sm font-bold uppercase tracking-wider text-outline">Preço por Unidade</label>
+<div class="relative flex items-center">
+<span class="absolute left-4 font-bold text-primary">R$</span>
+<input class="w-full pl-12 pr-4 py-4 bg-surface-container-highest border-none rounded-md focus:ring-2 focus:ring-primary/20 font-bold text-lg" type="number" value="80"/>
+</div>
+</div>
+<div class="space-y-4">
+<label class="block text-sm font-bold uppercase tracking-wider text-outline">Tempo Estimado</label>
+<div class="flex items-center gap-4">
+<input class="w-full h-2 bg-surface-container-high rounded-full appearance-none" max="180" min="30" step="10" type="range" value="90"/>
+<span class="min-w-[70px] font-bold text-secondary text-right">90 min</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Sticky Save Button -->
+<div class="fixed bottom-32 left-0 w-full px-6 flex justify-center pointer-events-none">
+<button class="pointer-events-auto bg-gradient-to-r from-primary to-primary-container text-on-primary font-headline font-bold text-lg px-12 py-5 rounded-full shadow-[0_32px_48px_rgba(0,88,190,0.15)] hover:opacity-90 active:scale-95 transition-all duration-300">
+                Salvar Alterações
+            </button>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pb-8 pt-4 bg-white/80 dark:bg-slate-900/80 backdrop-blur-2xl shadow-[0_-8px_30px_rgb(0,0,0,0.04)] z-50 rounded-t-[32px]">
+<button class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 px-5 py-2 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+<span class="material-symbols-outlined mb-1">home</span>
+<span class="font-['Manrope'] text-[11px] font-semibold">Home</span>
+</button>
+<button class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 px-5 py-2 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+<span class="material-symbols-outlined mb-1">handyman</span>
+<span class="font-['Manrope'] text-[11px] font-semibold">Offers</span>
+</button>
+<button class="flex flex-col items-center justify-center bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-[24px] px-5 py-2 active:scale-90 transition-transform duration-300">
+<span class="material-symbols-outlined mb-1">settings_accessibility</span>
+<span class="font-['Manrope'] text-[11px] font-semibold">Settings</span>
+</button>
+<button class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 px-5 py-2 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+<span class="material-symbols-outlined mb-1">person</span>
+<span class="font-['Manrope'] text-[11px] font-semibold">Profile</span>
+</button>
+</nav>
+</body></html>

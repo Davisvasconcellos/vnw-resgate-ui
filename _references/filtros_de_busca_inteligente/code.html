@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Manrope:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "surface-bright": "#f7f9fb",
+              "on-error-container": "#93000a",
+              "on-error": "#ffffff",
+              "surface-container-low": "#f2f4f6",
+              "on-secondary-container": "#00714d",
+              "inverse-on-surface": "#eff1f3",
+              "on-primary": "#ffffff",
+              "tertiary-fixed-dim": "#ffb95f",
+              "on-background": "#191c1e",
+              "inverse-surface": "#2d3133",
+              "on-tertiary": "#ffffff",
+              "surface-variant": "#e0e3e5",
+              "on-secondary-fixed-variant": "#005236",
+              "on-surface-variant": "#424754",
+              "on-tertiary-fixed": "#2a1700",
+              "error": "#ba1a1a",
+              "primary": "#0058be",
+              "error-container": "#ffdad6",
+              "on-primary-fixed": "#001a42",
+              "on-tertiary-fixed-variant": "#653e00",
+              "on-surface": "#191c1e",
+              "surface": "#f7f9fb",
+              "secondary-fixed-dim": "#4edea3",
+              "surface-container-high": "#e6e8ea",
+              "surface-container-highest": "#e0e3e5",
+              "surface-dim": "#d8dadc",
+              "secondary": "#006c49",
+              "on-secondary-fixed": "#002113",
+              "on-primary-container": "#fefcff",
+              "outline-variant": "#c2c6d6",
+              "on-secondary": "#ffffff",
+              "tertiary-container": "#a36700",
+              "tertiary": "#825100",
+              "primary-fixed-dim": "#adc6ff",
+              "on-primary-fixed-variant": "#004395",
+              "secondary-fixed": "#6ffbbe",
+              "surface-tint": "#005ac2",
+              "tertiary-fixed": "#ffddb8",
+              "background": "#f7f9fb",
+              "secondary-container": "#6cf8bb",
+              "inverse-primary": "#adc6ff",
+              "on-tertiary-container": "#fffbff",
+              "primary-fixed": "#d8e2ff",
+              "primary-container": "#2170e4",
+              "surface-container": "#eceef0",
+              "surface-container-lowest": "#ffffff",
+              "outline": "#727785"
+            },
+            fontFamily: {
+              "headline": ["Plus Jakarta Sans"],
+              "body": ["Manrope"],
+              "label": ["Manrope"]
+            },
+            borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+            text-transform: none;
+            letter-spacing: normal;
+            word-wrap: normal;
+            white-space: nowrap;
+            direction: ltr;
+        }
+        body {
+            background-color: #f7f9fb;
+            font-family: 'Manrope', sans-serif;
+        }
+        .glass-header {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="text-on-surface">
+<!-- Top Navigation Shell -->
+<header class="fixed top-0 w-full z-50 glass-header shadow-sm bg-opacity-70">
+<div class="flex justify-between items-center px-6 h-16 w-full max-w-7xl mx-auto">
+<div class="flex items-center gap-4">
+<button class="flex items-center justify-center w-10 h-10 rounded-full hover:bg-slate-100/50 transition-colors duration-200 active:scale-95">
+<span class="material-symbols-outlined text-on-surface-variant">arrow_back</span>
+</button>
+<h1 class="text-xl font-bold tracking-tight text-blue-600 font-headline">LimpaJá</h1>
+</div>
+<div class="flex items-center gap-3">
+<span class="text-xs font-semibold text-slate-500 uppercase tracking-widest hidden md:block">Step 1 of 3</span>
+<div class="w-10 h-10 rounded-full overflow-hidden bg-surface-container-high ring-2 ring-white shadow-sm">
+<img alt="User profile photo" class="w-full h-full object-cover" data-alt="close up portrait of a friendly professional woman smiling in a bright office setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBQRj4Ks5wbxzzoyXLdKu7FEXfMs52tOeei075psRJJ1EWmA4MdMWoD_UifgHXIvr-JVdz61dPQ9vTfvI3QEOITpqfXb6Q-Pmp8wbBC50eGFFHKDUk-ylYRQ6GR6nKdpkIeZoJ4Lpf-uXZOw0g0TVJkX0IbltW3Uon-6YZmBLBgCzg8HEbauFjKg1S3JLtbmdETDWs1nvoo5J3ykwkCZ3BratG9JQUhDBsQfu0soBODnfvR9JV4aJBz4G-OPplxFrbHUFsX3f9Ao1E"/>
+</div>
+</div>
+</div>
+</header>
+<main class="pt-24 pb-40 px-6 max-w-2xl mx-auto">
+<!-- Hero Title -->
+<div class="mb-10 text-left">
+<h2 class="text-4xl md:text-5xl font-extrabold font-headline text-on-surface tracking-tight leading-tight">
+                Customize your <span class="text-primary">service</span>
+</h2>
+<p class="mt-4 text-on-surface-variant font-body text-lg leading-relaxed">
+                Tell us about your space. We'll calculate the exact time and cost for a pristine result.
+            </p>
+</div>
+<!-- Customization Grid -->
+<div class="space-y-6">
+<!-- Room Parameter Card -->
+<div class="bg-surface-container-lowest p-6 rounded-lg flex items-center justify-between shadow-[0_4px_20px_rgba(0,0,0,0.02)] border border-outline-variant/10 group hover:shadow-md transition-shadow duration-300">
+<div class="flex items-center gap-5">
+<div class="w-14 h-14 rounded-2xl bg-primary/5 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-3xl">bed</span>
+</div>
+<div>
+<p class="font-headline font-bold text-lg text-on-surface">Rooms</p>
+<p class="font-body text-sm text-on-surface-variant">Bedrooms and living areas</p>
+</div>
+</div>
+<div class="flex items-center gap-4 bg-surface-container-low p-2 rounded-full">
+<button class="w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center text-primary active:scale-90 transition-transform">
+<span class="material-symbols-outlined">remove</span>
+</button>
+<span class="font-headline font-extrabold text-xl w-6 text-center">2</span>
+<button class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white shadow-md shadow-primary/20 active:scale-90 transition-transform">
+<span class="material-symbols-outlined">add</span>
+</button>
+</div>
+</div>
+<!-- Bathroom Parameter Card -->
+<div class="bg-surface-container-lowest p-6 rounded-lg flex items-center justify-between shadow-[0_4px_20px_rgba(0,0,0,0.02)] border border-outline-variant/10 group hover:shadow-md transition-shadow duration-300">
+<div class="flex items-center gap-5">
+<div class="w-14 h-14 rounded-2xl bg-secondary/5 flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-3xl">bathroom</span>
+</div>
+<div>
+<p class="font-headline font-bold text-lg text-on-surface">Bathrooms</p>
+<p class="font-body text-sm text-on-surface-variant">Full and half baths</p>
+</div>
+</div>
+<div class="flex items-center gap-4 bg-surface-container-low p-2 rounded-full">
+<button class="w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center text-primary active:scale-90 transition-transform">
+<span class="material-symbols-outlined">remove</span>
+</button>
+<span class="font-headline font-extrabold text-xl w-6 text-center">1</span>
+<button class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white shadow-md shadow-primary/20 active:scale-90 transition-transform">
+<span class="material-symbols-outlined">add</span>
+</button>
+</div>
+</div>
+<!-- Asymmetric Bento Grid for smaller items -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<!-- Windows -->
+<div class="bg-surface-container-lowest p-6 rounded-lg shadow-[0_4px_20px_rgba(0,0,0,0.02)] border border-outline-variant/10">
+<div class="flex justify-between items-start mb-4">
+<div class="w-12 h-12 rounded-xl bg-tertiary/5 flex items-center justify-center text-tertiary">
+<span class="material-symbols-outlined text-2xl">window</span>
+</div>
+<span class="font-headline font-extrabold text-2xl text-on-surface">4</span>
+</div>
+<p class="font-headline font-bold text-on-surface">Windows</p>
+<div class="flex gap-2 mt-4">
+<button class="flex-1 py-2 rounded-xl bg-surface-container-low hover:bg-surface-container-high transition-colors text-primary font-bold active:scale-95">-</button>
+<button class="flex-1 py-2 rounded-xl bg-primary text-white font-bold active:scale-95 shadow-lg shadow-primary/10">+</button>
+</div>
+</div>
+<!-- Rugs -->
+<div class="bg-surface-container-lowest p-6 rounded-lg shadow-[0_4px_20px_rgba(0,0,0,0.02)] border border-outline-variant/10">
+<div class="flex justify-between items-start mb-4">
+<div class="w-12 h-12 rounded-xl bg-primary/5 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-2xl">layers</span>
+</div>
+<span class="font-headline font-extrabold text-2xl text-on-surface">2</span>
+</div>
+<p class="font-headline font-bold text-on-surface">Rugs</p>
+<div class="flex gap-2 mt-4">
+<button class="flex-1 py-2 rounded-xl bg-surface-container-low hover:bg-surface-container-high transition-colors text-primary font-bold active:scale-95">-</button>
+<button class="flex-1 py-2 rounded-xl bg-primary text-white font-bold active:scale-95 shadow-lg shadow-primary/10">+</button>
+</div>
+</div>
+</div>
+<!-- Laundry Toggle Selection -->
+<div class="bg-surface-container-low/50 p-1 rounded-xl flex">
+<button class="flex-1 py-4 px-6 rounded-lg font-headline font-bold text-on-primary bg-primary shadow-lg shadow-primary/20 transition-all duration-300">
+                    No Laundry
+                </button>
+<button class="flex-1 py-4 px-6 rounded-lg font-headline font-bold text-on-surface-variant hover:bg-white/50 transition-all duration-300">
+                    1 Load (+1h)
+                </button>
+<button class="flex-1 py-4 px-6 rounded-lg font-headline font-bold text-on-surface-variant hover:bg-white/50 transition-all duration-300">
+                    2 Loads (+2h)
+                </button>
+</div>
+<!-- Informational Sheet -->
+<div class="bg-blue-50/50 p-6 rounded-lg flex gap-4 items-start border border-blue-100">
+<span class="material-symbols-outlined text-primary">info</span>
+<p class="font-body text-sm text-on-primary-fixed-variant leading-relaxed">
+                    Estimates are based on standard sizes. Deep cleaning or heavy-duty tasks may require additional time which our concierge will discuss upon arrival.
+                </p>
+</div>
+</div>
+</main>
+<!-- Bottom Sticky Price Card (Service Sheet Style) -->
+<div class="fixed bottom-0 left-0 w-full p-4 md:p-6 z-50">
+<div class="max-w-2xl mx-auto bg-white/80 backdrop-blur-3xl rounded-xl shadow-[0_-10px_40px_rgba(0,0,0,0.08)] border border-white p-6 md:p-8">
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+<div class="flex items-center justify-between md:justify-start gap-8 flex-1">
+<div>
+<p class="text-[11px] font-bold font-label text-slate-400 uppercase tracking-widest mb-1">Total Investment</p>
+<p class="text-3xl font-extrabold font-headline text-on-surface">$120.00</p>
+</div>
+<div class="h-10 w-[1px] bg-slate-200 hidden md:block"></div>
+<div>
+<p class="text-[11px] font-bold font-label text-slate-400 uppercase tracking-widest mb-1">Est. Duration</p>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-xl">schedule</span>
+<p class="text-xl font-bold font-headline text-on-surface">4h 30m</p>
+</div>
+</div>
+</div>
+<button class="bg-gradient-to-r from-primary to-primary-container text-white py-4 px-10 rounded-xl font-headline font-bold text-lg shadow-xl shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all duration-200">
+                    Continue
+                </button>
+</div>
+</div>
+</div>
+<!-- Hidden on Mobile Bottom Nav for Consistency (as per JSON but contextually suppressed for flow) -->
+<!-- The user is in a focused journey (Transactional), so BottomNavBar is suppressed per instructions. -->
+</body></html>

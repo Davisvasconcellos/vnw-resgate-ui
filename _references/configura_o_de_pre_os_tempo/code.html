@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Manrope:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "surface-bright": "#f7f9fb",
+              "on-error-container": "#93000a",
+              "on-error": "#ffffff",
+              "surface-container-low": "#f2f4f6",
+              "on-secondary-container": "#00714d",
+              "inverse-on-surface": "#eff1f3",
+              "on-primary": "#ffffff",
+              "tertiary-fixed-dim": "#ffb95f",
+              "on-background": "#191c1e",
+              "inverse-surface": "#2d3133",
+              "on-tertiary": "#ffffff",
+              "surface-variant": "#e0e3e5",
+              "on-secondary-fixed-variant": "#005236",
+              "on-surface-variant": "#424754",
+              "on-tertiary-fixed": "#2a1700",
+              "error": "#ba1a1a",
+              "primary": "#0058be",
+              "error-container": "#ffdad6",
+              "on-primary-fixed": "#001a42",
+              "on-tertiary-fixed-variant": "#653e00",
+              "on-surface": "#191c1e",
+              "surface": "#f7f9fb",
+              "secondary-fixed-dim": "#4edea3",
+              "surface-container-high": "#e6e8ea",
+              "surface-container-highest": "#e0e3e5",
+              "surface-dim": "#d8dadc",
+              "secondary": "#006c49",
+              "on-secondary-fixed": "#002113",
+              "on-primary-container": "#fefcff",
+              "outline-variant": "#c2c6d6",
+              "on-secondary": "#ffffff",
+              "tertiary-container": "#a36700",
+              "tertiary": "#825100",
+              "primary-fixed-dim": "#adc6ff",
+              "on-primary-fixed-variant": "#004395",
+              "secondary-fixed": "#6ffbbe",
+              "surface-tint": "#005ac2",
+              "tertiary-fixed": "#ffddb8",
+              "background": "#f7f9fb",
+              "secondary-container": "#6cf8bb",
+              "inverse-primary": "#adc6ff",
+              "on-tertiary-container": "#fffbff",
+              "primary-fixed": "#d8e2ff",
+              "primary-container": "#2170e4",
+              "surface-container": "#eceef0",
+              "surface-container-lowest": "#ffffff",
+              "outline": "#727785"
+            },
+            fontFamily: {
+              "headline": ["Plus Jakarta Sans"],
+              "body": ["Manrope"],
+              "label": ["Manrope"]
+            },
+            borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+      .glass-effect {
+        backdrop-filter: blur(30px);
+        -webkit-backdrop-filter: blur(30px);
+      }
+      body {
+        background-color: #f7f9fb;
+        font-family: 'Manrope', sans-serif;
+      }
+      h1, h2, h3 {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+      }
+      .hide-scrollbar::-webkit-scrollbar {
+        display: none;
+      }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="text-on-surface select-none">
+<!-- TopAppBar -->
+<nav class="fixed top-0 w-full z-50 bg-white/70 backdrop-blur-3xl shadow-sm">
+<div class="flex justify-between items-center px-6 h-16 w-full max-w-7xl mx-auto">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full overflow-hidden bg-surface-container-high">
+<img alt="User profile photo" class="w-full h-full object-cover" data-alt="Close-up professional portrait of a smiling young male cleaner in a clean uniform with bright studio lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDpPmcoqq_Xg_7ND_rWanBMGwykYcPMu3yTDlB1IisvhDdFZW_SDVuAexVO6wqofji7nmPLfQolmtYgz-ahPqF-RCY_cG6T-l3oBVLWpiW4x9odTxeE9IS-p1CIqTqeiajzk9fh-cj1NunO-ux2E8-wnkbLQ1uDrRhMwKJ_EKpNG2b4s1bv6BNc3dlY_OHuxPeY2X7Ax1mEMbSdSxOdoQWgSj7EK3yZioJ8KSbJq0w-Ktmte3BT9u-qY7B8RDHLTaltlq7aB5SFq4s"/>
+</div>
+<span class="text-xl font-bold tracking-tight text-blue-600">LimpaJá</span>
+</div>
+<div class="flex items-center gap-2">
+<button class="p-2 rounded-full hover:bg-slate-100/50 transition-all active:scale-95 duration-200 text-slate-500">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+</div>
+</div>
+</nav>
+<main class="pt-24 pb-32 px-6 max-w-3xl mx-auto">
+<!-- Header Section -->
+<header class="mb-8">
+<h1 class="text-3xl font-extrabold text-on-surface tracking-tight leading-tight">Set your Pricing &amp; Timing</h1>
+<p class="text-on-surface-variant mt-2 font-medium">Define how much you charge and the average duration for each service item.</p>
+</header>
+<!-- Pricing Configuration Groups (Apple-style settings) -->
+<div class="space-y-6">
+<!-- Standard Services Group -->
+<section>
+<div class="bg-surface-container-lowest rounded-lg shadow-sm overflow-hidden p-1">
+<!-- Bedroom Row -->
+<div class="flex items-center justify-between p-5 transition-colors">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-2xl" data-icon="bed">bed</span>
+</div>
+<div>
+<p class="font-bold text-on-surface">Bedroom</p>
+<p class="text-xs text-on-surface-variant">Base cleaning</p>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex flex-col items-end">
+<span class="text-[10px] uppercase font-bold tracking-wider text-outline mb-1">Price</span>
+<div class="flex items-center bg-surface-container-low px-3 py-2 rounded-xl">
+<span class="text-primary font-bold mr-1">$</span>
+<input class="w-10 bg-transparent border-none p-0 focus:ring-0 font-bold text-on-surface" type="number" value="15"/>
+</div>
+</div>
+<div class="flex flex-col items-end">
+<span class="text-[10px] uppercase font-bold tracking-wider text-outline mb-1">Time</span>
+<div class="flex items-center bg-surface-container-low px-3 py-2 rounded-xl">
+<input class="w-10 bg-transparent border-none p-0 focus:ring-0 font-bold text-on-surface text-right" type="number" value="30"/>
+<span class="text-on-surface-variant font-semibold ml-1 text-sm">m</span>
+</div>
+</div>
+</div>
+</div>
+<div class="h-px bg-surface-container mx-5"></div>
+<!-- Bathroom Row -->
+<div class="flex items-center justify-between p-5 transition-colors">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-2xl bg-secondary/10 flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-2xl" data-icon="shower">shower</span>
+</div>
+<div>
+<p class="font-bold text-on-surface">Bathroom</p>
+<p class="text-xs text-on-surface-variant">Deep scrub</p>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex flex-col items-end">
+<span class="text-[10px] uppercase font-bold tracking-wider text-outline mb-1">Price</span>
+<div class="flex items-center bg-surface-container-low px-3 py-2 rounded-xl">
+<span class="text-primary font-bold mr-1">$</span>
+<input class="w-10 bg-transparent border-none p-0 focus:ring-0 font-bold text-on-surface" type="number" value="25"/>
+</div>
+</div>
+<div class="flex flex-col items-end">
+<span class="text-[10px] uppercase font-bold tracking-wider text-outline mb-1">Time</span>
+<div class="flex items-center bg-surface-container-low px-3 py-2 rounded-xl">
+<input class="w-10 bg-transparent border-none p-0 focus:ring-0 font-bold text-on-surface text-right" type="number" value="45"/>
+<span class="text-on-surface-variant font-semibold ml-1 text-sm">m</span>
+</div>
+</div>
+</div>
+</div>
+<div class="h-px bg-surface-container mx-5"></div>
+<!-- Living Room Row -->
+<div class="flex items-center justify-between p-5 transition-colors">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-2xl bg-tertiary/10 flex items-center justify-center text-tertiary">
+<span class="material-symbols-outlined text-2xl" data-icon="chair">chair</span>
+</div>
+<div>
+<p class="font-bold text-on-surface">Living Room</p>
+<p class="text-xs text-on-surface-variant">Dusting &amp; vacuum</p>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex flex-col items-end">
+<span class="text-[10px] uppercase font-bold tracking-wider text-outline mb-1">Price</span>
+<div class="flex items-center bg-surface-container-low px-3 py-2 rounded-xl">
+<span class="text-primary font-bold mr-1">$</span>
+<input class="w-10 bg-transparent border-none p-0 focus:ring-0 font-bold text-on-surface" type="number" value="20"/>
+</div>
+</div>
+<div class="flex flex-col items-end">
+<span class="text-[10px] uppercase font-bold tracking-wider text-outline mb-1">Time</span>
+<div class="flex items-center bg-surface-container-low px-3 py-2 rounded-xl">
+<input class="w-10 bg-transparent border-none p-0 focus:ring-0 font-bold text-on-surface text-right" type="number" value="40"/>
+<span class="text-on-surface-variant font-semibold ml-1 text-sm">m</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Specialized Items Group -->
+<section>
+<h3 class="px-4 mb-3 text-sm font-bold text-on-surface-variant uppercase tracking-widest">Specialized Items</h3>
+<div class="bg-surface-container-lowest rounded-lg shadow-sm overflow-hidden p-1">
+<!-- Window Row -->
+<div class="flex items-center justify-between p-5">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-2xl bg-blue-100 flex items-center justify-center text-blue-600">
+<span class="material-symbols-outlined text-2xl" data-icon="window">window</span>
+</div>
+<div>
+<p class="font-bold text-on-surface">Window</p>
+<p class="text-xs text-on-surface-variant">Per pane cleaning</p>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex flex-col items-end">
+<span class="text-[10px] uppercase font-bold tracking-wider text-outline mb-1">Price</span>
+<div class="flex items-center bg-surface-container-low px-3 py-2 rounded-xl">
+<span class="text-primary font-bold mr-1">$</span>
+<input class="w-10 bg-transparent border-none p-0 focus:ring-0 font-bold text-on-surface" type="number" value="8"/>
+</div>
+</div>
+<div class="flex flex-col items-end">
+<span class="text-[10px] uppercase font-bold tracking-wider text-outline mb-1">Time</span>
+<div class="flex items-center bg-surface-container-low px-3 py-2 rounded-xl">
+<input class="w-10 bg-transparent border-none p-0 focus:ring-0 font-bold text-on-surface text-right" type="number" value="15"/>
+<span class="text-on-surface-variant font-semibold ml-1 text-sm">m</span>
+</div>
+</div>
+</div>
+</div>
+<div class="h-px bg-surface-container mx-5"></div>
+<!-- Laundry Row -->
+<div class="flex items-center justify-between p-5">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-2xl bg-purple-100 flex items-center justify-center text-purple-600">
+<span class="material-symbols-outlined text-2xl" data-icon="local_laundry_service">local_laundry_service</span>
+</div>
+<div>
+<p class="font-bold text-on-surface">Laundry</p>
+<p class="text-xs text-on-surface-variant">Wash &amp; fold (load)</p>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex flex-col items-end">
+<span class="text-[10px] uppercase font-bold tracking-wider text-outline mb-1">Price</span>
+<div class="flex items-center bg-surface-container-low px-3 py-2 rounded-xl">
+<span class="text-primary font-bold mr-1">$</span>
+<input class="w-10 bg-transparent border-none p-0 focus:ring-0 font-bold text-on-surface" type="number" value="12"/>
+</div>
+</div>
+<div class="flex flex-col items-end">
+<span class="text-[10px] uppercase font-bold tracking-wider text-outline mb-1">Time</span>
+<div class="flex items-center bg-surface-container-low px-3 py-2 rounded-xl">
+<input class="w-10 bg-transparent border-none p-0 focus:ring-0 font-bold text-on-surface text-right" type="number" value="20"/>
+<span class="text-on-surface-variant font-semibold ml-1 text-sm">m</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+<!-- Sticky Save Button -->
+<div class="fixed bottom-24 left-0 w-full px-6 md:px-0 flex justify-center z-40">
+<button class="w-full max-w-md bg-gradient-to-r from-primary to-primary-container text-on-primary py-4 px-8 rounded-xl font-bold text-lg shadow-xl shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all duration-200 flex items-center justify-center gap-2">
+<span class="material-symbols-outlined" data-icon="save">save</span>
+                Save Pricing Changes
+            </button>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full bg-white/80 backdrop-blur-2xl shadow-[0_-4px_20px_rgba(0,0,0,0.05)] rounded-t-[2rem] z-50">
+<div class="flex justify-around items-center px-4 pb-6 pt-3 max-w-7xl mx-auto">
+<a class="flex flex-col items-center justify-center text-slate-400 px-5 py-1.5 hover:text-blue-500 transition-colors" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="home">home</span>
+<span class="text-[11px] font-semibold font-label">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 px-5 py-1.5 hover:text-blue-500 transition-colors" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="event_note">event_note</span>
+<span class="text-[11px] font-semibold font-label">Bookings</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 px-5 py-1.5 hover:text-blue-500 transition-colors" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="calendar_month">calendar_month</span>
+<span class="text-[11px] font-semibold font-label">Calendar</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-blue-50 text-blue-600 rounded-full px-5 py-1.5 transition-transform duration-200 active:scale-95" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="person" style="font-variation-settings: 'FILL' 1;">person</span>
+<span class="text-[11px] font-semibold font-label">Profile</span>
+</a>
+</div>
+</nav>
+<!-- Visual Polish: Decorative blurred elements for Glassmorphism depth -->
+<div class="fixed -top-24 -left-24 w-64 h-64 bg-primary/10 rounded-full blur-[100px] pointer-events-none -z-10"></div>
+<div class="fixed top-1/2 -right-32 w-80 h-80 bg-secondary/10 rounded-full blur-[120px] pointer-events-none -z-10"></div>
+<div class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full h-32 bg-gradient-to-t from-white to-transparent pointer-events-none z-30"></div>
+</body></html>

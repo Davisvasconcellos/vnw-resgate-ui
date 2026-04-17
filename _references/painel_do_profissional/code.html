@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&amp;family=Manrope:wght@400;500;600;700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "surface-bright": "#f7f9fb",
+              "on-error-container": "#93000a",
+              "on-error": "#ffffff",
+              "surface-container-low": "#f2f4f6",
+              "on-secondary-container": "#00714d",
+              "inverse-on-surface": "#eff1f3",
+              "on-primary": "#ffffff",
+              "tertiary-fixed-dim": "#ffb95f",
+              "on-background": "#191c1e",
+              "inverse-surface": "#2d3133",
+              "on-tertiary": "#ffffff",
+              "surface-variant": "#e0e3e5",
+              "on-secondary-fixed-variant": "#005236",
+              "on-surface-variant": "#424754",
+              "on-tertiary-fixed": "#2a1700",
+              "error": "#ba1a1a",
+              "primary": "#0058be",
+              "error-container": "#ffdad6",
+              "on-primary-fixed": "#001a42",
+              "on-tertiary-fixed-variant": "#653e00",
+              "on-surface": "#191c1e",
+              "surface": "#f7f9fb",
+              "secondary-fixed-dim": "#4edea3",
+              "surface-container-high": "#e6e8ea",
+              "surface-container-highest": "#e0e3e5",
+              "surface-dim": "#d8dadc",
+              "secondary": "#006c49",
+              "on-secondary-fixed": "#002113",
+              "on-primary-container": "#fefcff",
+              "outline-variant": "#c2c6d6",
+              "on-secondary": "#ffffff",
+              "tertiary-container": "#a36700",
+              "tertiary": "#825100",
+              "primary-fixed-dim": "#adc6ff",
+              "on-primary-fixed-variant": "#004395",
+              "secondary-fixed": "#6ffbbe",
+              "surface-tint": "#005ac2",
+              "tertiary-fixed": "#ffddb8",
+              "background": "#f7f9fb",
+              "secondary-container": "#6cf8bb",
+              "inverse-primary": "#adc6ff",
+              "on-tertiary-container": "#fffbff",
+              "primary-fixed": "#d8e2ff",
+              "primary-container": "#2170e4",
+              "surface-container": "#eceef0",
+              "surface-container-lowest": "#ffffff",
+              "outline": "#727785"
+            },
+            fontFamily: {
+              "headline": ["Plus Jakarta Sans"],
+              "body": ["Manrope"],
+              "label": ["Manrope"]
+            },
+            borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+      body {
+        font-family: 'Manrope', sans-serif;
+        background-color: #f7f9fb;
+      }
+      h1, h2, h3 {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+      }
+      .glass-header {
+        backdrop-filter: blur(30px);
+        -webkit-backdrop-filter: blur(30px);
+      }
+      .bento-grid {
+        display: grid;
+        grid-template-columns: repeat(12, 1fr);
+        gap: 1.5rem;
+      }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="text-on-surface">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-white/70 dark:bg-slate-900/70 backdrop-blur-3xl shadow-sm bg-opacity-70">
+<div class="flex justify-between items-center px-6 h-16 w-full max-w-7xl mx-auto">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full overflow-hidden bg-surface-container-high">
+<img alt="User profile photo" class="w-full h-full object-cover" data-alt="Close up portrait of a friendly professional man in his 30s with a warm smile, professional attire, soft natural lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDnFtjihRtPb_vutfuv5vJxUnIdZ67kQMedF8O65LNmc8xUlBZnt-FfuUw5wXtTq5ERvHuYUqZnItuA6lxQmJPDDnZI1YFITUC757aHfxDV3cAV4zaLcSqo1C8vxKyDBQfyKObPzA7GFY8Ea2J-2LeM8iNyKT1VpUNWnTS8MXTbriQ9Gnhcq0jKXnxMX2bgi815c7GSPXUrqH8A1aIEIRqL6Zt4Ze-K4LdhJiEIoTezB-5Awd_cmMjj5jJ5W_6-3hFe29bassqdX1s"/>
+</div>
+<span class="text-xl font-bold tracking-tight text-blue-600 dark:text-blue-400">LimpaJá</span>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 rounded-full hover:bg-slate-100/50 dark:hover:bg-slate-800/50 transition-all duration-200 active:scale-95">
+<span class="material-symbols-outlined text-slate-500 dark:text-slate-400">notifications</span>
+</button>
+</div>
+</div>
+</header>
+<main class="pt-24 pb-32 px-6 max-w-7xl mx-auto">
+<!-- Hero Welcome -->
+<section class="mb-10">
+<h1 class="text-4xl font-extrabold tracking-tight mb-2">Welcome back, Ricardo</h1>
+<p class="text-on-surface-variant font-medium">You have 4 jobs scheduled for today.</p>
+</section>
+<div class="bento-grid">
+<!-- Earnings Summary Card (High-end Bento Style) -->
+<div class="col-span-12 md:col-span-8 bg-surface-container-lowest rounded-lg p-8 shadow-sm flex flex-col md:flex-row justify-between items-center gap-8 border border-outline-variant/10">
+<div class="flex flex-col gap-2 w-full md:w-1/2">
+<span class="text-sm font-bold uppercase tracking-widest text-on-surface-variant opacity-70">Weekly Earnings</span>
+<div class="flex items-baseline gap-2">
+<span class="text-5xl font-extrabold text-primary tracking-tighter">R$ 1.284</span>
+<span class="text-secondary font-bold flex items-center gap-1 text-sm bg-secondary-container/30 px-2 py-0.5 rounded-full">
+<span class="material-symbols-outlined text-sm">trending_up</span> 12%
+                        </span>
+</div>
+<p class="text-on-surface-variant text-sm mt-2">Paid directly to your bank account every Tuesday.</p>
+</div>
+<div class="w-full md:w-px h-px md:h-16 bg-outline-variant/20"></div>
+<div class="flex flex-col gap-2 w-full md:w-1/3">
+<span class="text-sm font-bold uppercase tracking-widest text-on-surface-variant opacity-70">Rating</span>
+<div class="flex items-center gap-1">
+<span class="text-4xl font-extrabold text-tertiary">4.9</span>
+<div class="flex gap-0.5 ml-2">
+<span class="material-symbols-outlined text-tertiary" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-tertiary" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-tertiary" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-tertiary" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-tertiary" style="font-variation-settings: 'FILL' 0;">star_half</span>
+</div>
+</div>
+<p class="text-on-surface-variant text-sm">Based on 124 reviews</p>
+</div>
+</div>
+<!-- Quick Actions / Mini Stats -->
+<div class="col-span-12 md:col-span-4 grid grid-cols-2 gap-4">
+<div class="bg-primary-container text-on-primary-container rounded-lg p-6 flex flex-col justify-between">
+<span class="material-symbols-outlined text-3xl">task_alt</span>
+<div>
+<div class="text-2xl font-bold">18</div>
+<div class="text-xs font-semibold opacity-80 uppercase tracking-wider">Jobs Done</div>
+</div>
+</div>
+<div class="bg-surface-container-high rounded-lg p-6 flex flex-col justify-between">
+<span class="material-symbols-outlined text-3xl text-primary">schedule</span>
+<div>
+<div class="text-2xl font-bold">34h</div>
+<div class="text-xs font-semibold text-on-surface-variant uppercase tracking-wider">On Site</div>
+</div>
+</div>
+</div>
+<!-- Today's Schedule -->
+<div class="col-span-12 lg:col-span-7 space-y-4">
+<div class="flex justify-between items-end mb-2">
+<h2 class="text-2xl font-bold">Today's Schedule</h2>
+<span class="text-primary font-bold text-sm cursor-pointer hover:underline">View Calendar</span>
+</div>
+<!-- Job Card 1 -->
+<div class="bg-surface-container-lowest rounded-lg p-6 shadow-sm border border-outline-variant/5 flex items-center justify-between transition-transform hover:scale-[1.01]">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">cleaning_services</span>
+</div>
+<div>
+<h3 class="font-bold text-lg">Deep Cleaning</h3>
+<p class="text-on-surface-variant text-sm">Client: Ana Martins • 08:30 AM</p>
+</div>
+</div>
+<div class="text-right">
+<span class="bg-primary/10 text-primary px-4 py-1.5 rounded-full text-sm font-bold">In Progress</span>
+</div>
+</div>
+<!-- Job Card 2 -->
+<div class="bg-surface-container-lowest rounded-lg p-6 shadow-sm border border-outline-variant/5 flex items-center justify-between transition-transform hover:scale-[1.01]">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">window</span>
+</div>
+<div>
+<h3 class="font-bold text-lg">Window Sanitizing</h3>
+<p class="text-on-surface-variant text-sm">Client: Marcos Silva • 01:00 PM</p>
+</div>
+</div>
+<div class="text-right">
+<span class="bg-surface-container-high text-on-surface-variant px-4 py-1.5 rounded-full text-sm font-bold">Scheduled</span>
+</div>
+</div>
+<!-- Job Card 3 -->
+<div class="bg-surface-container-lowest rounded-lg p-6 shadow-sm border border-outline-variant/5 flex items-center justify-between transition-transform hover:scale-[1.01]">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">home_work</span>
+</div>
+<div>
+<h3 class="font-bold text-lg">Post-Construction</h3>
+<p class="text-on-surface-variant text-sm">Client: Julia Rezende • 04:30 PM</p>
+</div>
+</div>
+<div class="text-right">
+<span class="bg-surface-container-high text-on-surface-variant px-4 py-1.5 rounded-full text-sm font-bold">Scheduled</span>
+</div>
+</div>
+</div>
+<!-- New Job Offers -->
+<div class="col-span-12 lg:col-span-5 space-y-4">
+<h2 class="text-2xl font-bold mb-2">New Job Offers</h2>
+<div class="bg-white rounded-lg p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-blue-50 relative overflow-hidden">
+<div class="absolute top-0 right-0 p-3">
+<span class="bg-amber-100 text-amber-800 text-[10px] font-black px-2 py-0.5 rounded uppercase tracking-tighter">High Demand</span>
+</div>
+<div class="flex flex-col gap-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600">
+<span class="material-symbols-outlined">distance</span>
+</div>
+<div>
+<h3 class="font-bold">Residential Express</h3>
+<p class="text-xs text-on-surface-variant">2.4 km from your current location</p>
+</div>
+</div>
+<div class="flex justify-between items-center py-2 border-y border-outline-variant/10">
+<div>
+<p class="text-xs text-on-surface-variant uppercase font-bold tracking-widest">Est. Payout</p>
+<p class="text-xl font-extrabold text-secondary">R$ 145,00</p>
+</div>
+<div class="text-right">
+<p class="text-xs text-on-surface-variant uppercase font-bold tracking-widest">Duration</p>
+<p class="text-lg font-bold">2.5 hours</p>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-3 pt-2">
+<button class="bg-surface-container-high text-on-surface font-bold py-3 rounded-xl hover:bg-surface-container-highest transition-colors active:scale-95">Decline</button>
+<button class="bg-secondary text-white font-bold py-3 rounded-xl hover:shadow-lg hover:shadow-secondary/20 transition-all active:scale-95">Accept Job</button>
+</div>
+</div>
+</div>
+<div class="bg-white rounded-lg p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-blue-50 opacity-80">
+<div class="flex flex-col gap-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600">
+<span class="material-symbols-outlined">apartment</span>
+</div>
+<div>
+<h3 class="font-bold text-on-surface-variant">Office Maintenance</h3>
+<p class="text-xs text-on-surface-variant">5.8 km away • Tomorrow morning</p>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-3">
+<button class="bg-surface-container-low text-on-surface-variant font-bold py-2.5 rounded-xl text-sm">View Details</button>
+<button class="bg-secondary text-white font-bold py-2.5 rounded-xl text-sm">Accept Job</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pb-6 pt-3 bg-white/80 dark:bg-slate-900/80 backdrop-blur-2xl rounded-t-[2rem] z-50 shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
+<a class="flex flex-col items-center justify-center bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-300 rounded-full px-5 py-1.5 transition-transform duration-200 tap-highlight-none" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+<span class="text-[11px] font-semibold font-body">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 px-5 py-1.5 hover:text-blue-500 transition-colors" href="#">
+<span class="material-symbols-outlined">calendar_month</span>
+<span class="text-[11px] font-semibold font-body">Calendar</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 px-5 py-1.5 hover:text-blue-500 transition-colors" href="#">
+<span class="material-symbols-outlined">payments</span>
+<span class="text-[11px] font-semibold font-body">Pricing</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 px-5 py-1.5 hover:text-blue-500 transition-colors" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="text-[11px] font-semibold font-body">Profile</span>
+</a>
+</nav>
+</body></html>
