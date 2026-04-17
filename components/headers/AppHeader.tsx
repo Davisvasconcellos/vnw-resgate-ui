@@ -63,7 +63,7 @@ export default function AppHeader({
       localStorage.removeItem('vnw_token');
       localStorage.removeItem('vnw_user');
       setMenuOpen(false);
-      router.push('/login');
+      router.push('/');
     }
   }
 

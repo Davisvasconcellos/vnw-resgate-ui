@@ -29,7 +29,7 @@ const getByPath = (obj: unknown, key: string): unknown => {
 }
 
 export function I18nProvider({ children }: { children: React.ReactNode }) {
-  const [language, setLanguageState] = useState<Language>('en')
+  const [language, setLanguageState] = useState<Language>('pt-BR')
 
   useEffect(() => {
     const stored = window.localStorage.getItem('conciergo.language')

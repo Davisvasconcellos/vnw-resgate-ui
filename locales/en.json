@@ -85,6 +85,8 @@
   "help": {
     "title": "I need help",
     "subtitle": "Choose the type of help you need",
+    "myRequests": "My Requests",
+    "myRequestsDesc": "Track the status and messages of your help requests.",
     "requestNow": "Request help now",
     "requestNowDesc": "Send your location and photo quickly",
     "rescue": "Rescue",

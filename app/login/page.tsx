@@ -1,6 +1,6 @@
 'use client'
 
-import { Suspense, useState } from 'react'
+import { Suspense, useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useSearchParams, useRouter } from 'next/navigation'
 import { useI18n } from '@/components/i18n/I18nProvider'
@@ -16,6 +16,14 @@ function LoginContent() {
   
   const [phone, setPhone] = useState('')
   const [loading, setLoading] = useState(false)
+
+  // Redireciona se já estiver logado
+  useEffect(() => {
+    const token = localStorage.getItem('vnw_token')
+    if (token) {
+      router.replace('/assist')
+    }
+  }, [router])
 
   const offerLabels: Record<string, string> = {
     shelter: 'Abrigo',

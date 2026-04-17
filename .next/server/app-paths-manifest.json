@@ -1,7 +1,7 @@
 {
-  "/assist/page": "app/assist/page.js",
-  "/request/page": "app/request/page.js",
-  "/login/page": "app/login/page.js",
   "/page": "app/page.js",
-  "/help/page": "app/help/page.js"
+  "/help/page": "app/help/page.js",
+  "/request/page": "app/request/page.js",
+  "/help/my-requests/page": "app/help/my-requests/page.js",
+  "/help/shelters/page": "app/help/shelters/page.js"
 }

@@ -94,8 +94,16 @@ function MapTracker({ setCurrentCenter, onUpdateCenter }: { setCurrentCenter: (c
 
 function MapFlyTo({ center }: { center: [number, number] }) {
   const map = useMap()
+
   useEffect(() => {
-    if (center) map.flyTo(center, 15)
+    if (center) {
+      const current = map.getCenter()
+      // Só voa se a distância for relevante (evita micro-movimentos e loops)
+      const dist = Math.abs(current.lat - center[0]) + Math.abs(current.lng - center[1])
+      if (dist > 0.0001) {
+        map.flyTo(center, 15)
+      }
+    }
   }, [center, map])
   return null
 }
