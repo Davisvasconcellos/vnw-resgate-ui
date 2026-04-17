@@ -3,9 +3,10 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import CapacityBar from '@/components/ui/CapacityBar'
-import { useSearchParams } from 'next/navigation'
+import { useSearchParams, useRouter } from 'next/navigation'
 import { useI18n } from '@/components/i18n/I18nProvider'
 import AppHeader from '@/components/headers/AppHeader'
+import BottomNavShelter from '@/components/BottomNavShelter'
 
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState, AppDispatch } from '@/store'
@@ -27,13 +28,17 @@ interface Entry {
 export default function ShelterManagePage() {
   const { t, language } = useI18n()
   const dispatch = useDispatch<AppDispatch>()
+  const router = useRouter()
+  const searchParams = useSearchParams()
   
-  // Pegando id do shelter do manager logado (mockado ui-id caso nao exista db real)
-  const shelterIdCode = useSelector((state: RootState) => state.auth.id_code) || 'temp-ui'
-  
+  const profile = useSelector((state: RootState) => state.auth.profile)
+  const shelterIdCode = profile?.managed_shelters?.[0]?.id_code || null
+  const [loading, setLoading] = useState(true)
+
   const entriesRaw = useSelector((state: RootState) => state.shelters.entries)
+  
   // Mapping entries for frontend compat e fallback
-  const entries: Entry[] = entriesRaw.map(e => ({
+  const entries: Entry[] = entriesRaw.map((e: any) => ({
     id_code: e.id_code || e.id,
     name: e.name,
     phone: e.phone,
@@ -68,25 +73,34 @@ export default function ShelterManagePage() {
   const [people, setPeople] = useState(1)
 
   const available = shelter.capacity - shelter.occupied
-  const searchParams = useSearchParams()
 
   useEffect(() => {
+    if (!profile) return;
+    if (!shelterIdCode) {
+        router.push('/onboarding?offer=shelter')
+    }
+  }, [profile, shelterIdCode, router])
+
+  useEffect(() => {
+    if (!shelterIdCode) return
+
+    setLoading(true)
     // Carregar os dados (Entries) baseados no ID do abrigo
     dispatch(fetchShelterEntries(shelterIdCode))
     
-    // Opcional: Fetch meta dados do shelter
+    // Fetch meta dados do shelter
     api.get(`/shelters/${shelterIdCode}`).then(res => {
       if(res.data.data) {
         setShelter({
            name: res.data.data.name,
            capacity: res.data.data.capacity,
            occupied: res.data.data.occupied,
-           phone: res.data.data.phone
+           phone: res.data.data.phone || '(48) 3251-9000'
         })
       }
     }).catch(err => {
-      console.warn("Usando fallback para Shelter Meta", err.message)
-    })
+      console.warn("Falha ao carregar metadados do abrigo", err.message)
+    }).finally(() => setLoading(false))
   }, [dispatch, shelterIdCode])
 
   useEffect(() => {
@@ -154,17 +168,26 @@ export default function ShelterManagePage() {
   const countByStatus = (status: EntryStatus) => entries.filter((e) => e.status === status).length
 
   return (
-    <main className="min-h-screen bg-surface dark:bg-[#0a1628] flex flex-col pb-44 pt-16 transition-colors">
-      <AppHeader />
-
-      <div className="px-5 pt-8 shrink-0 max-w-2xl mx-auto w-full">
-        <section className="mb-8">
-          <h1 className="text-4xl font-extrabold font-headline text-on-surface dark:text-white tracking-tight leading-tight">
-            {t('shelterManage.title')}
-          </h1>
-          <p className="mt-2 text-on-surface-variant dark:text-slate-400 font-body text-base">
-            {shelter.name}
-          </p>
+    <main className="min-h-screen bg-surface dark:bg-[#0a1628] flex flex-col pb-44 transition-colors">
+      <div className="bg-white/90 dark:bg-[#0a1628]/90 backdrop-blur-xl border-b border-slate-100 dark:border-white/5 px-6 pt-12 pb-8 sticky top-0 z-20">
+        <section className="flex items-start gap-4 relative max-w-2xl mx-auto">
+          <Link 
+            href="/assist"
+            className="w-11 h-11 rounded-full bg-white dark:bg-white/10 flex items-center justify-center text-slate-400 dark:text-slate-200 active:scale-95 transition-all shadow-sm shrink-0 border border-slate-100 dark:border-white/5"
+          >
+            <span className="material-symbols-outlined text-[20px]">home</span>
+          </Link>
+          <div>
+            <h1 className="text-3xl font-black text-slate-800 dark:text-white tracking-tight leading-tight font-headline">
+              {t('shelterManage.title')}
+            </h1>
+            <div className="flex items-center gap-2 mt-1.5">
+              <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              <p className="text-slate-500 dark:text-slate-400 font-body text-sm font-bold uppercase tracking-wider">
+                {shelter.name}
+              </p>
+            </div>
+          </div>
         </section>
       </div>
 
@@ -289,7 +312,7 @@ export default function ShelterManagePage() {
         {selectedEntry && (
           <div className="fixed inset-0 z-50 flex flex-col justify-end">
             <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setSelectedEntry(null)} />
-            <div className="relative z-10 bg-white rounded-t-[2rem] px-5 pt-4 pb-14 reveal-pop">
+            <div className="relative z-10 bg-white rounded-t-[2rem] px-5 pt-4 pb-32 reveal-pop">
               <div className="w-10 h-1 rounded-full bg-slate-200 mx-auto mb-5 shrink-0" />
               
               <div className="mb-6">
@@ -369,24 +392,24 @@ export default function ShelterManagePage() {
         {showCheckinModal && (
           <div className="fixed inset-0 z-50 flex flex-col justify-end">
             <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setShowCheckinModal(false)} />
-            <div className="relative z-10 bg-white rounded-t-[2rem] px-5 pt-4 pb-14 reveal-pop max-h-[90vh] overflow-y-auto">
+            <div className="relative z-10 bg-white rounded-t-[2rem] px-5 pt-4 pb-32 reveal-pop max-h-[90vh] overflow-y-auto">
               <div className="w-10 h-1 rounded-full bg-slate-200 mx-auto mb-5 shrink-0" />
               <h2 className="text-xl font-bold text-slate-800 font-headline mb-5">{t('shelterManage.manualCheckin')}</h2>
 
               <div className="space-y-4">
                 <div>
-                  <label className="text-xs font-bold uppercase tracking-wide text-slate-400 mb-1.5 block">{t('onboarding.shelterForm.name')}</label>
+                  <label className="text-xs font-bold uppercase tracking-wide text-slate-400 mb-1.5 block">Nome</label>
                   <input
                     type="text"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    placeholder={t('onboarding.shelterForm.namePlace')}
+                    placeholder="Ex: Família Silva, José, Maria"
                     className="w-full rounded-xl bg-slate-50 border border-slate-200 px-4 py-3.5 text-slate-800 font-semibold text-sm outline-none focus:border-blue-400 transition-colors"
                   />
                 </div>
 
                 <div>
-                  <label className="text-xs font-bold uppercase tracking-wide text-slate-400 mb-1.5 block">{t('request.phone')}</label>
+                  <label className="text-xs font-bold uppercase tracking-wide text-slate-400 mb-1.5 block">Telefone</label>
                   <input
                     type="tel"
                     value={phone}
@@ -397,7 +420,7 @@ export default function ShelterManagePage() {
                 </div>
 
                 <div>
-                  <label className="text-xs font-bold uppercase tracking-wide text-slate-400 mb-1.5 block">{t('onboarding.boatForm.spots')}</label>
+                  <label className="text-xs font-bold uppercase tracking-wide text-slate-400 mb-1.5 block">Quantidade de Pessoas</label>
                   <div className="flex items-center gap-4 bg-slate-50 rounded-xl p-3 border border-slate-200">
                     <button type="button" onClick={() => setPeople(Math.max(1, people - 1))} className="w-12 h-12 rounded-xl bg-white border border-slate-200 font-bold text-slate-700 text-2xl active:scale-95 transition-transform shrink-0">−</button>
                     <div className="flex-1 text-center flex flex-col">
@@ -423,6 +446,8 @@ export default function ShelterManagePage() {
             </div>
           </div>
         )}
+
+      <BottomNavShelter />
     </main>
   )
 }

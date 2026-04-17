@@ -32,8 +32,16 @@ import { RootState } from '@/store'
 function BottomNavContent() {
   const pathname = usePathname()
   const searchParams = useSearchParams()
-  const role = useSelector((state: RootState) => state.auth.role) as typeof moduleParam
+  const [mounted, setMounted] = useState(false)
+  
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  const role = useSelector((state: RootState) => state.auth.role)
   const moduleParam = searchParams.get('module')
+
+  if (!mounted) return null
 
   // Ocultar nav bar totalmente nestas rotas (telas cheias ou limpeza visual)
 

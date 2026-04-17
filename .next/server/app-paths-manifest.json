@@ -1,10 +1,9 @@
 {
   "/_not-found/page": "app/_not-found/page.js",
-  "/onboarding/page": "app/onboarding/page.js",
-  "/assist/page": "app/assist/page.js",
   "/volunteer/tasks/page": "app/volunteer/tasks/page.js",
-  "/login/page": "app/login/page.js",
-  "/favicon.ico/route": "app/favicon.ico/route.js",
-  "/page": "app/page.js",
-  "/user-profile/page": "app/user-profile/page.js"
+  "/nearby/page": "app/nearby/page.js",
+  "/onboarding/page": "app/onboarding/page.js",
+  "/shelter/manage/page": "app/shelter/manage/page.js",
+  "/shelter/team/page": "app/shelter/team/page.js",
+  "/assist/page": "app/assist/page.js"
 }

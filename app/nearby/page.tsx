@@ -64,6 +64,41 @@ export default function NearbyPage() {
   const [selectedPin, setSelectedPin] = useState<string | null>(null)
   const [mapExpanded, setMapExpanded] = useState(false)
   const [mapCenter, setMapCenter] = useState<[number, number]>([-27.4332, -48.4550])
+  const [showAttendModal, setShowAttendModal] = useState(false)
+  const [volunteerMessage, setVolunteerMessage] = useState('')
+  const [isSubmitting, setIsSubmitting] = useState(false)
+
+  const handleAttend = async () => {
+    if (!selectedRequest) return
+    setIsSubmitting(true)
+
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api/v1'}/requests/${selectedRequest.id_code}/status`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('vnw_token')}`
+        },
+        body: JSON.stringify({
+          status: 'attending',
+          volunteer_message: volunteerMessage
+        })
+      })
+
+      if (response.ok) {
+        setShowAttendModal(false)
+        setSelectedPin(null)
+        router.push('/volunteer/tasks')
+      } else {
+        alert('Erro ao aceitar pedido. Verifique se você está logado.')
+      }
+    } catch (error) {
+      console.error('Attend error:', error)
+      alert('Erro de conexão com o servidor.')
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
 
   useEffect(() => {
     // Simula obter navegação nativa e dispara para Redux chamarem backend
@@ -85,7 +120,11 @@ export default function NearbyPage() {
   const mapRequests = requestsState.items.map((r: any) => ({
     ...r,
     calcDistance: r.distanceKm || (r.lat && r.lng ? getDistanceFromLatLonInKm(mapCenter[0], mapCenter[1], r.lat, r.lng) : 0)
-  })).filter((r: any) => statusFilter === 'all' || r.status === statusFilter)
+  })).filter((r: any) => {
+    // Esconde resolvidos do MAPA operacional
+    if (r.status === 'resolved' || r.status === 'completed') return false;
+    return statusFilter === 'all' || r.status === statusFilter;
+  })
 
   // 2. Filtra rigidamente pelo Raio selecionado para a LISTA de Cards
   const listShelters = mapShelters.filter((s: any) => s.calcDistance <= radius).sort((a: any, b: any) => a.calcDistance - b.calcDistance)
@@ -227,9 +266,74 @@ export default function NearbyPage() {
                     <span className="dark:text-white font-bold">{(selectedRequest as any).urgency === 'high' ? 'Risco: Emergência' : (selectedRequest as any).urgency === 'medium' ? 'Risco: Moderado' : 'Monitoramento'}</span>
                   </div>
                 </div>
-                <button className="w-full bg-blue-600 text-white font-bold py-4 rounded-2xl flex items-center justify-center gap-2 shadow-lg active:scale-95 transition-transform"><span className="material-symbols-outlined">directions_car</span>Atender</button>
+                <button 
+                  onClick={() => setShowAttendModal(true)}
+                  className="w-full bg-blue-600 text-white font-bold py-4 rounded-2xl flex items-center justify-center gap-2 shadow-lg active:scale-95 transition-transform"
+                >
+                  <span className="material-symbols-outlined">directions_car</span>
+                  Atender
+                </button>
               </div>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* Attend Confirmation Modal */}
+      {showAttendModal && selectedRequest && (
+        <div className="fixed inset-0 z-[110] flex flex-col justify-end">
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-md" onClick={() => !isSubmitting && setShowAttendModal(false)} />
+          <div className="relative z-10 bg-white dark:bg-[#0d2247] rounded-t-[3rem] px-6 pt-6 pb-20 reveal-pop max-h-[90vh] overflow-y-auto w-full shadow-2xl">
+            <div className="w-12 h-1.5 rounded-full bg-slate-200 mx-auto mb-8" />
+            
+            <div className="flex items-center gap-4 mb-6">
+              <div className="w-14 h-14 rounded-2xl bg-blue-50 dark:bg-blue-900/40 flex items-center justify-center text-blue-600">
+                <span className="material-symbols-outlined text-[32px]">volunteer_activism</span>
+              </div>
+              <div>
+                <h2 className="text-xl font-black text-slate-800 dark:text-white font-headline leading-tight">Confirmar Missão</h2>
+                <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">{HELP_TYPE_LABELS[selectedRequest.type]?.label || selectedRequest.type} · {selectedRequest.id_code?.slice(0,8)}</p>
+              </div>
+            </div>
+
+            <div className="bg-slate-50 dark:bg-white/5 rounded-2xl p-4 border border-slate-100 dark:border-white/5 mb-6">
+               <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Mensagem para o solicitante</p>
+               <textarea
+                 value={volunteerMessage}
+                 onChange={(e) => setVolunteerMessage(e.target.value)}
+                 placeholder="Ex: Estou a caminho com um barco. Chego em 10 minutos."
+                 className="w-full bg-transparent border-none p-0 text-sm font-semibold text-slate-700 dark:text-white placeholder:text-slate-400 outline-none resize-none h-24"
+               />
+            </div>
+
+            <p className="text-[11px] text-slate-500 dark:text-slate-400 mb-8 italic leading-relaxed text-center px-4">
+              Ao confirmar, este pedido será vinculado a você e aparecerá em suas missões ativas.
+            </p>
+
+            <div className="flex flex-col gap-3">
+              <button
+                 onClick={handleAttend}
+                 disabled={isSubmitting}
+                 className="w-full bg-blue-600 text-white font-black py-4 rounded-2xl shadow-xl shadow-blue-500/20 active:scale-95 transition-all text-sm uppercase tracking-widest flex items-center justify-center gap-3 disabled:opacity-50"
+              >
+                {isSubmitting ? (
+                  <div className="h-5 w-5 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+                ) : (
+                  <>
+                    <span className="material-symbols-outlined">check_circle</span>
+                    Confirmar Aceite
+                  </>
+                )}
+              </button>
+              
+              <button
+                 onClick={() => setShowAttendModal(false)}
+                 disabled={isSubmitting}
+                 className="w-full py-4 text-slate-400 font-bold text-xs uppercase tracking-widest"
+              >
+                Cancelar
+              </button>
+            </div>
           </div>
         </div>
       )}

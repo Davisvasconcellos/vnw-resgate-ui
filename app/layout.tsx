@@ -3,6 +3,7 @@ import type { Metadata } from 'next'
 import { Plus_Jakarta_Sans, Manrope } from 'next/font/google'
 import { I18nProvider } from '@/components/i18n/I18nProvider'
 import BottomNavWrapper from '@/components/BottomNavWrapper'
+import { Toaster } from 'react-hot-toast'
 
 import { ReduxProvider } from '@/store/Provider'
 
@@ -43,6 +44,7 @@ export default function RootLayout({
           <I18nProvider>
             {children}
             <BottomNavWrapper />
+            <Toaster position="top-center" />
           </I18nProvider>
         </ReduxProvider>
       </body>

@@ -8,6 +8,10 @@ import { useDispatch, useSelector } from 'react-redux'
 import { setCredentials, UserRole } from '@/store/slices/authSlice'
 import { RootState } from '@/store'
 import { api } from '@/services/api'
+import LocationIndicator from '@/components/ui/LocationIndicator'
+import dynamic from 'next/dynamic'
+
+const MapComponent = dynamic(() => import('@/components/ui/MapComponent'), { ssr: false })
 
 function OnboardingContent() {
   const { t } = useI18n()
@@ -37,6 +41,48 @@ function OnboardingContent() {
 
   const [skills, setSkills] = useState<string[]>([])
   const profile = useSelector((state: RootState) => state.auth.profile)
+
+  // Location States for Shelter
+  const [locationStatus, setLocationStatus] = useState<'acquiring' | 'ready' | 'error'>('acquiring')
+  const [locationAddress, setLocationAddress] = useState('Obtendo localização...')
+  const [showMapModal, setShowMapModal] = useState(false)
+  const [pickedLoc, setPickedLoc] = useState<[number, number]>([-27.4350, -48.4550])
+  const [mapFlyTrigger, setMapFlyTrigger] = useState<[number, number] | null>(null)
+
+  const searchAddressForCoords = async () => {
+    if (!locationAddress || locationAddress === 'Obtendo localização...') return;
+    try {
+      const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(locationAddress)}`);
+      const data = await res.json();
+      if (data && data.length > 0) {
+        const lat = parseFloat(data[0].lat);
+        const lon = parseFloat(data[0].lon);
+        setPickedLoc([lat, lon]);
+        setMapFlyTrigger([lat, lon]);
+      } else {
+        alert('Endereço não localizado pelo satélite. Tente detalhar mais a rua e cidade.');
+      }
+    } catch(e) {}
+  }
+
+  const reverseGeocode = async (center: [number, number]) => {
+    try {
+      const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${center[0]}&lon=${center[1]}`);
+      const data = await res.json();
+      if (data && data.display_name) {
+        setLocationAddress(data.display_name);
+      }
+    } catch (e) {}
+  }
+
+  // Initial location fetch simulation
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLocationStatus('ready')
+      setLocationAddress('R. das Gaivotas, 320 – Canasvieiras, Florianópolis')
+    }, 1500)
+    return () => clearTimeout(timer)
+  }, [])
 
   // Recovery: If we have token but no profile (refresh), fetch /me
   useEffect(() => {
@@ -89,6 +135,13 @@ function OnboardingContent() {
     }
   }, [profile])
 
+  // Auto-redirect if already has a shelter
+  useEffect(() => {
+    if (offer === 'shelter' && profile?.managed_shelters && profile.managed_shelters.length > 0) {
+      router.push(`/shelter/manage`)
+    }
+  }, [profile, offer, router])
+
   const toggleSkill = (id: string) => {
     setSkills(prev => prev.includes(id) ? prev.filter(s => s !== id) : [...prev, id])
   }
@@ -99,15 +152,27 @@ function OnboardingContent() {
     
     try {
       if (offer === 'shelter') {
-        // ... Shelters logic (mantida)
         const payload = {
-          name: (e.target as any).elements[0].value,
-          address: (e.target as any).elements[1].value,
-          capacity: Number((e.target as any).elements[2].value),
-          lat: -27.4332,
-          lng: -48.4550
+          name: (e.target as any).querySelector('input[name="shelterName"]').value,
+          address: locationAddress,
+          capacity: Number((e.target as any).querySelector('input[name="shelterCapacity"]').value),
+          lat: pickedLoc[0],
+          lng: pickedLoc[1]
         }
-        await api.post('/shelters', payload)
+        const res = await api.post('/shelters', payload)
+        const shelter = res.data.data
+        
+        // Sync state and redirect to shelter page
+        const meRes = await api.get('/auth/me');
+        dispatch(setCredentials({
+          id_code: meRes.data.data.user.id_code,
+          role: 'manager',
+          token: localStorage.getItem('vnw_token') || '',
+          profile: meRes.data.data.user
+        }))
+        
+        router.push(`/shelter/manage`)
+        return;
       } else {
         const payload = {
           offer_types: [
@@ -135,9 +200,10 @@ function OnboardingContent() {
       }))
 
       router.push('/assist')
-    } catch (error) {
-      console.warn('Fallback: Redirecionando mesmo com erro de persistência em ambiente dev')
-      router.push('/assist')
+    } catch (error: any) {
+      console.error('Onboarding error:', error)
+      const msg = error.response?.data?.message || 'Erro ao salvar dados. Verifique os campos.'
+      alert(`Erro: ${msg}`)
     } finally {
       setSubmitting(false)
     }
@@ -166,26 +232,26 @@ function OnboardingContent() {
       </div>
 
       {/* Forms */}
-      <form onSubmit={handleSubmit} className="flex-1 px-4 pt-6 pb-32 space-y-6">
+      <form id="onboardingForm" onSubmit={handleSubmit} className="flex-1 px-4 pt-6 pb-32 space-y-6">
         
         {/* SHELTER FORM */}
         {offer === 'shelter' && (
           <div className="space-y-4">
             <div>
               <label className="text-xs font-bold uppercase tracking-wide text-slate-400 dark:text-slate-500 mb-1.5 block">{t('onboarding.shelterForm.name')}</label>
-              <input required type="text" placeholder={t('onboarding.shelterForm.namePlace')} className="w-full bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-3.5 text-sm font-semibold text-slate-800 dark:text-white outline-none focus:border-blue-500 transition-all" />
+              <input required name="shelterName" type="text" placeholder={t('onboarding.shelterForm.namePlace')} className="w-full bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-3.5 text-sm font-semibold text-slate-800 dark:text-white outline-none focus:border-blue-500 transition-all" />
             </div>
+            
+            {/* NOVO: Seletor de Localização Premium */}
             <div>
               <label className="text-xs font-bold uppercase tracking-wide text-slate-400 dark:text-slate-500 mb-1.5 block">{t('onboarding.shelterForm.address')}</label>
-              <input required type="text" placeholder={t('onboarding.shelterForm.addressPlace')} className="w-full bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-3.5 text-sm font-semibold text-slate-800 dark:text-white outline-none focus:border-blue-500 transition-all" />
-              <button type="button" className="flex items-center gap-1.5 mt-2 text-blue-600 dark:text-blue-400 text-xs font-bold">
-                <span className="material-symbols-outlined text-[16px]">my_location</span> {t('onboarding.shelterForm.useLocation')}
-              </button>
+              <LocationIndicator address={locationAddress} status={locationStatus} onClick={() => setShowMapModal(true)} />
             </div>
+
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <label className="text-xs font-bold uppercase tracking-wide text-slate-400 dark:text-slate-500 mb-1.5 block">{t('onboarding.shelterForm.capacity')}</label>
-                <input required type="number" placeholder={t('onboarding.shelterForm.capacityPlace')} className="w-full bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-3.5 text-sm font-semibold text-slate-800 dark:text-white outline-none focus:border-blue-500 transition-all" />
+                <input required name="shelterCapacity" type="number" placeholder={t('onboarding.shelterForm.capacityPlace')} className="w-full bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-3.5 text-sm font-semibold text-slate-800 dark:text-white outline-none focus:border-blue-500 transition-all" />
               </div>
             </div>
             <div>
@@ -323,7 +389,7 @@ function OnboardingContent() {
       <div className="fixed bottom-0 left-0 w-full px-4 pb-8 pt-4 bg-gradient-to-t from-slate-50 dark:from-[#0a1628] via-slate-50 dark:via-[#0a1628] to-transparent transition-colors">
         <button
           type="submit"
-          onClick={handleSubmit}
+          form="onboardingForm"
           disabled={submitting}
           className="w-full flex items-center justify-center gap-2 rounded-2xl py-4 font-bold text-white text-lg font-headline transition-all active:scale-[0.97] disabled:opacity-60"
           style={{ background: 'linear-gradient(135deg, #1565C0, #1976D2)', boxShadow: '0 8px 24px -6px rgba(21,101,192,0.5)' }}
@@ -336,6 +402,64 @@ function OnboardingContent() {
         </button>
       </div>
 
+      {/* MODAL DE MAPA */}
+      {showMapModal && (
+        <div className="fixed inset-0 z-[100] bg-surface dark:bg-[#0a1628] flex flex-col">
+          <div className="flex flex-col gap-3 p-4 shrink-0 glass-header border-b border-slate-100 dark:border-white/5 shadow-sm">
+            <div className="flex items-center gap-3">
+              <button 
+                type="button"
+                onClick={() => setShowMapModal(false)} 
+                className="w-10 h-10 flex items-center justify-center rounded-xl bg-slate-100 dark:bg-white/5 active:scale-95"
+              >
+                <span className="material-symbols-outlined text-slate-600 dark:text-slate-300">close</span>
+              </button>
+              <div className="flex-1">
+                <p className="text-sm font-bold uppercase tracking-widest text-on-surface dark:text-white">Localização do Abrigo</p>
+                <p className="text-[10px] text-slate-500 font-bold uppercase tracking-tighter opacity-60">Digite o endereço ou mova o alfinete</p>
+              </div>
+              <button 
+                type="button"
+                onClick={() => {
+                  setLocationStatus('ready');
+                  if (!locationAddress || locationAddress === 'Obtendo localização...') {
+                    setLocationAddress(`Lat: ${pickedLoc[0].toFixed(5)}, Lng: ${pickedLoc[1].toFixed(5)}`);
+                  }
+                  setShowMapModal(false);
+                }} 
+                className="px-5 py-2.5 bg-primary text-white rounded-xl font-bold uppercase tracking-wider text-xs active:scale-95 transition-transform shadow-md shadow-primary/30"
+              >
+                Confirmar
+              </button>
+            </div>
+            
+            <div className="relative w-full z-10 transition-transform">
+              <div className="absolute left-3 top-1/2 -translate-y-1/2 flex items-center justify-center pointer-events-none">
+                <span className="material-symbols-outlined text-primary/70 text-lg">search</span>
+              </div>
+              <input
+                type="text"
+                autoFocus
+                placeholder="Rua, Número, Bairro, Cidade..."
+                value={locationAddress === 'Obtendo localização...' ? '' : locationAddress}
+                onChange={(e) => setLocationAddress(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && searchAddressForCoords()}
+                className="w-full bg-white dark:bg-slate-800 text-sm font-semibold rounded-2xl pl-10 pr-12 py-3.5 outline-none shadow border border-slate-200 dark:border-slate-700/50 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all dark:text-white placeholder:text-slate-400 font-body"
+              />
+              <button 
+                onClick={searchAddressForCoords}
+                className="absolute right-2 top-1/2 -translate-y-1/2 text-white bg-primary p-1.5 rounded-xl hover:bg-primary/80 active:scale-95 transition-all shadow-sm shadow-primary/40 flex items-center justify-center"
+              >
+                <span className="material-symbols-outlined text-[18px]">travel_explore</span>
+              </button>
+            </div>
+          </div>
+
+          <div className="flex-1 relative bg-slate-100 dark:bg-slate-900 border-t-2 border-primary/20">
+            <MapComponent onUpdateCenter={(center) => { setPickedLoc(center); reverseGeocode(center); }} externalCenter={mapFlyTrigger} />
+          </div>
+        </div>
+      )}
     </main>
   )
 }
