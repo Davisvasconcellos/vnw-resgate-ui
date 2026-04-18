@@ -65,6 +65,12 @@ export default function MissingPage() {
 
   useEffect(() => {
     fetchPeople()
+
+    // Listener para o botão de "+" da NavBar Global
+    const handleOpenModal = () => setShowAddModal(true)
+    window.addEventListener('open-add-missing', handleOpenModal)
+    
+    return () => window.removeEventListener('open-add-missing', handleOpenModal)
   }, [activeTab, search])
 
   const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -249,9 +255,9 @@ export default function MissingPage() {
 
       {/* Selected Person Details Modal */}
       {selectedPerson && (
-        <div className="fixed inset-0 z-[110] flex flex-col justify-end">
-          <div className="absolute inset-0 bg-slate-900/90 backdrop-blur-md" onClick={() => setSelectedPerson(null)} />
-          <div className="relative z-10 bg-white dark:bg-[#0a1628] rounded-t-[3.5rem] px-8 pt-6 pb-40 animate-in slide-in-from-bottom duration-500 max-h-[92vh] overflow-y-auto w-full shadow-2xl transition-colors font-sans">
+        <div className="fixed inset-0 z-[210] flex flex-col justify-end">
+          <div className="absolute inset-0 bg-slate-900/95 backdrop-blur-md" onClick={() => setSelectedPerson(null)} />
+          <div className="relative z-10 bg-white dark:bg-[#0a1628] rounded-t-[3.5rem] px-8 pt-6 pb-40 animate-in slide-in-from-bottom duration-500 max-h-[92vh] overflow-y-auto w-full shadow-2xl transition-colors font-sans" onClick={e => e.stopPropagation()}>
             <div className="w-12 h-1.5 rounded-full bg-slate-200 dark:bg-white/10 mx-auto mb-8 shrink-0" />
             
             <div className="flex flex-col md:flex-row gap-8">
@@ -326,9 +332,9 @@ export default function MissingPage() {
       )}
 
       {showAddModal && (
-        <div className="fixed inset-0 z-[100] flex flex-col justify-end">
-          <div className="absolute inset-0 bg-slate-900/80 backdrop-blur-md" onClick={() => setShowAddModal(false)} />
-          <div className="relative z-10 bg-white dark:bg-[#0d2247] rounded-t-[3.5rem] px-8 pt-6 pb-40 animate-in slide-in-from-bottom duration-500 max-h-[92vh] overflow-y-auto w-full shadow-2xl transition-colors font-sans">
+        <div className="fixed inset-0 z-[200] flex flex-col justify-end touch-none">
+          <div className="absolute inset-0 bg-slate-900/90 backdrop-blur-xl" onClick={(e) => { e.stopPropagation(); setShowAddModal(false); }} />
+          <div className="relative z-10 bg-white dark:bg-[#0d2247] rounded-t-[3.5rem] px-8 pt-6 pb-40 animate-in slide-in-from-bottom duration-500 max-h-[92vh] overflow-y-auto w-full shadow-2xl transition-colors font-sans" onClick={e => e.stopPropagation()}>
             <div className="w-12 h-1.5 rounded-full bg-slate-200 dark:bg-white/10 mx-auto mb-8 shrink-0" />
             
             <div className="flex items-center gap-4 mb-8">
@@ -342,13 +348,9 @@ export default function MissingPage() {
             </div>
             
             <form className="space-y-6" onSubmit={handleRegister}>
-              <div 
+              <label 
+                htmlFor="missing-photo-input"
                 className="relative overflow-hidden flex bg-white dark:bg-white/5 border-2 border-slate-100 dark:border-white/10 border-dashed rounded-[2rem] h-48 items-center justify-center text-slate-400 hover:border-primary/50 dark:hover:bg-white/10 transition-all cursor-pointer group"
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  fileInputRef.current?.click();
-                }}
               >
                 {photoPreview ? (
                    <img src={photoPreview} alt="Preview" className="w-full h-full object-cover" />
@@ -365,13 +367,13 @@ export default function MissingPage() {
                   </div>
                 )}
                 <input 
-                  ref={fileInputRef}
+                  id="missing-photo-input"
                   type="file" 
                   accept="image/*" 
                   className="hidden" 
                   onChange={handlePhotoUpload}
                 />
-              </div>
+              </label>
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="col-span-1">

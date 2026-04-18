@@ -15,6 +15,7 @@ function LoginContent() {
   const offer = searchParams.get('offer') ?? ''
   
   const [loading, setLoading] = useState(false)
+  const [debug, setDebug] = useState<string>('')
 
   // Redireciona se já estiver logado
   useEffect(() => {
@@ -34,22 +35,29 @@ function LoginContent() {
 
   const handleGoogleLogin = async () => {
     setLoading(true);
+    setDebug('Iniciando Google Login...');
     try {
+      setDebug(`API BaseURL: ${api.defaults.baseURL}`);
       const result = await signInWithPopup(auth, googleProvider);
+      setDebug('Google Auth OK. Pegando Token...');
       const idToken = await result.user.getIdToken();
 
+      setDebug('Token obtido. Enviando para API...');
       const response = await api.post('/auth/google', { idToken });
 
       if (response.data.success) {
+        setDebug('API Sucesso! Salvando sessão...');
         localStorage.setItem('vnw_token', response.data.data.token);
         localStorage.setItem('vnw_user', JSON.stringify(response.data.data.user));
         router.push('/assist');
       } else {
+        setDebug(`API Erro: ${JSON.stringify(response.data)}`);
         alert('Falha ao autenticar com a API.');
       }
     } catch (error: any) {
       console.error('Erro no Google Login', error);
       const detail = error.response?.data?.message || error.message || 'Erro desconhecido';
+      setDebug(`CATCH Erro: ${detail} | Config: ${JSON.stringify(error.config?.url)}`);
       alert('Erro na autenticação: ' + detail);
     } finally {
       setLoading(false);
@@ -68,7 +76,7 @@ function LoginContent() {
       </div>
 
       {/* Header */}
-      <div className="relative z-10 flex items-center gap-3 px-4 pt-14 pb-6">
+      <div className="relative z-10 flex items-center gap-3 px-4 pt-14 pb-4">
         <Link href="/" className="flex items-center justify-center w-10 h-10 rounded-xl bg-white/10 text-white active:scale-95 transition-transform">
           <span className="material-symbols-outlined text-[22px]">arrow_back</span>
         </Link>
@@ -103,6 +111,19 @@ function LoginContent() {
             <span className="flex-1 text-left font-headline text-base">Entrar com Google</span>
             <span className="material-symbols-outlined text-slate-400 text-[20px]">chevron_right</span>
           </button>
+
+          {/* DEBUG AREA */}
+          {debug && (
+            <div className="p-4 bg-black/40 rounded-2xl border border-white/10 overflow-hidden">
+               <p className="text-[10px] font-black uppercase text-blue-400 tracking-widest mb-2 flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
+                  Console Debug
+               </p>
+               <p className="text-white/70 text-[11px] font-mono break-all leading-relaxed whitespace-pre-wrap">
+                  {debug}
+               </p>
+            </div>
+          )}
 
           <div className="pt-4 text-center">
              <p className="text-white/40 text-[10px] uppercase font-black tracking-[0.2em] mb-4">Em breve</p>
