@@ -1,5 +1,5 @@
 import './globals.css'
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { Plus_Jakarta_Sans, Manrope } from 'next/font/google'
 import { I18nProvider } from '@/components/i18n/I18nProvider'
 import BottomNavWrapper from '@/components/BottomNavWrapper'
@@ -24,6 +24,23 @@ const body = Manrope({
 export const metadata: Metadata = {
   title: 'VNW Resgate — Apoio em Emergências',
   description: 'Plataforma de apoio em situações de emergência — conectando pessoas afetadas a voluntários e recursos em tempo real.',
+  manifest: '/manifest.json',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: 'VNW Resgate',
+  },
+  formatDetection: {
+    telephone: false,
+  },
+}
+
+export const viewport: Viewport = {
+  themeColor: '#ba1a1a',
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
 }
 
 export default function RootLayout({
@@ -34,6 +51,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+        <link rel="icon" href="/favicon.ico" sizes="any" />
         <link
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
           rel="stylesheet"

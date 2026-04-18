@@ -14,7 +14,6 @@ function LoginContent() {
   const role = searchParams.get('role') ?? 'volunteer'
   const offer = searchParams.get('offer') ?? ''
   
-  const [phone, setPhone] = useState('')
   const [loading, setLoading] = useState(false)
 
   // Redireciona se já estiver logado
@@ -32,21 +31,6 @@ function LoginContent() {
     volunteer: 'Voluntário',
   }
 
-  const handleLogin = () => {
-    setLoading(true)
-    const phoneDigits = phone.replace(/\D/g, '')
-    // Telefone curinga de teste
-    if (phoneDigits === '5521123456789' || phoneDigits === '21123456789') {
-      setTimeout(() => {
-        router.push('/assist')
-      }, 500)
-    } else {
-      setTimeout(() => {
-        setLoading(false)
-        alert('Telefone não cadastrado. Use o curinga 21 1234-56789 para testar.')
-      }, 1000)
-    }
-  }
 
   const handleGoogleLogin = async () => {
     setLoading(true);
@@ -102,12 +86,12 @@ function LoginContent() {
         </div>
 
         {/* Login options */}
-        <div className="space-y-3">
+        <div className="space-y-6">
           <button
             onClick={handleGoogleLogin}
             disabled={loading}
-            className="w-full flex items-center gap-4 rounded-2xl px-5 py-4 font-semibold text-slate-800 transition-all active:scale-[0.97] disabled:opacity-75"
-            style={{ background: 'white', boxShadow: '0 4px 16px rgba(0,0,0,0.15)' }}
+            className="w-full flex items-center gap-4 rounded-2xl px-5 py-5 font-semibold text-slate-800 transition-all active:scale-[0.97] disabled:opacity-75"
+            style={{ background: 'white', boxShadow: '0 8px 32px -8px rgba(0,0,0,0.3)' }}
           >
             <svg width="24" height="24" viewBox="0 0 24 24" className="shrink-0">
               <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
@@ -119,42 +103,16 @@ function LoginContent() {
             <span className="material-symbols-outlined text-slate-400 text-[20px]">chevron_right</span>
           </button>
 
-          <div className="relative flex items-center gap-3">
-            <div className="flex-1 h-px bg-white/15" />
-            <span className="text-white/30 text-xs font-semibold">ou</span>
-            <div className="flex-1 h-px bg-white/15" />
-          </div>
-
-          <div className="rounded-2xl overflow-hidden shadow-lg" style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.12)' }}>
-            <div className="px-4 py-3">
-              <label className="text-white/50 text-xs font-semibold uppercase tracking-wide">Telefone</label>
-              <div className="flex items-center gap-3 mt-1.5 focus-within:bg-white/5 px-2 py-1 -mx-2 rounded-lg transition-colors">
-                <span className="text-white font-bold text-base">🇧🇷 +55</span>
-                <input
-                  type="tel"
-                  placeholder="(21) 1234-56789"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  onKeyDown={(e) => { if (e.key === 'Enter') handleLogin() }}
-                  className="flex-1 bg-transparent text-white placeholder-white/30 text-base font-semibold outline-none border-none"
-                />
-              </div>
-            </div>
-            <button
-              onClick={handleLogin}
-              disabled={loading}
-              className="w-full flex items-center justify-center gap-2 py-4 font-bold text-white font-headline text-base transition-all active:scale-[0.97] disabled:opacity-75"
-              style={{ background: 'linear-gradient(135deg, #1565C0, #1976D2)' }}
-            >
-              {loading ? (
-                <div className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent" />
-              ) : (
-                <>
-                  <span className="material-symbols-outlined text-[20px]" style={{ fontVariationSettings: `'FILL' 1` }}>sms</span>
-                  Enviar código SMS
-                </>
-              )}
-            </button>
+          <div className="pt-4 text-center">
+             <p className="text-white/40 text-[10px] uppercase font-black tracking-[0.2em] mb-4">Em breve</p>
+             <div className="flex gap-3">
+                <div className="flex-1 py-3 rounded-xl border border-white/5 bg-white/5 text-white/30 text-xs font-bold uppercase tracking-widest cursor-not-allowed">
+                   Login Email
+                </div>
+                <div className="flex-1 py-3 rounded-xl border border-white/5 bg-white/5 text-white/30 text-xs font-bold uppercase tracking-widest cursor-not-allowed">
+                   Criar Conta
+                </div>
+             </div>
           </div>
         </div>
 

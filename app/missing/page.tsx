@@ -26,6 +26,10 @@ export default function MissingPage() {
   const [showAddModal, setShowAddModal] = useState(false)
   const [loading, setLoading] = useState(true)
   const [people, setPeople] = useState<MissingPerson[]>([])
+  const [selectedPerson, setSelectedPerson] = useState<MissingPerson | null>(null)
+  
+  const [uploading, setUploading] = useState(false)
+  const [photoPreview, setPhotoPreview] = useState<string | null>(null)
   
   // Form state
   const [formData, setFormData] = useState({
@@ -35,7 +39,8 @@ export default function MissingPage() {
     description: '',
     reporter_name: '',
     reporter_phone: '',
-    reporter_relation: ''
+    reporter_relation: '',
+    photo_url: ''
   })
 
   const fetchPeople = async () => {
@@ -61,6 +66,33 @@ export default function MissingPage() {
     fetchPeople()
   }, [activeTab, search])
 
+  const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    setUploading(true)
+    try {
+      const formData = new FormData()
+      formData.append('file', file)
+      
+      // Chamada para a API unificada de uploads
+      const res = await api.post('/uploads', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      })
+      
+      const url = res.data.data.url || res.data.data.fileUrl
+      
+      setFormData(prev => ({ ...prev, photo_url: url }))
+      setPhotoPreview(url)
+      toast.success('Foto carregada pela API!')
+    } catch (error) {
+      console.error('Erro no upload via API:', error)
+      toast.error('Falha no upload da foto.')
+    } finally {
+      setUploading(false)
+    }
+  }
+
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault()
     try {
@@ -72,9 +104,11 @@ export default function MissingPage() {
       if (res.data.success) {
         toast.success('Registro criado com sucesso!')
         setShowAddModal(false)
+        setPhotoPreview(null)
         setFormData({
             name: '', age: '', last_seen: '', description: '',
-            reporter_name: '', reporter_phone: '', reporter_relation: ''
+            reporter_name: '', reporter_phone: '', reporter_relation: '',
+            photo_url: ''
         })
         fetchPeople()
       }
@@ -87,7 +121,7 @@ export default function MissingPage() {
     <main className="min-h-screen bg-surface dark:bg-[#0a1628] flex flex-col pb-40 transition-colors">
       {/* Clean Header Pattern */}
       <div className="bg-white/90 dark:bg-[#0a1628]/90 backdrop-blur-xl border-b border-slate-100 dark:border-white/5 px-6 pt-12 pb-8 sticky top-0 z-20">
-        <section className="flex items-start gap-4 relative max-w-2xl mx-auto">
+        <section className="flex items-start gap-4 relative max-w-4xl mx-auto">
           <Link 
             href="/help?module=help"
             className="w-11 h-11 rounded-full bg-slate-100 dark:bg-white/10 flex items-center justify-center text-slate-400 dark:text-slate-200 active:scale-95 transition-all shadow-sm shrink-0 border border-slate-100 dark:border-white/5"
@@ -95,10 +129,10 @@ export default function MissingPage() {
             <span className="material-symbols-outlined text-[20px]">arrow_back</span>
           </Link>
           <div className="flex-1">
-            <h1 className="text-3xl font-black text-slate-800 dark:text-white tracking-tight leading-tight font-headline">
+            <h1 className="text-3xl font-black text-slate-800 dark:text-white tracking-tight leading-tight font-headline uppercase">
               {t('missingPage.title')}
             </h1>
-            <p className="mt-1.5 text-slate-500 dark:text-slate-400 font-body text-base font-medium">
+            <p className="mt-1.5 text-slate-500 dark:text-slate-400 font-body text-sm font-medium">
               {t('missingPage.subtitle')}
             </p>
           </div>
@@ -111,121 +145,181 @@ export default function MissingPage() {
         </section>
       </div>
 
-      <div className="px-4 py-6 space-y-6 max-w-2xl mx-auto w-full font-sans">
-        {/* Toggle Tabs */}
-        <div className="flex bg-slate-100 dark:bg-white/5 p-1.5 rounded-3xl shadow-sm border border-slate-100 dark:border-white/5">
-          <button
-            onClick={() => setActiveTab('missing')}
-            className={`flex-1 py-3 text-xs font-black uppercase tracking-widest rounded-2xl transition-all ${
-              activeTab === 'missing' 
-                ? 'bg-white dark:bg-primary text-red-600 dark:text-white shadow-sm' 
-                : 'text-slate-400 hover:bg-white/50'
-            }`}
-          >
-            {t('missingPage.tabMissing')}
-          </button>
-          <button
-            onClick={() => setActiveTab('found')}
-            className={`flex-1 py-3 text-xs font-black uppercase tracking-widest rounded-2xl transition-all ${
-              activeTab === 'found' 
-                ? 'bg-white dark:bg-primary text-emerald-600 dark:text-white shadow-sm' 
-                : 'text-slate-400 hover:bg-white/50'
-            }`}
-          >
-            {t('missingPage.tabFound')}
-          </button>
-        </div>
-
-        {/* Search Bar */}
-        <div className="relative group">
-          <span className="material-symbols-outlined absolute left-5 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-primary transition-colors">search</span>
-          <input
-            type="search"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder={t('missingPage.searchPlace')}
-            className="w-full bg-white dark:bg-white/5 border border-slate-100 dark:border-white/5 pl-14 pr-6 py-4 rounded-3xl text-sm font-bold text-slate-800 dark:text-white placeholder:text-slate-300 focus:ring-4 focus:ring-primary/10 transition-all shadow-sm"
-          />
-        </div>
-
-        {/* List */}
+      <div className="px-4 py-6 space-y-8 max-w-4xl mx-auto w-full font-sans">
+        {/* Toggle Tabs & Search */}
         <div className="space-y-4">
+          <div className="flex bg-slate-100 dark:bg-white/5 p-1.5 rounded-3xl shadow-sm border border-slate-100 dark:border-white/5">
+            <button
+              onClick={() => setActiveTab('missing')}
+              className={`flex-1 py-3 text-[10px] font-black uppercase tracking-widest rounded-2xl transition-all ${
+                activeTab === 'missing' 
+                  ? 'bg-white dark:bg-red-600 text-red-600 dark:text-white shadow-sm font-black' 
+                  : 'text-slate-400 hover:bg-white/50'
+              }`}
+            >
+              {t('missingPage.tabMissing')}
+            </button>
+            <button
+              onClick={() => setActiveTab('found')}
+              className={`flex-1 py-3 text-[10px] font-black uppercase tracking-widest rounded-2xl transition-all ${
+                activeTab === 'found' 
+                  ? 'bg-white dark:bg-emerald-600 text-emerald-600 dark:text-white shadow-sm' 
+                  : 'text-slate-400 hover:bg-white/50'
+              }`}
+            >
+              {t('missingPage.tabFound')}
+            </button>
+          </div>
+
+          <div className="relative group">
+            <span className="material-symbols-outlined absolute left-5 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-primary transition-colors">search</span>
+            <input
+              type="search"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder={t('missingPage.searchPlace')}
+              className="w-full bg-white dark:bg-white/5 border border-slate-100 dark:border-white/5 pl-14 pr-6 py-4 rounded-3xl text-sm font-bold text-slate-800 dark:text-white placeholder:text-slate-300 focus:ring-4 focus:ring-primary/10 transition-all shadow-sm"
+            />
+          </div>
+        </div>
+
+        {/* List Grid */}
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-6">
           {loading ? (
-             <div className="flex flex-col items-center justify-center py-20 opacity-40">
-                <div className="h-8 w-8 animate-spin rounded-full border-2 border-blue-500 border-t-transparent mb-4" />
-                <p className="text-xs font-bold uppercase tracking-widest">Buscando registros...</p>
+             <div className="col-span-full flex flex-col items-center justify-center py-20 opacity-40">
+                <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent mb-4" />
+                <p className="text-[10px] font-black uppercase tracking-[0.2em]">Sincronizando banco...</p>
              </div>
           ) : people.length === 0 ? (
-            <div className="text-center py-16 px-6 bg-white dark:bg-white/5 rounded-[3rem] border border-dashed border-slate-200 dark:border-white/5">
+            <div className="col-span-full text-center py-24 px-6 bg-white dark:bg-white/5 rounded-[3rem] border border-dashed border-slate-200 dark:border-white/5">
               <span className="material-symbols-outlined text-[64px] text-slate-200 mb-4" style={{ fontVariationSettings: `'FILL' 1` }}>person_search</span>
               <p className="text-slate-800 dark:text-white font-black uppercase tracking-widest text-xs mb-1">{t('missingPage.notFound')}</p>
               <p className="text-xs text-slate-400 font-medium">{t('missingPage.notFoundDesc')}</p>
             </div>
           ) : (
             people.map(person => (
-              <div key={person.id_code} className="bg-white dark:bg-white/5 rounded-[2.5rem] p-6 border border-slate-50 dark:border-white/5 shadow-sm hover:shadow-xl transition-all group overflow-hidden">
-                <div className="flex items-center gap-5">
-                  <div className="relative shrink-0">
-                    <div className="w-20 h-20 rounded-3xl bg-slate-50 dark:bg-white/10 flex items-center justify-center text-slate-300 group-hover:bg-primary/5 group-hover:text-primary transition-colors overflow-hidden border border-slate-100 dark:border-white/5">
-                       {person.photo_url ? (
-                           <img src={person.photo_url} alt={person.name} className="w-full h-full object-cover" />
-                       ) : (
-                           <span className="material-symbols-outlined text-[40px]">person</span>
-                       )}
-                    </div>
-                  </div>
-                  
-                  <div className="flex-1 min-w-0">
-                    <h2 className="font-headline font-black text-slate-900 dark:text-white text-2xl tracking-tighter leading-tight">
-                        {person.name}
-                    </h2>
-                    <div className="mt-2 flex items-center gap-3">
-                        <span className="bg-slate-100 dark:bg-white/10 text-slate-500 dark:text-slate-400 text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest">
+              <button 
+                key={person.id_code} 
+                onClick={() => setSelectedPerson(person)}
+                className="group relative flex flex-col bg-white dark:bg-white/5 rounded-[2rem] overflow-hidden border border-slate-100 dark:border-white/5 shadow-sm active:scale-95 transition-all outline-none focus:ring-4 focus:ring-primary/10 text-left"
+              >
+                {/* Image Container - Prioridade Visual */}
+                <div className="aspect-[3/4] relative overflow-hidden bg-slate-100 dark:bg-white/10">
+                   {person.photo_url ? (
+                       <img src={person.photo_url} alt={person.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                   ) : (
+                       <div className="w-full h-full flex flex-col items-center justify-center text-slate-300 gap-2">
+                           <span className="material-symbols-outlined text-[48px]">person</span>
+                           <span className="text-[9px] font-black uppercase tracking-widest opacity-50">Sem foto</span>
+                       </div>
+                   )}
+                   
+                   {/* Urgency Badge overlay */}
+                   <div className="absolute top-3 left-3">
+                      <div className={`px-2 py-1 rounded-lg text-[8px] font-black uppercase tracking-widest backdrop-blur-md shadow-sm border ${
+                        person.status === 'missing' 
+                          ? 'bg-red-500/90 text-white border-white/20' 
+                          : 'bg-emerald-500/90 text-white border-white/20'
+                      }`}>
+                         {person.status}
+                      </div>
+                   </div>
+                </div>
+
+                <div className="p-4 flex-1">
+                  <h2 className="font-headline font-black text-slate-900 dark:text-white text-lg tracking-tighter leading-tight truncate uppercase">
+                      {person.name}
+                  </h2>
+                  <div className="mt-1 flex items-center justify-between">
+                      <span className="text-slate-400 text-[10px] font-bold uppercase tracking-wider">
                         {t('missingPage.age').replace('{age}', person.age.toString())}
-                        </span>
-                        <div className="flex items-center gap-1.5">
-                            <span className={`w-2.5 h-2.5 rounded-full ${person.status === 'missing' ? 'bg-red-500' : 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]'}`} />
-                            <span className={`text-[10px] font-black uppercase tracking-widest leading-none ${person.status === 'missing' ? 'text-red-500' : 'text-emerald-500'}`}>
-                            {person.status.toUpperCase()}
-                            </span>
-                        </div>
-                    </div>
+                      </span>
+                      <span className="material-symbols-outlined text-primary text-[18px] opacity-0 group-hover:opacity-100 transition-opacity">info</span>
                   </div>
                 </div>
-
-                <div className="mt-6 space-y-4">
-                  <div className="p-5 rounded-2xl bg-slate-50 dark:bg-white/5 italic text-slate-600 dark:text-slate-400 text-sm leading-relaxed border border-slate-50 dark:border-white/5">
-                     "{person.description}"
-                  </div>
-                  
-                  <div className="flex items-start gap-3 px-1">
-                      <div className="w-8 h-8 rounded-xl bg-primary/5 flex items-center justify-center text-primary shrink-0">
-                        <span className="material-symbols-outlined text-[18px]">location_on</span>
-                      </div>
-                      <div>
-                        <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-0.5">{t('missingPage.lastSeen')}</p>
-                        <p className="text-xs text-slate-700 dark:text-white font-bold leading-snug">{person.last_seen}</p>
-                      </div>
-                  </div>
-
-                  <div className="flex items-center justify-between pt-4 border-t border-slate-100 dark:border-white/5 transition-colors">
-                    <div className="flex-1">
-                      <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-0.5">{t('missingPage.reporter')}</p>
-                      <p className="text-xs font-bold text-slate-800 dark:text-white">{person.reporter_name}</p>
-                    </div>
-                    {person.reporter_phone && (
-                        <a href={`tel:${person.reporter_phone}`} className="flex items-center gap-2.5 bg-blue-600 text-white px-6 py-3 rounded-2xl active:scale-95 transition-all shadow-lg shadow-blue-500/20">
-                            <span className="material-symbols-outlined text-[18px]">call</span>
-                            <span className="text-[10px] font-black uppercase tracking-widest">Contatar</span>
-                        </a>
-                    )}
-                  </div>
-                </div>
-              </div>
+              </button>
             ))
           )}
         </div>
       </div>
+
+      {/* Selected Person Details Modal */}
+      {selectedPerson && (
+        <div className="fixed inset-0 z-[110] flex flex-col justify-end">
+          <div className="absolute inset-0 bg-slate-900/90 backdrop-blur-md" onClick={() => setSelectedPerson(null)} />
+          <div className="relative z-10 bg-white dark:bg-[#0a1628] rounded-t-[3.5rem] px-8 pt-6 pb-40 animate-in slide-in-from-bottom duration-500 max-h-[92vh] overflow-y-auto w-full shadow-2xl transition-colors font-sans">
+            <div className="w-12 h-1.5 rounded-full bg-slate-200 dark:bg-white/10 mx-auto mb-8 shrink-0" />
+            
+            <div className="flex flex-col md:flex-row gap-8">
+               <div className="w-full md:w-64 aspect-square md:aspect-[3/4] rounded-[2.5rem] overflow-hidden bg-slate-50 dark:bg-white/5 border border-slate-100 dark:border-white/10 shrink-0">
+                  {selectedPerson.photo_url ? (
+                      <img src={selectedPerson.photo_url} alt={selectedPerson.name} className="w-full h-full object-cover" />
+                  ) : (
+                      <div className="w-full h-full flex items-center justify-center text-slate-200">
+                          <span className="material-symbols-outlined text-[80px]">person</span>
+                      </div>
+                  )}
+               </div>
+
+               <div className="flex-1 text-left">
+                  <div className="flex items-center gap-3 mb-2">
+                     <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${
+                       selectedPerson.status === 'missing' ? 'bg-red-100 text-red-600' : 'bg-emerald-100 text-emerald-600'
+                     }`}>
+                        {selectedPerson.status}
+                     </span>
+                     <span className="text-slate-400 text-xs font-bold">{selectedPerson.age} anos</span>
+                  </div>
+
+                  <h2 className="text-4xl font-black text-slate-900 dark:text-white font-headline tracking-tighter mb-4 uppercase">
+                    {selectedPerson.name}
+                  </h2>
+
+                  <div className="space-y-6 text-left">
+                    <div className="bg-slate-50 dark:bg-white/5 p-6 rounded-3xl border border-slate-100 dark:border-white/5">
+                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Descrição Física / Roupas</p>
+                        <p className="text-slate-700 dark:text-slate-300 italic leading-relaxed text-sm">"{selectedPerson.description}"</p>
+                    </div>
+
+                    <div className="flex items-start gap-4">
+                        <div className="w-12 h-12 rounded-2xl bg-blue-50 dark:bg-blue-500/20 flex items-center justify-center text-blue-600 dark:text-blue-400 shrink-0">
+                           <span className="material-symbols-outlined">location_on</span>
+                        </div>
+                        <div>
+                           <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">{t('missingPage.lastSeen')}</p>
+                           <p className="text-sm font-bold text-slate-900 dark:text-white leading-tight">{selectedPerson.last_seen}</p>
+                        </div>
+                    </div>
+
+                    <div className="pt-6 border-t border-slate-100 dark:border-white/5">
+                        <div className="flex items-center justify-between mb-6">
+                           <div className="text-left">
+                              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">{t('missingPage.reporter')}</p>
+                              <p className="text-lg font-black text-slate-900 dark:text-white leading-none">{selectedPerson.reporter_name}</p>
+                           </div>
+                           {selectedPerson.reporter_phone && (
+                              <a 
+                                href={`tel:${selectedPerson.reporter_phone}`}
+                                className="w-14 h-14 rounded-2xl bg-primary text-white flex items-center justify-center shadow-lg shadow-primary/30 active:scale-95 transition-all"
+                              >
+                                 <span className="material-symbols-outlined text-[28px]">call</span>
+                              </a>
+                           )}
+                        </div>
+
+                        <button 
+                          onClick={() => setSelectedPerson(null)}
+                          className="w-full py-4 rounded-2xl bg-slate-100 dark:bg-white/10 text-slate-600 dark:text-slate-300 font-black text-xs uppercase tracking-[0.2em] active:scale-[0.98] transition-all"
+                        >
+                          Fechar Detalhes
+                        </button>
+                    </div>
+                  </div>
+               </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {showAddModal && (
         <div className="fixed inset-0 z-[100] flex flex-col justify-end">
@@ -244,11 +338,31 @@ export default function MissingPage() {
             </div>
             
             <form className="space-y-6" onSubmit={handleRegister}>
-              <div className="flex bg-slate-50 dark:bg-white/5 border-2 border-slate-100 dark:border-white/10 border-dashed rounded-[2rem] h-32 items-center justify-center text-slate-400 hover:bg-slate-100 transition-colors cursor-pointer">
-                <div className="flex flex-col items-center gap-1">
-                  <span className="material-symbols-outlined text-[32px]">add_a_photo</span>
-                  <span className="text-[10px] font-black uppercase tracking-widest">{t('missingPage.addPhoto')}</span>
-                </div>
+              <div 
+                className="relative overflow-hidden flex bg-slate-50 dark:bg-white/5 border-2 border-slate-100 dark:border-white/10 border-dashed rounded-[2rem] h-48 items-center justify-center text-slate-400 hover:bg-slate-100 dark:hover:bg-white/10 transition-colors cursor-pointer"
+                onClick={() => document.getElementById('missing-photo-input')?.click()}
+              >
+                {photoPreview ? (
+                   <img src={photoPreview} alt="Preview" className="w-full h-full object-cover" />
+                ) : (
+                  <div className="flex flex-col items-center gap-1">
+                    {uploading ? (
+                       <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent mb-2" />
+                    ) : (
+                       <span className="material-symbols-outlined text-[32px]">add_photo_alternate</span>
+                    )}
+                    <span className="text-[10px] font-black uppercase tracking-widest">
+                       {uploading ? 'Subindo...' : t('missingPage.addPhoto')}
+                    </span>
+                  </div>
+                )}
+                <input 
+                  id="missing-photo-input"
+                  type="file" 
+                  accept="image/*" 
+                  className="hidden" 
+                  onChange={handlePhotoUpload}
+                />
               </div>
 
               <div className="grid grid-cols-2 gap-4">

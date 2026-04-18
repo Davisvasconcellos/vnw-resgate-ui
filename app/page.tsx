@@ -107,14 +107,16 @@ export default function HomePage() {
       <header className="relative z-10 flex flex-col items-center pt-8 pb-4 px-6">
         <div className="relative group">
           {isLogged && userProfile?.avatar_url ? (
-            <div className="w-16 h-16 rounded-2xl overflow-hidden border-2 border-blue-500 shadow-lg shadow-blue-500/20 mb-4 animate-in zoom-in">
+            <Link href="/user-profile" className="block w-16 h-16 rounded-2xl overflow-hidden border-2 border-blue-500 shadow-lg shadow-blue-500/20 mb-4 animate-in zoom-in active:scale-90 transition-transform">
               <img src={userProfile.avatar_url} alt="Profile" className="w-full h-full object-cover" />
-            </div>
+            </Link>
           ) : (
-            <div className="flex items-center justify-center w-16 h-16 rounded-2xl mb-4 shadow-xl" style={{ background: 'linear-gradient(135deg, #E53935, #C62828)' }}>
-              <span className="material-symbols-outlined text-white text-[36px]" style={{ fontVariationSettings: `'FILL' 1` }}>
-                water
-              </span>
+            <div className="w-20 h-20 mb-4 animate-in zoom-in duration-700">
+               <img 
+                  src={theme === 'dark' ? '/logo-dark.png' : '/logo.png'} 
+                  alt="VNW Resgate" 
+                  className="w-full h-full object-contain"
+               />
             </div>
           )}
         </div>
@@ -128,9 +130,12 @@ export default function HomePage() {
           Apoio em situações de enchente
         </p>
 
+      </header>
+
+      <div className="relative z-10 flex-1 flex flex-col justify-center px-6 gap-3 pb-36 max-w-lg mx-auto w-full">
         {/* Informative Banner */}
         {!isLogged && (
-          <div className="mt-8 w-full flex items-start gap-4 rounded-3xl px-6 py-5 bg-white dark:bg-white/5 backdrop-blur-md border border-slate-200 dark:border-white/10 transition-all shadow-xl shadow-slate-200/50 dark:shadow-none">
+          <div className="mb-4 w-full flex items-start gap-4 rounded-3xl px-6 py-5 bg-white dark:bg-white/5 backdrop-blur-md border border-slate-200 dark:border-white/10 transition-all shadow-xl shadow-slate-200/50 dark:shadow-none">
             <div className="w-12 h-12 rounded-full bg-blue-50 dark:bg-blue-500/20 flex items-center justify-center shrink-0">
                <span className="material-symbols-outlined text-blue-600 dark:text-blue-400 text-[24px]">info</span>
             </div>
@@ -142,9 +147,7 @@ export default function HomePage() {
             </div>
           </div>
         )}
-      </header>
 
-      <div className="relative z-10 flex-1 flex flex-col justify-center px-6 gap-3 pb-36 max-w-lg mx-auto w-full">
         <Link href="/help" className="block group">
           <div className="flex items-center gap-4 rounded-3xl p-5 transition-all active:scale-[0.97] bg-white dark:bg-white/5 backdrop-blur-md shadow-sm border border-slate-100 dark:border-white/10 overflow-hidden relative">
             <div className="flex items-center justify-center w-14 h-14 rounded-full bg-red-600 text-white shrink-0 relative z-10 shadow-lg shadow-red-600/10">

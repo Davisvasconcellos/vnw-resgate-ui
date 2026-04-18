@@ -9,6 +9,8 @@
 html,
 body {
   @apply bg-surface dark:bg-[#0a1628] text-on-surface dark:text-white transition-colors duration-300;
+  overscroll-behavior-y: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .glass-card {

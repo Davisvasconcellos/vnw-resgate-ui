@@ -1,61 +1,33 @@
 {
-  "app\\onboarding\\page.tsx -> @/components/ui/MapComponent": {
-    "id": 2574,
-    "files": [
-      "static/css/fc1c9daac70c093b.css",
-      "static/chunks/d0deef33.8939d2e5cad19017.js",
-      "static/chunks/4525.2a75ff9598e56f10.js"
-    ]
-  },
   "app\\page.tsx -> @/services/api": {
-    "id": 459,
+    "id": "app\\page.tsx -> @/services/api",
     "files": [
-      "static/chunks/8472-8229bf53f63e0619.js",
-      "static/chunks/459.c72122f654591d32.js"
+      "static/chunks/_app-pages-browser_services_api_ts.js"
     ]
   },
   "app\\page.tsx -> @/services/firebase": {
-    "id": 2190,
+    "id": "app\\page.tsx -> @/services/firebase",
     "files": [
-      "static/chunks/4ea34a6d-48434bde8e87dd08.js",
-      "static/chunks/1179-d911c87758772254.js",
-      "static/chunks/7594.c019cb7f7fd5ec18.js"
-    ]
-  },
-  "app\\request\\page.tsx -> @/components/ui/MapComponent": {
-    "id": 2574,
-    "files": [
-      "static/css/fc1c9daac70c093b.css",
-      "static/chunks/d0deef33.8939d2e5cad19017.js",
-      "static/chunks/4525.2a75ff9598e56f10.js"
+      "static/chunks/_app-pages-browser_services_firebase_ts.js"
     ]
   },
   "app\\user-profile\\page.tsx -> @/components/ui/MapComponent": {
-    "id": 2574,
+    "id": "app\\user-profile\\page.tsx -> @/components/ui/MapComponent",
     "files": [
-      "static/css/fc1c9daac70c093b.css",
-      "static/chunks/d0deef33.8939d2e5cad19017.js",
-      "static/chunks/4525.2a75ff9598e56f10.js"
-    ]
-  },
-  "components\\ui\\InteractiveMap.tsx -> @/components/ui/MapComponent": {
-    "id": 2574,
-    "files": [
-      "static/css/fc1c9daac70c093b.css",
-      "static/chunks/d0deef33.8939d2e5cad19017.js",
-      "static/chunks/2574.6f5ec86e0c3e5a7b.js"
+      "static/css/_app-pages-browser_components_ui_MapComponent_tsx.css",
+      "static/chunks/_app-pages-browser_components_ui_MapComponent_tsx.js"
     ]
   },
   "store\\slices\\requestsSlice.ts -> @/app/mock-data": {
-    "id": 5323,
+    "id": "store\\slices\\requestsSlice.ts -> @/app/mock-data",
     "files": [
-      "static/chunks/5323.594c243e2de57b82.js"
+      "static/chunks/_app-pages-browser_app_mock-data_ts.js"
     ]
   },
   "store\\slices\\sheltersSlice.ts -> @/app/mock-data": {
-    "id": 5323,
+    "id": "store\\slices\\sheltersSlice.ts -> @/app/mock-data",
     "files": [
-      "static/chunks/5323.594c243e2de57b82.js"
+      "static/chunks/_app-pages-browser_app_mock-data_ts.js"
     ]
   }
 }

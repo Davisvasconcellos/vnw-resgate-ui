@@ -88,10 +88,18 @@ export default function AppHeader({
       <div className="flex justify-between items-center px-4 h-16 w-full max-w-7xl mx-auto relative">
         <div className="flex items-center gap-3">
           <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity active:scale-95 duration-200">
-            <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-white shadow-lg shadow-primary/20">
-              <span className="material-symbols-outlined text-[20px]" style={{ fontVariationSettings: `'FILL' 1` }}>sos</span>
+            <div className="w-9 h-9 flex items-center justify-center shrink-0">
+               <img 
+                  src={(typeof document !== 'undefined' && document.documentElement.classList.contains('dark')) ? '/logo-dark.png' : '/logo.png'} 
+                  alt="VNW logo"
+                  className="w-full h-full object-contain"
+                  onError={(e) => {
+                    // Fallback para CSS class se a imagem falhar no carregamento inicial
+                    e.currentTarget.style.display = 'none';
+                  }}
+               />
             </div>
-            <span className="font-headline font-extrabold text-lg tracking-tighter text-primary dark:text-white">VNW-RESCUE</span>
+            <span className="font-headline font-extrabold text-lg tracking-tighter text-primary dark:text-white uppercase">VNW Resgate</span>
           </Link>
           <span className="text-outline-variant/30 px-2 font-light">|</span>
         </div>

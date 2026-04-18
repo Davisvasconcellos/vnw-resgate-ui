@@ -1,0 +1,22 @@
+{
+  "name": "VNW Resgate",
+  "short_name": "VNW Resgate",
+  "description": "Aplicativo de apoio em situações de desastres e resgates.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a1628",
+  "theme_color": "#ba1a1a",
+  "icons": [
+    {
+      "src": "/icon.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
