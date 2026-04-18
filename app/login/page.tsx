@@ -49,7 +49,8 @@ function LoginContent() {
       }
     } catch (error: any) {
       console.error('Erro no Google Login', error);
-      alert('Erro na autenticação: ' + error.message);
+      const detail = error.response?.data?.message || error.message || 'Erro desconhecido';
+      alert('Erro na autenticação: ' + detail);
     } finally {
       setLoading(false);
     }

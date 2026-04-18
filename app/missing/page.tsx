@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { useI18n } from '@/components/i18n/I18nProvider'
 import { api } from '@/services/api'
@@ -21,6 +21,7 @@ interface MissingPerson {
 
 export default function MissingPage() {
   const { t } = useI18n()
+  const fileInputRef = useRef<HTMLInputElement>(null)
   const [activeTab, setActiveTab] = useState<'missing' | 'found'>('missing')
   const [search, setSearch] = useState('')
   const [showAddModal, setShowAddModal] = useState(false)
@@ -68,25 +69,28 @@ export default function MissingPage() {
 
   const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
-    if (!file) return
+    if (!file) return;
 
+    console.log('Iniciando upload do arquivo:', file.name);
     setUploading(true)
     try {
       const formData = new FormData()
       formData.append('file', file)
       
+      console.log('Enviando para POST /uploads...');
       // Chamada para a API unificada de uploads
       const res = await api.post('/uploads', formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       })
       
+      console.log('Resposta do upload:', res.data);
       const url = res.data.data.url || res.data.data.fileUrl
       
       setFormData(prev => ({ ...prev, photo_url: url }))
       setPhotoPreview(url)
       toast.success('Foto carregada pela API!')
-    } catch (error) {
-      console.error('Erro no upload via API:', error)
+    } catch (error: any) {
+      console.error('Erro no upload via API:', error.response?.data || error.message)
       toast.error('Falha no upload da foto.')
     } finally {
       setUploading(false)
@@ -339,25 +343,29 @@ export default function MissingPage() {
             
             <form className="space-y-6" onSubmit={handleRegister}>
               <div 
-                className="relative overflow-hidden flex bg-slate-50 dark:bg-white/5 border-2 border-slate-100 dark:border-white/10 border-dashed rounded-[2rem] h-48 items-center justify-center text-slate-400 hover:bg-slate-100 dark:hover:bg-white/10 transition-colors cursor-pointer"
-                onClick={() => document.getElementById('missing-photo-input')?.click()}
+                className="relative overflow-hidden flex bg-white dark:bg-white/5 border-2 border-slate-100 dark:border-white/10 border-dashed rounded-[2rem] h-48 items-center justify-center text-slate-400 hover:border-primary/50 dark:hover:bg-white/10 transition-all cursor-pointer group"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  fileInputRef.current?.click();
+                }}
               >
                 {photoPreview ? (
                    <img src={photoPreview} alt="Preview" className="w-full h-full object-cover" />
                 ) : (
-                  <div className="flex flex-col items-center gap-1">
+                  <div className="flex flex-col items-center gap-1 pointer-events-none">
                     {uploading ? (
                        <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent mb-2" />
                     ) : (
-                       <span className="material-symbols-outlined text-[32px]">add_photo_alternate</span>
+                       <span className="material-symbols-outlined text-[32px] group-hover:scale-110 transition-transform">add_photo_alternate</span>
                     )}
-                    <span className="text-[10px] font-black uppercase tracking-widest">
+                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">
                        {uploading ? 'Subindo...' : t('missingPage.addPhoto')}
                     </span>
                   </div>
                 )}
                 <input 
-                  id="missing-photo-input"
+                  ref={fileInputRef}
                   type="file" 
                   accept="image/*" 
                   className="hidden" 
