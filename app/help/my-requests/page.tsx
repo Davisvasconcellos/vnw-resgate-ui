@@ -176,15 +176,13 @@ export default function MyRequestsPage() {
                           {req.type.toUpperCase()}
                         </span>
                         {req.status === 'pending' && (
-                          <div className="flex items-center gap-1 text-red-500 animate-pulse">
-                            <span className="material-symbols-outlined text-xs font-bold">emergency</span>
-                            <span className="text-[8px] font-black uppercase tracking-widest">Aguardando</span>
+                          <div className="flex items-center justify-center text-amber-500 animate-pulse bg-amber-50 dark:bg-amber-900/20 w-6 h-6 rounded-full group-hover:scale-110 transition-transform">
+                            <span className="material-symbols-outlined text-sm font-bold">schedule</span>
                           </div>
                         )}
                         {req.is_verified && (
-                          <div className="flex items-center gap-1 text-blue-500">
-                            <span className="material-symbols-outlined text-[10px] font-bold">verified</span>
-                            <span className="text-[8px] font-black uppercase tracking-widest">Verificado</span>
+                          <div className="flex items-center justify-center text-blue-500 bg-blue-50 dark:bg-blue-900/20 w-6 h-6 rounded-full group-hover:scale-110 transition-transform">
+                            <span className="material-symbols-outlined text-sm font-bold" style={{ fontVariationSettings: "'FILL' 1" }}>verified</span>
                           </div>
                         )}
                       </div>

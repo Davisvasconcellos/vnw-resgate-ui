@@ -252,27 +252,78 @@ export default function NearbyPage() {
               </div>
             )}
             {selectedRequest && (
-              <div>
-                <div className="flex justify-between items-start mb-6">
-                  <h3 className="font-bold text-slate-800 dark:text-white text-lg leading-tight font-headline">Pedido: {HELP_TYPE_LABELS[selectedRequest.type]?.label || selectedRequest.type}</h3>
+              <div className="animate-in fade-in slide-in-from-bottom-5 duration-300">
+                <div className="flex justify-between items-center mb-6">
+                  <div className="flex items-center gap-2">
+                    <h3 className="font-black text-slate-800 dark:text-white text-2xl leading-tight font-headline">
+                      {HELP_TYPE_LABELS[selectedRequest.type]?.label || selectedRequest.type}
+                    </h3>
+                    {selectedRequest.is_verified && (
+                      <span className="material-symbols-outlined text-blue-500 text-[20px]" style={{ fontVariationSettings: "'FILL' 1" }}>verified</span>
+                    )}
+                  </div>
                   <StatusBadge status={selectedRequest.status} />
                 </div>
+
+                {selectedRequest.photo_url && (
+                  <div className="relative aspect-video w-full rounded-[2rem] overflow-hidden mb-6 bg-slate-100 dark:bg-white/5 border border-slate-100 dark:border-white/5 shadow-inner">
+                    <img 
+                      src={selectedRequest.photo_url} 
+                      alt="Localização" 
+                      className="w-full h-full object-cover" 
+                    />
+                  </div>
+                )}
+
                 <div className="space-y-4 mb-8 text-sm">
-                  <div className="flex items-center gap-3"><span className="material-symbols-outlined text-blue-600">location_on</span><span className="dark:text-white">{(selectedRequest as any).address}</span></div>
-                  <div className="flex items-center gap-3"><span className="material-symbols-outlined text-emerald-600">group</span><span className="dark:text-white">{(selectedRequest as any).people_count || (selectedRequest as any).people || 1} pessoas aguardando</span></div>
-                  <div className="flex items-center gap-3"><span className="material-symbols-outlined text-orange-600">person</span><span className="dark:text-white font-medium">{(selectedRequest as any).reporter_name || (selectedRequest as any).name || 'Solicitante Desconhecido'}</span></div>
-                  <div className="flex items-center gap-3">
-                    <span className="material-symbols-outlined text-red-600">emergency</span>
-                    <span className="dark:text-white font-bold">{(selectedRequest as any).urgency === 'high' ? 'Risco: Emergência' : (selectedRequest as any).urgency === 'medium' ? 'Risco: Moderado' : 'Monitoramento'}</span>
+                  <div className="flex items-start gap-3">
+                    <div className="w-8 h-8 rounded-full bg-blue-50 dark:bg-blue-500/10 flex items-center justify-center shrink-0">
+                      <span className="material-symbols-outlined text-blue-600 text-[18px]">location_on</span>
+                    </div>
+                    <div>
+                      <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-0.5">Endereço</p>
+                      <span className="dark:text-white font-bold leading-relaxed">{(selectedRequest as any).address}</span>
+                    </div>
+                  </div>
+
+                  {selectedRequest.description && (
+                    <div className="flex items-start gap-3 bg-slate-50 dark:bg-white/5 p-4 rounded-2xl border border-slate-100 dark:border-white/5">
+                      <div className="flex-1">
+                        <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Descrição</p>
+                        <p className="text-slate-600 dark:text-slate-300 font-medium leading-relaxed italic">
+                          "{selectedRequest.description}"
+                        </p>
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="flex items-center gap-3 bg-slate-50 dark:bg-white/5 p-3 rounded-2xl">
+                      <span className="material-symbols-outlined text-emerald-600">group</span>
+                      <span className="dark:text-white font-bold">{(selectedRequest as any).people_count || (selectedRequest as any).people || 1} pessoas</span>
+                    </div>
+                    <div className="flex items-center gap-3 bg-slate-50 dark:bg-white/5 p-3 rounded-2xl truncate">
+                      <span className="material-symbols-outlined text-orange-600">person</span>
+                      <span className="dark:text-white font-bold truncate">{(selectedRequest as any).reporter_name || (selectedRequest as any).name || '---'}</span>
+                    </div>
                   </div>
                 </div>
-                <button 
-                  onClick={() => setShowAttendModal(true)}
-                  className="w-full bg-blue-600 text-white font-bold py-4 rounded-2xl flex items-center justify-center gap-2 shadow-lg active:scale-95 transition-transform"
-                >
-                  <span className="material-symbols-outlined">directions_car</span>
-                  Atender
-                </button>
+
+                <div className="flex gap-3">
+                  <button 
+                    onClick={() => setShowAttendModal(true)}
+                    className="flex-[2] bg-blue-600 text-white font-black py-4 rounded-2xl flex items-center justify-center gap-3 shadow-lg active:scale-95 transition-all text-sm uppercase tracking-widest"
+                  >
+                    <span className="material-symbols-outlined">directions_car</span>
+                    Atender
+                  </button>
+                  <a 
+                    href={`tel:${selectedRequest.reporter_phone || selectedRequest.phone}`}
+                    className="flex-1 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 rounded-2xl flex items-center justify-center active:scale-95 transition-all"
+                  >
+                    <span className="material-symbols-outlined">call</span>
+                  </a>
+                </div>
               </div>
             )}
           </div>
@@ -346,34 +397,57 @@ export default function NearbyPage() {
 
       <div className="px-4 mt-3 space-y-2.5">
         {(tab === 'requests' ? listRequests : listShelters).map((item: any) => (
-          <button key={item.id_code || Math.random()} onClick={() => setSelectedPin(item.id_code)} className="w-full text-left rounded-2xl p-4 transition-all border bg-white dark:bg-white/5 border-slate-100 dark:border-white/10 shadow-sm">
+          <button 
+            key={item.id_code || Math.random()} 
+            onClick={() => setSelectedPin(item.id_code)} 
+            className={`w-full text-left rounded-[2rem] p-5 transition-all border bg-white dark:bg-white/5 border-slate-100 dark:border-white/10 shadow-sm hover:shadow-md active:scale-[0.98] ${selectedPin === item.id_code ? 'ring-2 ring-primary ring-offset-2 dark:ring-offset-[#0a1628]' : ''}`}
+          >
             <div className="flex items-start justify-between mb-2">
-              <div>
-                <p className="font-bold text-slate-800 dark:text-white text-sm leading-snug mb-1">{item.name || HELP_TYPE_LABELS[item.type as keyof typeof HELP_TYPE_LABELS]?.label || item.type}</p>
+              <div className="flex-1 min-w-0 pr-4">
+                <div className="flex items-center gap-2 mb-1">
+                    <p className="font-extrabold text-slate-800 dark:text-white text-base leading-snug truncate transition-colors">
+                        {item.name || HELP_TYPE_LABELS[item.type as keyof typeof HELP_TYPE_LABELS]?.label || item.type}
+                    </p>
+                    {item.is_verified && (
+                        <span className="material-symbols-outlined text-blue-500 text-[16px]" style={{ fontVariationSettings: "'FILL' 1" }}>verified</span>
+                    )}
+                    {item.photo_url && (
+                        <span className="material-symbols-outlined text-slate-400 text-[16px]">image</span>
+                    )}
+                </div>
                 {tab === 'requests' && (
-                  <p className="text-[11px] text-slate-500 font-medium truncate max-w-[200px]">{item.address || 'Localização no Mapa'}</p>
+                  <div className="space-y-0.5">
+                    <p className="text-[11px] text-slate-500 font-bold truncate transition-colors">
+                        {item.address || 'Localização no Mapa'}
+                    </p>
+                    {item.description && (
+                        <p className="text-[10px] text-slate-400 font-medium truncate leading-tight">
+                            {item.description}
+                        </p>
+                    )}
+                  </div>
                 )}
               </div>
-              <span className="text-xs font-bold text-slate-400 dark:text-outline-variant whitespace-nowrap ml-2">{item.calcDistance} km</span>
+              <span className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-tighter shrink-0">{item.calcDistance} km</span>
             </div>
             {tab === 'shelters' ? (
               <CapacityBar current={item.occupied} total={item.capacity} />
             ) : (
-              <div className="space-y-3 mt-3">
+              <div className="space-y-3 mt-4">
                 <div className="flex items-center gap-2">
                   <StatusBadge status={item.status} size="sm" />
-                  <span className={`px-2 py-0.5 rounded-md text-[9px] font-bold uppercase tracking-wider ${item.urgency === 'high' ? 'text-red-700 bg-red-100 dark:bg-red-900/30 dark:text-red-400' : item.urgency === 'medium' ? 'text-orange-700 bg-orange-100 dark:bg-orange-900/30 dark:text-orange-400' : 'text-emerald-700 bg-emerald-100 dark:bg-emerald-900/30 dark:text-emerald-400'}`}>
+                  <span className={`px-2 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-wider ${item.urgency === 'high' ? 'text-red-700 bg-red-100 dark:bg-red-900/30 dark:text-red-400' : item.urgency === 'medium' ? 'text-orange-700 bg-orange-100 dark:bg-orange-900/30 dark:text-orange-400' : 'text-emerald-700 bg-emerald-100 dark:bg-emerald-900/30 dark:text-emerald-400'}`}>
                     {item.urgency === 'high' ? 'Emergência' : item.urgency === 'medium' ? 'Moderado' : 'Monitorar'}
                   </span>
                 </div>
                 <div className="flex items-center gap-4 text-[11px] text-slate-500 dark:text-slate-400 font-medium">
-                  <div className="flex items-center gap-1 bg-slate-50 dark:bg-white/5 px-2 py-1 rounded-lg">
+                  <div className="flex items-center gap-1.5 bg-slate-50 dark:bg-white/5 px-2.5 py-1.5 rounded-xl border border-slate-100 dark:border-white/5">
                     <span className="material-symbols-outlined text-[14px]">group</span>
                     <span>{item.people_count || item.people || 1}</span>
                   </div>
-                  <div className="flex items-center gap-1 bg-slate-50 dark:bg-white/5 px-2 py-1 rounded-lg truncate">
+                  <div className="flex items-center gap-1.5 bg-slate-50 dark:bg-white/5 px-2.5 py-1.5 rounded-xl border border-slate-100 dark:border-white/5 truncate">
                     <span className="material-symbols-outlined text-[14px]">person</span>
-                    <span className="truncate">{item.reporter_name || item.name || 'Desconhecido'}</span>
+                    <span className="truncate">{item.reporter_name || item.name || '---'}</span>
                   </div>
                 </div>
               </div>

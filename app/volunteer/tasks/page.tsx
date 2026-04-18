@@ -6,6 +6,33 @@ import { useI18n } from '@/components/i18n/I18nProvider'
 import { api } from '@/services/api'
 import ProtectedRoute from '@/components/ProtectedRoute'
 
+const CapacityBar = ({ current, total }: { current: number; total: number }) => {
+  const percentage = Math.min(Math.round((current / total) * 100), 100);
+  const isFull = percentage >= 100;
+
+  return (
+    <div className="w-full space-y-1.5 animate-in fade-in duration-500">
+      <div className="flex justify-between items-end">
+        <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Ocupação do Abrigo</span>
+        <span className={`text-xs font-black ${isFull ? 'text-red-500' : percentage > 80 ? 'text-orange-500' : 'text-blue-600'}`}>
+          {percentage}%
+        </span>
+      </div>
+      <div className="h-2.5 bg-slate-100 dark:bg-white/5 rounded-full overflow-hidden border border-slate-200/50 dark:border-white/5 p-[2px]">
+        <div 
+          className={`h-full rounded-full transition-all duration-1000 ease-out shadow-sm ${
+            isFull ? 'bg-red-500' : percentage > 80 ? 'bg-orange-500' : 'bg-blue-600'
+          }`}
+          style={{ width: `${percentage}%` }}
+        />
+      </div>
+      <p className="text-[9px] font-bold text-slate-400 uppercase tracking-tight">
+        {current} de {total} vagas preenchidas
+      </p>
+    </div>
+  );
+};
+
 export default function VolunteerTasksPage() {
   const { t } = useI18n()
   const [loading, setLoading] = useState(true)
@@ -15,12 +42,13 @@ export default function VolunteerTasksPage() {
   const [selectedTask, setSelectedTask] = useState<any>(null)
   const [opportunities, setOpportunities] = useState<any[]>([])
   const [showDetail, setShowDetail] = useState(false)
+  const [allShelters, setAllShelters] = useState<any[]>([])
+  const [isSelectingShelter, setIsSelectingShelter] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
 
   const refreshData = async () => {
     setLoading(true)
     try {
-      // 1. Minhas Tarefas (Ativas/Histórico)
       const resTasks = await api.get('/volunteers/tasks')
       const { help_requests, shelters } = resTasks.data.data
 
@@ -35,16 +63,17 @@ export default function VolunteerTasksPage() {
         ...shelters.map((s: any) => ({
           ...s,
           id: s.id_code,
+          assignment_id: s.id,
           reporter_name: s.name,
           address: s.address,
           status: s.volunteer_status === 'accepted' ? 'ongoing' : 'finished',
-          type: 'shelter'
+          type: 'shelter',
+          isMission: true
         }))
       ]
       setTasks(unifiedTasks)
 
-      // 2. Oportunidades Disponíveis (Pendentes)
-      const resOpps = await api.get('/requests?status=pending&radiusKm=50')
+      const resOpps = await api.get('/requests?status=pending&radiusKm=100')
       setOpportunities(resOpps.data.data.map((o: any) => ({
         ...o,
         id: o.id_code,
@@ -52,8 +81,12 @@ export default function VolunteerTasksPage() {
         reporter_phone: o.reporter_phone || o.requester?.phone || 'N/A'
       })))
 
+      // Buscar todos os abrigos para o desfecho
+      const resShelters = await api.get('/shelters')
+      setAllShelters(resShelters.data.data)
+
     } catch (error) {
-      console.error('Error loading tasks', error)
+      console.error('Error loading data', error)
     } finally {
       setLoading(false)
     }
@@ -73,16 +106,20 @@ export default function VolunteerTasksPage() {
     }
   }
 
-  const handleComplete = async (dest: string) => {
+  const handleComplete = async (dest: string, shelterId?: string) => {
     if (!selectedTask) return
     try {
-      await api.put(`/requests/${selectedTask.id}/status`, { status: 'completed', dropoff: dest })
+      const payload: any = { status: 'completed', dropoff: dest }
+      if (shelterId) payload.shelter_id = shelterId
+
+      await api.put(`/requests/${selectedTask.id}/status`, payload)
+      
       refreshData()
-      setShowCheckout(false); setShowDetail(false);
+      setShowCheckout(false); setShowDetail(false); setIsSelectingShelter(false);
       setSelectedTask(null)
     } catch (e) {
       refreshData()
-      setShowCheckout(false); setShowDetail(false);
+      setShowCheckout(false); setShowDetail(false); setIsSelectingShelter(false);
       setSelectedTask(null)
     }
   }
@@ -96,27 +133,26 @@ export default function VolunteerTasksPage() {
     }
   }
 
-  // 1. Filtrar itens baseado na busca e na aba ativa
   const baseItems = activeTab === 'opportunities' 
-    ? opportunities.filter(o => !tasks.some(t => t.shelter_id === o.shelter_id && t.volunteer_message === o.volunteer_message && t.status === 'ongoing'))
+    ? opportunities.filter(o => !tasks.some(t => t.id_code === o.id_code))
     : tasks.filter(t => t.status === activeTab)
 
   const filteredItems = baseItems.filter(item => {
     return item.reporter_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-           item.volunteer_message?.toLowerCase().includes(searchQuery.toLowerCase())
+           item.volunteer_message?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+           item.address?.toLowerCase().includes(searchQuery.toLowerCase())
   })
 
-  // 2. Preparar itens para exibição (Oportunidades agora vêm como registro único com total_slots)
   const displayItems = activeTab === 'opportunities' 
     ? filteredItems.map(o => ({
         ...o,
         slots: o.total_slots,
-        available_ids: [o.id_code] // Mantendo compatibilidade com o clique
+        available_ids: [o.id_code]
       }))
     : filteredItems
 
   const tabCounts = {
-    opportunities: opportunities.length,
+    opportunities: opportunities.filter(o => !tasks.some(t => t.id_code === o.id_code)).length,
     ongoing: tasks.filter(t => t.status === 'ongoing').length,
     finished: tasks.filter(t => t.status === 'finished').length
   };
@@ -135,17 +171,18 @@ export default function VolunteerTasksPage() {
 
   const getTaskColor = (type: string) => {
     switch (type) {
-      case 'medical': return '#C62828';
+      case 'medical': return '#ba1a1a';
       case 'boat': return '#0277BD';
       case 'rescue': return '#E65100';
       case 'food': return '#2E7D32';
+      case 'shelter': return '#1565C0';
       default: return '#1565C0';
     }
   };
 
   return (
     <ProtectedRoute>
-      <main className="min-h-screen bg-surface dark:bg-[#0a1628] flex flex-col pb-32 transition-colors">
+      <main className="min-h-screen bg-slate-50 dark:bg-[#0a1628] flex flex-col pb-32 transition-colors">
         <div className="bg-white/90 dark:bg-[#0a1628]/90 backdrop-blur-xl border-b border-slate-100 dark:border-white/5 px-6 pt-12 pb-8 sticky top-0 z-20">
           <section className="flex items-start gap-4 relative max-w-2xl mx-auto">
             <Link 
@@ -196,124 +233,147 @@ export default function VolunteerTasksPage() {
           </div>
 
           <div className="space-y-6">
-            {loading && activeTab !== 'opportunities' ? (
+            {loading ? (
               <div className="flex justify-center py-20">
                 <div className="h-10 w-10 animate-spin rounded-full border-4 border-primary border-t-transparent" />
               </div>
             ) : filteredItems.length === 0 ? (
-              <div className="text-center py-20 bg-white dark:bg-white/5 rounded-[2.5rem] border border-dashed border-slate-200 dark:border-white/10 opacity-60">
-                <span className="material-symbols-outlined text-slate-300 dark:text-white/10 text-6xl mb-4" style={{ fontVariationSettings: "'FILL' 1" }}>inventory_2</span>
-                <p className="text-slate-500 dark:text-slate-400 font-bold px-10 uppercase text-[10px] tracking-widest">
-                  {activeTab === 'opportunities' ? 'Nenhuma nova solicitação.' : activeTab === 'ongoing' ? 'Sem missões ativas.' : 'Histórico vazio.'}
+              <div className="text-center py-20 bg-white dark:bg-white/5 rounded-[2.5rem] p-10 border border-dashed border-slate-200 dark:border-white/10 opacity-60">
+                <div className="w-20 h-20 bg-slate-50 dark:bg-white/5 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <span className="material-symbols-outlined text-slate-300 text-4xl">inventory_2</span>
+                </div>
+                <h3 className="text-lg font-bold text-slate-800 dark:text-white">Nada encontrado</h3>
+                <p className="text-[10px] text-slate-500 font-black uppercase tracking-widest mt-2 px-10">
+                  {activeTab === 'opportunities' ? 'Nenhuma nova solicitação disponível.' : activeTab === 'ongoing' ? 'Sem missões ativas no momento.' : 'Histórico de atividades vazio.'}
                 </p>
               </div>
             ) : (
-              displayItems.map((item: any) => (
-                <div 
-                  key={item.id}
-                  onClick={() => { setSelectedTask(item); setShowDetail(true); }}
-                  className={`bg-white dark:bg-white/5 rounded-[2.5rem] p-6 shadow-sm border border-slate-100 dark:border-white/10 hover:shadow-md transition-all relative overflow-hidden group cursor-pointer active:scale-[0.98] ${
-                    item.status === 'finished' ? 'opacity-60 grayscale' : ''
-                  }`}
-                >
+              <div className="space-y-6">
+                {displayItems.map((item: any) => (
                   <div 
-                    className="absolute top-0 right-0 w-2.5 h-full opacity-80"
-                    style={{ backgroundColor: getTaskColor(item.type) }}
-                  />
+                    key={item.id}
+                    onClick={() => { setSelectedTask(item); setShowDetail(true); }}
+                    className={`bg-white dark:bg-white/5 rounded-[2.5rem] p-6 shadow-sm border border-slate-100 dark:border-white/10 hover:shadow-md transition-all relative overflow-hidden group cursor-pointer active:scale-[0.98] ${
+                      item.status === 'finished' ? 'opacity-60 grayscale' : ''
+                    }`}
+                  >
+                    <div 
+                      className="absolute right-0 top-0 bottom-0 w-1.5 transition-all group-hover:w-2.5"
+                      style={{ backgroundColor: getTaskColor(item.type) }}
+                    />
 
-                  <div className="flex items-start gap-5">
-                    <div className="w-16 h-16 rounded-[1.8rem] bg-slate-50 dark:bg-white/5 flex items-center justify-center shrink-0 border border-slate-100 dark:border-white/10 group-hover:bg-slate-100 transition-colors">
-                      <span className="material-symbols-outlined text-[32px]" style={{ color: getTaskColor(item.type) }}>
-                        {getTaskIcon(item.type)}
-                      </span>
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex justify-between items-center mb-1.5">
-                        <span 
-                          className="text-[9px] font-black uppercase tracking-widest px-2.5 py-1 rounded-lg"
-                          style={{ backgroundColor: `${getTaskColor(item.type)}15`, color: getTaskColor(item.type) }}
-                        >
-                          {item.volunteer_message?.includes('NECESSIDADE') 
-                            ? item.volunteer_message.replace('NECESSIDADE DE VOLUNTÁRIOS: ', '') 
-                            : item.type || 'VOLUNTÁRIO'
-                          }
+                    <div className="flex items-start gap-4 mb-4">
+                      <div className="shrink-0 w-14 h-14 rounded-2xl bg-slate-50 dark:bg-white/5 flex items-center justify-center text-slate-400 shadow-inner group-hover:scale-105 transition-transform border border-slate-100 dark:border-white/5">
+                        <span className="material-symbols-outlined text-[28px]" style={{ color: getTaskColor(item.type) }}>
+                          {getTaskIcon(item.type)}
                         </span>
-                        {item.urgency === 'high' && (
-                          <div className="flex items-center gap-1 text-red-600 animate-pulse">
-                            <span className="material-symbols-outlined text-[14px]">emergency</span>
-                            <span className="text-[9px] font-black uppercase tracking-widest">Urgente</span>
-                          </div>
-                        )}
                       </div>
                       
-                      <h3 className="font-black text-slate-800 dark:text-white text-xl font-headline leading-tight line-clamp-1 mb-2">
-                        {item.reporter_name || 'Pedido de Ajuda'}
-                      </h3>
-                      
-                      <div className="flex items-start gap-1.5 text-xs text-slate-500 dark:text-slate-400 font-semibold leading-relaxed h-9">
-                        <span className="material-symbols-outlined text-[18px] text-slate-400 shrink-0 translate-y-0.5">location_on</span>
-                        <span className="line-clamp-2 overflow-hidden">
-                          {item.address || item.location}
-                        </span>
-                        {activeTab === 'opportunities' && item.slots > 0 && (
-                          <div className="mt-1 flex items-center gap-2">
-                             <span className="text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded-lg bg-blue-100 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400">
-                               0 / {item.slots} Vagas
-                             </span>
-                          </div>
-                        )}
-                      </div>
-
-                      <div className="mt-6 flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <a 
-                            href={`tel:${item.reporter_phone || item.phone}`}
-                            onClick={(e) => e.stopPropagation()}
-                            className="w-10 h-10 rounded-full bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 flex items-center justify-center active:scale-90 transition-all border border-emerald-100 dark:border-emerald-500/20 shadow-sm"
-                          >
-                            <span className="material-symbols-outlined text-[20px]">call</span>
-                          </a>
-                          <div className="text-[11px] font-bold">
-                            <p className="text-slate-400 leading-none mb-1 uppercase tracking-tighter opacity-70">
-                               {item.requester?.name || 'Gestor'}
-                            </p>
-                            <p className="text-slate-700 dark:text-white leading-none tracking-tight">{item.reporter_phone || item.phone || 'N/A'}</p>
-                          </div>
-                        </div>
-                        
-                        {activeTab === 'opportunities' ? (
-                          <button
-                            onClick={(e) => { e.stopPropagation(); handleAcceptOpportunity(item.available_ids?.[0] || item.id); }}
-                            className="px-6 py-3 rounded-2xl bg-primary text-white font-black text-[10px] uppercase tracking-widest shadow-lg active:scale-95 transition-all flex items-center gap-2"
-                          >
-                            <span className="material-symbols-outlined text-[18px]">send</span>
-                            Aceitar
-                          </button>
-                        ) : (
-                          <div className="flex gap-2">
-                            {item.status === 'ongoing' && (
-                              <button
-                                onClick={(e) => { 
-                                  e.stopPropagation(); 
-                                  if (item.type === 'volunteer') {
-                                    handleFinishVolunteerTask(item.assignment_id);
-                                  } else {
-                                    setSelectedTask(item); 
-                                    setShowCheckout(true); 
-                                  }
-                                }}
-                                className="px-6 py-3 rounded-2xl bg-[#2E7D32] text-white font-black text-[10px] uppercase tracking-widest shadow-lg shadow-green-900/20 active:scale-95 transition-all"
-                              >
-                                Concluir
-                              </button>
+                      <div className="flex-1 min-w-0 pr-2">
+                         <div className="flex items-center gap-2 mb-1 flex-wrap">
+                            <span className="px-2 py-0.5 rounded-lg text-[8px] font-black uppercase tracking-widest text-white shadow-sm" style={{ backgroundColor: getTaskColor(item.type) }}>
+                              {item.type.toUpperCase()}
+                            </span>
+                            {item.urgency === 'high' && (
+                              <div className="flex items-center justify-center text-red-500 animate-pulse bg-red-50 dark:bg-red-900/20 w-6 h-6 rounded-full">
+                                  <span className="material-symbols-outlined text-sm font-bold">priority_high</span>
+                              </div>
                             )}
-                          </div>
-                        )}
+                            {item.is_verified && (
+                              <div className="flex items-center justify-center text-blue-500 bg-blue-50 dark:bg-blue-900/20 w-6 h-6 rounded-full">
+                                  <span className="material-symbols-outlined text-sm font-bold" style={{ fontVariationSettings: "'FILL' 1" }}>verified</span>
+                              </div>
+                            )}
+                            {item.photo_url && (
+                              <div className="flex items-center justify-center text-slate-400 bg-slate-100 dark:bg-white/5 w-6 h-6 rounded-full border border-slate-200 dark:border-white/10">
+                                  <span className="material-symbols-outlined text-xs font-bold">image</span>
+                              </div>
+                            )}
+                         </div>
+                         <h3 className="font-extrabold text-lg text-slate-900 dark:text-white font-headline leading-tight truncate">
+                            {item.reporter_name || item.name || 'Pedido de Ajuda'}
+                         </h3>
                       </div>
+                    </div>
+
+                    <div className="space-y-1.5 mb-6">
+                      <div className="flex items-center gap-2 text-slate-500 dark:text-outline-variant text-[11px] font-bold">
+                          <span className="material-symbols-outlined text-[16px] text-primary">location_on</span>
+                          <span className="truncate">{item.address || item.location || 'Localização no Mapa'}</span>
+                      </div>
+                      {item.description && (
+                           <div className="ml-6">
+                              <p className="text-[10px] text-slate-400 font-medium italic truncate">
+                                  "{item.description}"
+                              </p>
+                           </div>
+                      )}
+                    </div>
+
+                    {item.type === 'shelter' && item.capacity > 0 && (
+                       <div className="mb-6 px-1">
+                           <CapacityBar current={item.occupied} total={item.capacity} />
+                       </div>
+                    )}
+
+                    <div className="flex items-center justify-between mt-auto">
+                      <div className="flex items-center gap-2.5">
+                         {activeTab !== 'opportunities' && (
+                           <a 
+                             href={`tel:${item.reporter_phone || item.phone}`}
+                             onClick={(e) => e.stopPropagation()}
+                             className="w-11 h-11 rounded-2xl bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 flex items-center justify-center active:scale-95 transition-all border border-emerald-100 dark:border-emerald-500/10 shadow-sm"
+                           >
+                             <span className="material-symbols-outlined text-[20px]">call</span>
+                           </a>
+                         )}
+                         <div className="flex items-center gap-3">
+                            <div className="text-[10px] font-black uppercase tracking-widest text-slate-400 opacity-80 leading-tight">
+                                {new Date(item.created_at).toLocaleDateString()}
+                            </div>
+                            {(item.type === 'rescue' || item.type === 'transport' || item.type === 'boat') && item.people_count > 0 && (
+                               <div className="flex items-center gap-1 text-slate-400">
+                                  <span className="material-symbols-outlined text-[16px]">group</span>
+                                  <span className="text-[10px] font-black leading-tight">{item.people_count}</span>
+                               </div>
+                            )}
+                         </div>
+                      </div>
+
+                      {activeTab === 'opportunities' ? (
+                        <button
+                          onClick={(e) => { e.stopPropagation(); handleAcceptOpportunity(item.available_ids?.[0] || item.id); }}
+                          className="px-6 py-3 rounded-2xl bg-primary text-white font-black text-[11px] uppercase tracking-widest shadow-xl shadow-primary/20 active:scale-95 transition-all flex items-center gap-2"
+                        >
+                          <span className="material-symbols-outlined text-[16px]">send</span>
+                          Aceitar
+                        </button>
+                      ) : (
+                        item.status === 'ongoing' && (
+                          <button
+                            onClick={(e) => { 
+                              e.stopPropagation(); 
+                              if (item.isMission) {
+                                handleFinishVolunteerTask(item.assignment_id);
+                              } else if (item.type === 'rescue' || item.type === 'transport' || item.type === 'boat') {
+                                setSelectedTask(item); 
+                                setShowCheckout(true); 
+                              } else {
+                                setSelectedTask(item);
+                                handleComplete('completed');
+                              }
+                            }}
+                            className="px-6 py-3 rounded-2xl bg-emerald-600 text-white font-black text-[10px] uppercase tracking-widest shadow-xl shadow-emerald-900/20 active:scale-95 transition-all flex items-center gap-2"
+                          >
+                            <span className="material-symbols-outlined text-[18px]">task_alt</span>
+                            Concluir
+                          </button>
+                        )
+                      )}
                     </div>
                   </div>
-                </div>
-              ))
+                ))}
+              </div>
             )}
           </div>
         </div>
@@ -322,13 +382,9 @@ export default function VolunteerTasksPage() {
         {showDetail && selectedTask && (
           <div className="fixed inset-0 z-[110] flex flex-col justify-end">
              <div className="absolute inset-0 bg-black/80 backdrop-blur-md" onClick={() => setShowDetail(false)} />
-             <div className="relative z-10 bg-white dark:bg-[#0a1628] rounded-t-[3rem] w-full max-w-2xl mx-auto overflow-hidden reveal-pop border-t border-white/5 max-h-[92vh] flex flex-col pt-2">
-                
-                {/* Visual Header / Close indicator */}
+             <div className="relative z-10 bg-white dark:bg-[#0a1628] rounded-t-[3rem] w-full max-w-2xl mx-auto overflow-hidden reveal-pop border-t border-white/5 max-h-[92vh] flex flex-col pt-2 transition-transform duration-500">
                 <div className="w-12 h-1.5 rounded-full bg-slate-200 dark:bg-white/10 mx-auto my-4 shrink-0" onClick={() => setShowDetail(false)} />
-
                 <div className="flex-1 overflow-y-auto px-6 pb-20">
-                    {/* Media section (image) */}
                     <div className="relative aspect-[4/3] rounded-[2rem] overflow-hidden bg-slate-100 dark:bg-white/5 mb-6 border border-slate-100 dark:border-white/5">
                         {selectedTask.photo_url ? (
                             <img src={selectedTask.photo_url} alt="Localização" className="w-full h-full object-cover" />
@@ -338,14 +394,16 @@ export default function VolunteerTasksPage() {
                                 <p className="text-xs font-black uppercase tracking-widest mt-2">{selectedTask.type === 'shelter' ? 'Abrigo Oficial' : 'Sem foto do local'}</p>
                             </div>
                         )}
-                        
-                        <div className="absolute top-4 left-4">
-                             <span 
-                                className="text-[10px] font-black uppercase tracking-widest px-4 py-2 rounded-2xl shadow-xl backdrop-blur-xl"
-                                style={{ backgroundColor: `${getTaskColor(selectedTask.type)}`, color: 'white' }}
-                                >
+                        <div className="absolute top-4 left-4 flex flex-col gap-2">
+                             <span className="text-[10px] font-black uppercase tracking-widest px-4 py-2 rounded-2xl shadow-xl backdrop-blur-xl bg-primary text-white">
                                 {selectedTask.type}
                             </span>
+                            {(selectedTask.type === 'rescue' || selectedTask.type === 'transport' || selectedTask.type === 'boat') && selectedTask.people_count > 0 && (
+                               <span className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest px-4 py-2 rounded-2xl shadow-xl backdrop-blur-xl bg-white/90 text-slate-900 border border-slate-200">
+                                  <span className="material-symbols-outlined text-[16px]">group</span>
+                                  {selectedTask.people_count}
+                               </span>
+                            )}
                         </div>
                     </div>
 
@@ -353,15 +411,24 @@ export default function VolunteerTasksPage() {
                         {selectedTask.reporter_name || selectedTask.name}
                     </h2>
                     
-                    <div className="flex items-center gap-3 mt-4 mb-8">
-                        <div className="w-12 h-12 rounded-full bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 flex items-center justify-center shrink-0">
-                            <span className="material-symbols-outlined text-[24px]">call</span>
-                        </div>
-                        <div>
-                            <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Contatar Solicitante</p>
-                            <a href={`tel:${selectedTask.reporter_phone}`} className="text-lg font-black text-slate-700 dark:text-white leading-none">{selectedTask.reporter_phone}</a>
-                        </div>
-                    </div>
+                    {selectedTask.status !== 'pending' && (
+                      <div className="flex items-center gap-3 mt-4 mb-8 animate-in fade-in slide-in-from-left-4 duration-500">
+                          <div className="w-12 h-12 rounded-full bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 flex items-center justify-center shrink-0">
+                              <span className="material-symbols-outlined text-[24px]">call</span>
+                          </div>
+                          <div>
+                              <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Contatar Solicitante</p>
+                              <a href={`tel:${selectedTask.reporter_phone}`} className="text-lg font-black text-slate-700 dark:text-white leading-none">{selectedTask.reporter_phone}</a>
+                          </div>
+                      </div>
+                    )}
+
+                    {selectedTask.status === 'pending' && (
+                      <div className="mt-4 mb-8 p-4 rounded-2xl bg-blue-50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-500/10 flex items-center gap-3 text-blue-600 dark:text-blue-400">
+                         <span className="material-symbols-outlined">lock</span>
+                         <p className="text-[11px] font-bold leading-tight uppercase tracking-tight">O contato será liberado após aceitar a missão.</p>
+                      </div>
+                    )}
 
                     <div className="space-y-6">
                         <div className="bg-slate-50 dark:bg-white/5 p-6 rounded-[2rem] border border-slate-100 dark:border-white/5">
@@ -372,7 +439,6 @@ export default function VolunteerTasksPage() {
                             <p className="text-base font-bold text-slate-700 dark:text-slate-200 leading-relaxed">
                                 {selectedTask.address || selectedTask.location}
                             </p>
-                            
                             <a 
                                 href={`https://www.google.com/maps/dir/?api=1&destination=${selectedTask.lat},${selectedTask.lng}`}
                                 target="_blank"
@@ -394,23 +460,17 @@ export default function VolunteerTasksPage() {
                         )}
                     </div>
 
-                    {/* Footer Actions in Modal */}
                     <div className="mt-10 flex gap-3 pb-8">
-                        <button 
-                            onClick={() => setShowDetail(false)}
-                            className="flex-1 py-4 rounded-2xl border-2 border-slate-100 dark:border-white/5 text-slate-500 dark:text-slate-400 font-black text-[11px] uppercase tracking-widest active:scale-95 transition-all"
-                        >
+                        <button onClick={() => setShowDetail(false)} className="flex-1 py-4 rounded-2xl border-2 border-slate-100 dark:border-white/5 text-slate-500 dark:text-slate-400 font-black text-[11px] uppercase tracking-widest active:scale-95 transition-all">
                             Fechar
                         </button>
                         {selectedTask.status === 'ongoing' && (
                             <button 
                                 onClick={() => { 
                                   setShowDetail(false); 
-                                  if (selectedTask.type === 'volunteer') {
-                                    handleFinishVolunteerTask(selectedTask.assignment_id);
-                                  } else {
-                                    setShowCheckout(true); 
-                                  }
+                                  if (selectedTask.isMission) handleFinishVolunteerTask(selectedTask.assignment_id);
+                                  else if (selectedTask.type === 'rescue' || selectedTask.type === 'transport' || selectedTask.type === 'boat') setShowCheckout(true);
+                                  else handleComplete('completed');
                                 }}
                                 className="flex-[1.5] py-4 rounded-2xl bg-emerald-600 text-white font-black text-[11px] uppercase tracking-widest shadow-xl shadow-emerald-900/20 active:scale-95 transition-all"
                             >
@@ -423,36 +483,82 @@ export default function VolunteerTasksPage() {
           </div>
         )}
 
-        {/* Detail Modal Overlay can be added here if needed */}
         {showCheckout && selectedTask && (
-          <div className="fixed inset-0 z-[100] flex flex-col justify-end">
-            <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setShowCheckout(false)} />
-            <div className="relative z-10 bg-white dark:bg-[#0a1628] rounded-t-[2.5rem] px-6 pt-6 pb-20 reveal-pop border-t border-white/5">
+          <div className="fixed inset-0 z-[130] flex flex-col justify-end">
+            <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => { setShowCheckout(false); setIsSelectingShelter(false); }} />
+            <div className="relative z-10 bg-white dark:bg-[#0a1628] rounded-t-[2.5rem] px-6 pt-6 pb-20 reveal-pop border-t border-white/5 max-h-[90vh] flex flex-col">
               <div className="w-12 h-1.5 rounded-full bg-slate-200 dark:bg-white/10 mx-auto mb-6 shrink-0" />
-              <h2 className="text-2xl font-black text-slate-800 dark:text-white font-headline mb-2">Finalizar Resgate</h2>
-              <p className="text-sm text-slate-500 dark:text-slate-400 mb-8 font-medium">Informe para onde você levou o(a) {selectedTask.reporter_name || selectedTask.name || 'solicitante'}</p>
+              
+              {!isSelectingShelter ? (
+                <>
+                  <h2 className="text-2xl font-black text-slate-800 dark:text-white font-headline mb-2">Finalizar Missão</h2>
+                  <p className="text-sm text-slate-500 dark:text-slate-400 mb-8 font-medium">Informe o desfecho deste atendimento:</p>
 
-              <div className="grid grid-cols-1 gap-3">
-                {[
-                  { id: 'shelter', label: 'Levado para um Abrigo', icon: 'house', desc: 'A pessoa foi acolhida com segurança.', color: 'text-blue-600', bg: 'bg-blue-50 dark:bg-blue-500/10' },
-                  { id: 'safe', label: 'Deixado em Local Seguro', icon: 'verified_user', desc: 'A pessoa seguiu para casa de familiares ou área seca.', color: 'text-emerald-600', bg: 'bg-emerald-50 dark:bg-emerald-500/10' },
-                ].map(option => (
-                  <button
-                    key={option.id}
-                    onClick={() => handleComplete(option.id)}
-                    className="flex items-center gap-4 bg-slate-50 dark:bg-white/5 border border-slate-100 dark:border-white/5 p-5 rounded-[1.8rem] active:scale-[0.98] transition-all text-left group hover:border-primary/30"
-                  >
-                    <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 ${option.bg} ${option.color}`}>
-                      <span className="material-symbols-outlined text-[26px]" style={{ fontVariationSettings: "'FILL' 1" }}>{option.icon}</span>
+                  <div className="grid grid-cols-1 gap-3">
+                    {[
+                      { id: 'shelter', label: 'Levado para um Abrigo', icon: 'house', desc: 'A pessoa foi acolhida com segurança.', color: 'text-blue-600', bg: 'bg-blue-50 dark:bg-blue-500/10' },
+                      { id: 'safe', label: 'Deixado em Local Seguro', icon: 'verified_user', desc: 'A pessoa seguiu para casa de familiares ou área seca.', color: 'text-emerald-600', bg: 'bg-emerald-50 dark:bg-emerald-500/10' },
+                    ].map(option => (
+                      <button
+                        key={option.id}
+                        onClick={() => option.id === 'shelter' ? setIsSelectingShelter(true) : handleComplete(option.id)}
+                        className="flex items-center gap-4 bg-slate-50 dark:bg-white/5 border border-slate-100 dark:border-white/5 p-5 rounded-[1.8rem] active:scale-[0.98] transition-all text-left group hover:border-primary/30"
+                      >
+                        <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 ${option.bg} ${option.color}`}>
+                          <span className="material-symbols-outlined text-[26px]" style={{ fontVariationSettings: "'FILL' 1" }}>{option.icon}</span>
+                        </div>
+                        <div className="flex-1">
+                          <p className="font-extrabold text-slate-800 dark:text-white text-base leading-tight">{option.label}</p>
+                          <p className="text-[11px] text-slate-500 mt-1 font-bold uppercase tracking-widest">{option.desc}</p>
+                        </div>
+                        <span className="material-symbols-outlined text-slate-300 group-hover:text-primary transition-colors">chevron_right</span>
+                      </button>
+                    ))}
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="flex items-center gap-4 mb-6">
+                    <button onClick={() => setIsSelectingShelter(false)} className="w-10 h-10 rounded-full bg-slate-100 dark:bg-white/5 flex items-center justify-center text-slate-500">
+                       <span className="material-symbols-outlined">arrow_back</span>
+                    </button>
+                    <div>
+                      <h2 className="text-xl font-black text-slate-800 dark:text-white font-headline leading-tight">Escolher Abrigo</h2>
+                      <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Ponto de entrega do solicitante</p>
                     </div>
-                    <div className="flex-1">
-                      <p className="font-extrabold text-slate-800 dark:text-white text-base leading-tight">{option.label}</p>
-                      <p className="text-[11px] text-slate-500 mt-1 font-bold uppercase tracking-widest">{option.desc}</p>
-                    </div>
-                    <span className="material-symbols-outlined text-slate-300 group-hover:text-primary transition-colors">chevron_right</span>
-                  </button>
-                ))}
-              </div>
+                  </div>
+
+                  <div className="flex-1 overflow-y-auto space-y-2.5 pr-1 min-h-[300px]">
+                    {allShelters.length === 0 ? (
+                       <div className="py-10 text-center opacity-50 italic text-sm">Nenhum abrigo cadastrado.</div>
+                    ) : (
+                      allShelters.map((sh: any) => {
+                        const perc = Math.round((sh.occupied / sh.capacity) * 100) || 0;
+                        return (
+                          <button 
+                            key={sh.id_code} 
+                            onClick={() => handleComplete('shelter', sh.id_code)}
+                            className="w-full text-left bg-slate-50 dark:bg-white/5 p-5 rounded-[1.8rem] border border-slate-100 dark:border-white/5 hover:border-blue-500/30 transition-all group active:scale-[0.98]"
+                          >
+                             <div className="flex items-start justify-between gap-4">
+                               <div className="flex-1 min-w-0">
+                                  <p className="font-black text-slate-800 dark:text-white text-base leading-tight truncate group-hover:text-blue-600 transition-colors">{sh.name}</p>
+                                  <p className="text-[10px] text-slate-500 mt-1 font-bold uppercase tracking-widest truncate">{sh.address}</p>
+                               </div>
+                               <div className="text-right shrink-0">
+                                  <div className={`px-2 py-1 rounded-lg text-[10px] font-black inline-block ${perc >= 90 ? 'bg-red-50 text-red-600' : 'bg-blue-50 text-blue-600'}`}>
+                                     {perc}%
+                                  </div>
+                                  <p className="text-[8px] font-black text-slate-400 mt-1 uppercase tracking-tighter">Ocupado</p>
+                               </div>
+                             </div>
+                          </button>
+                        );
+                      })
+                    )}
+                  </div>
+                </>
+              )}
             </div>
           </div>
         )}
