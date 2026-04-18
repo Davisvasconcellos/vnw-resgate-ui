@@ -1,9 +1,1 @@
-{
-  "/help/page": "app/help/page.js",
-  "/assist/page": "app/assist/page.js",
-  "/page": "app/page.js",
-  "/request/page": "app/request/page.js",
-  "/volunteer/tasks/page": "app/volunteer/tasks/page.js",
-  "/onboarding/page": "app/onboarding/page.js",
-  "/shelter/manage/page": "app/shelter/manage/page.js"
-}
+{}

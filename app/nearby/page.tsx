@@ -74,7 +74,7 @@ export default function NearbyPage() {
     setIsSubmitting(true)
 
     try {
-      const response = await api.put(`/requests/${selectedRequest.id_code}/status`, {
+      const response = await api.put(`/requests/${selectedRequest.id_code || selectedRequest.id}/status`, {
         status: 'attending',
         volunteer_message: volunteerMessage
       })

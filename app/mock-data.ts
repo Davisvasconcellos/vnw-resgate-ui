@@ -5,6 +5,7 @@ export type HelpType = 'rescue' | 'shelter' | 'medical' | 'food' | 'transport' |
 
 export interface Shelter {
   id: string
+  id_code?: string
   name: string
   address: string
   distanceKm: number
@@ -18,16 +19,25 @@ export interface Shelter {
 
 export interface HelpRequest {
   id: string
+  id_code?: string
   type: HelpType
   status: HelpStatus
   people: number
+  people_count?: number
   address: string
   distanceKm: number
   photoUrl?: string
+  photo_url?: string
   createdAt: string
+  created_at?: string
   urgency: 'high' | 'medium' | 'low'
   lat?: number
   lng?: number
+  is_verified?: boolean
+  description?: string
+  reporter_name?: string
+  reporter_phone?: string
+  phone?: string
 }
 
 export interface UsefulPhone {
