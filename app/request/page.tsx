@@ -204,7 +204,7 @@ function RequestForm() {
             </div>
             {description && (
               <div className="bg-slate-50 dark:bg-white/5 p-2 rounded-lg mt-1 italic text-xs">
-                 "{description}"
+                 &quot;{description}&quot;
               </div>
             )}
             <div className="flex justify-between items-center">

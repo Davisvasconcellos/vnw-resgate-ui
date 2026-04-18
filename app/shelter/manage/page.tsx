@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import Link from 'next/link'
 import CapacityBar from '@/components/ui/CapacityBar'
 import { useSearchParams, useRouter } from 'next/navigation'
@@ -25,7 +25,7 @@ interface Entry {
   assumeMessage?: string
 }
 
-export default function ShelterManagePage() {
+function ShelterManageContent() {
   const { t, language } = useI18n()
   const dispatch = useDispatch<AppDispatch>()
   const router = useRouter()
@@ -449,5 +449,13 @@ export default function ShelterManagePage() {
 
       <BottomNavShelter />
     </main>
+  )
+}
+
+export default function ShelterManagePage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-slate-50 dark:bg-[#0a1628] flex items-center justify-center"><div className="h-8 w-8 animate-spin rounded-full border-2 border-blue-500 border-t-transparent" /></div>}>
+       <ShelterManageContent />
+    </Suspense>
   )
 }

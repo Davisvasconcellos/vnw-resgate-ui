@@ -101,7 +101,7 @@ export default function CameraInput({ onCapture, preview }: Props) {
         <div className="relative">
           <div
             onClick={(e) => {
-                if (navigator.mediaDevices?.getUserMedia) {
+                if (typeof navigator !== 'undefined' && typeof navigator.mediaDevices?.getUserMedia === 'function') {
                     e.preventDefault();
                     setIsCameraActive(true);
                 }

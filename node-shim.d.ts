@@ -10,6 +10,3 @@ declare module 'path' {
   export default _default
 }
 
-declare const process: {
-  cwd(): string
-}

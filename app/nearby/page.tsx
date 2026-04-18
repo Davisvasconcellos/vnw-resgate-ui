@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { HELP_TYPE_LABELS } from '@/app/mock-data' // Vamos manter os enums que ajudam front
@@ -49,7 +49,7 @@ function getDistanceFromLatLonInKm(lat1: number, lon1: number, lat2: number, lon
   return parseFloat((R * c).toFixed(1))
 }
 
-export default function NearbyPage() {
+function NearbyContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const moduleParam = searchParams.get('module')
@@ -455,5 +455,13 @@ export default function NearbyPage() {
       </div>
 
     </main>
+  )
+}
+
+export default function NearbyPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-slate-50 dark:bg-[#0a1628] flex items-center justify-center"><div className="h-8 w-8 animate-spin rounded-full border-2 border-blue-500 border-t-transparent" /></div>}>
+       <NearbyContent />
+    </Suspense>
   )
 }
