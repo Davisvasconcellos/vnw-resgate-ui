@@ -133,8 +133,10 @@ function RequestForm() {
       
       // Fluxo 1: Fazer Upload da Imagem se existir
       if (photoFile) {
+        const mainFolder = process.env.NEXT_PUBLIC_MAIN_FOLDER || 'uploads';
         const formData = new FormData()
         formData.append('file', photoFile)
+        formData.append('folder', `${mainFolder}/rescue`)
         
         // Chamada real para a API de upload
         const uploadRes = await api.post('/uploads', formData, { headers: { 'Content-Type': 'multipart/form-data' }})

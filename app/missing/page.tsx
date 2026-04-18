@@ -80,12 +80,20 @@ export default function MissingPage() {
 
     console.log('Iniciando upload do arquivo:', file.name);
     setDebugInfo(`Iniciando upload: ${file.name} (${(file.size / 1024 / 1024).toFixed(2)}MB)`);
+    
+    // Preview instantâneo local (Blob URL)
+    const localUrl = URL.createObjectURL(file)
+    setPhotoPreview(localUrl)
+    
     setUploading(true)
     try {
+      const mainFolder = process.env.NEXT_PUBLIC_MAIN_FOLDER || 'uploads';
+      
       const formData = new FormData()
       formData.append('file', file)
+      formData.append('folder', `${mainFolder}/missing`) 
       
-      setDebugInfo(prev => prev + '\nEnviando para API...');
+      setDebugInfo(prev => prev + '\nEnviando para API (folder: missing)...');
       // Chamada para a API unificada de uploads
       const res = await api.post('/uploads', formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
@@ -95,6 +103,7 @@ export default function MissingPage() {
       const url = res.data.data.url || res.data.data.fileUrl
       
       setFormData(prev => ({ ...prev, photo_url: url }))
+      // Atualizamos para a URL final do servidor após o sucesso
       setPhotoPreview(url)
       toast.success('Foto carregada pela API!')
     } catch (error: any) {
@@ -378,14 +387,6 @@ export default function MissingPage() {
                   onChange={handlePhotoUpload}
                 />
               </label>
-
-              {/* Debug Info */}
-              {debugInfo && (
-                <div className="p-4 bg-slate-900 text-blue-400 font-mono text-[10px] rounded-2xl break-all">
-                  <p className="font-black uppercase mb-1 underline">Upload Debug:</p>
-                  {debugInfo}
-                </div>
-              )}
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="col-span-1">
