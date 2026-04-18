@@ -7,6 +7,7 @@ import { HELP_TYPE_LABELS } from '@/app/mock-data' // Vamos manter os enums que 
 import CapacityBar from '@/components/ui/CapacityBar'
 import StatusBadge from '@/components/ui/StatusBadge'
 import InteractiveMap from '@/components/ui/InteractiveMap'
+import { api } from '@/services/api'
 
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState, AppDispatch } from '@/store'
@@ -73,19 +74,12 @@ export default function NearbyPage() {
     setIsSubmitting(true)
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api/v1'}/requests/${selectedRequest.id_code}/status`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('vnw_token')}`
-        },
-        body: JSON.stringify({
-          status: 'attending',
-          volunteer_message: volunteerMessage
-        })
+      const response = await api.put(`/requests/${selectedRequest.id_code}/status`, {
+        status: 'attending',
+        volunteer_message: volunteerMessage
       })
 
-      if (response.ok) {
+      if (response.status === 200) {
         setShowAttendModal(false)
         setSelectedPin(null)
         router.push('/volunteer/tasks')
