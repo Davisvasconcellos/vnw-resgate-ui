@@ -77,9 +77,21 @@ Para rodar em produção através do **Render**:
 
 ---
 
-## 🔗 Links Úteis para Configuração
-*   **Firebase**: [Console do Firebase](https://console.firebase.google.com/) (Crie um projeto para habilitar o Google Auth).
-*   **Google Cloud**: [Cloud Console](https://console.cloud.google.com/) (Habilitar Drive API e criar Credenciais OAuth2).
+## 💎 Template Library (Exemplos de UI)
+
+Para facilitar o desenvolvimento e a manutenção da consistência visual, este projeto conta com uma biblioteca de componentes integrada acessível via rotas:
+
+*   **`/template` (Master Premium)**: O padrão visual definitivo V2.0, contendo os componentes de alta fidelidade e design moderno.
+*   **`/template2` (Legacy Harvest)**: A colheita original de elementos V1.0, servindo como base histórica do design do sistema.
+*   **`/template3` (União Integral)**: O repositório absoluto que empilha todos os elementos de ambos os mundos para consulta rápida e comparação.
+
+---
+
+## ⚖️ Propriedade Intelectual & Termos de Uso
+
+Este projeto foi desenvolvido com **fins estritamente educacionais**.
+
+**Propriedade Intelectual**: O design, os templates e a lógica desta aplicação são de propriedade exclusiva de **Davis Pereira de Vasconcellos**. É proibida a utilização comercial ou redistribuição sem autorização prévia.
 
 ---
 

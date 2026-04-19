@@ -1,1 +1,1 @@
-self.__REACT_LOADABLE_MANIFEST="{}"
+self.__REACT_LOADABLE_MANIFEST="{\"store\\\\slices\\\\requestsSlice.ts -> @/app/mock-data\":{\"id\":\"store\\\\slices\\\\requestsSlice.ts -> @/app/mock-data\",\"files\":[\"static/chunks/_app-pages-browser_app_mock-data_ts.js\"]},\"store\\\\slices\\\\sheltersSlice.ts -> @/app/mock-data\":{\"id\":\"store\\\\slices\\\\sheltersSlice.ts -> @/app/mock-data\",\"files\":[\"static/chunks/_app-pages-browser_app_mock-data_ts.js\"]}}"

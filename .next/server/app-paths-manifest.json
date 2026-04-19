@@ -1,1 +1,7 @@
-{}
+{
+  "/_not-found/page": "app/_not-found/page.js",
+  "/template/page": "app/template/page.js",
+  "/template2/page": "app/template2/page.js",
+  "/template3/page": "app/template3/page.js",
+  "/help/my-requests/page": "app/help/my-requests/page.js"
+}
