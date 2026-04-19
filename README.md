@@ -1,106 +1,85 @@
-# 🛡️ VNW Resgate — Interface de Missão Crítica
+# 🛡️ VNW Resgate — Interface de Missão Crítica (V1.0)
 
-Esta é a interface "Premium" do ecossistema **VNW Resgate**, desenvolvida em Next.js para ser uma ferramenta de campo ágil, humana e resiliente. Projetada para ser utilizada por voluntários e pessoas em situação de risco durante desastres naturais e operações de salvamento.
-
----
-
-## 🆘 Funcionalidades de Impacto (Life-Saving Features)
-
-Implementamos uma série de recursos focados na **preservação da vida**, **economia de recursos** e **segurança humana**:
-
-### 1. 🔋 Modo de Economia de Bateria (Dark Mode)
-*   **Design OLED-Ready:** A interface suporta modo escuro profundo para economizar bateria em dispositivos móveis, um recurso crucial em áreas com interrupção de energia elétrica.
-*   **Baixa Luminosidade:** Reduz o brilho da tela, ideal para resgates noturnos, evitando ofuscar a visão do voluntário.
-
-### 2. 📱 Instalação PWA (Nativo no Celular)
-*   **Acesso Instantâneo:** Pode ser instalado na tela de início do smartphone sem depender de lojas de aplicativos (App Store/Play Store).
-*   **Resiliência de Rede:** Cache inteligente para garantir que informações críticas de contato e localização estejam disponíveis mesmo com sinal de internet instável.
-
-### 3. 🔐 Privacidade e Proteção de Dados
-*   **Ocultação de Contatos:** O número de telefone do solicitante de ajuda é **ocultado em pedidos abertos** para prevenir golpes e assédio. O contato só é liberado para o voluntário que assume oficialmente a missão.
-*   **Rastreabilidade por UUID:** Cada solicitação possui um identificador único seguro (`id_code`), permitindo o acompanhamento sem expor IDs sequenciais do banco de dados.
-
-### 4. 🚀 Workflow de Resgate Inteligente
-*   **Acesso à Câmera Nativa:** Possibilita o envio rápido de fotos do local/ocorrência para que a equipe de triagem possa avaliar a urgência visualmente.
-*   **Triagem por Modais:** Categorias específicas com cores e ícones distintos para: **Resgate (SOS)**, **Abrigo**, **Médico**, **Alimento**, **Transporte** e **Barco**.
-
-### 5. 👥 Visibilidade Logística Humana
-*   **Contador de Pessoas Prioritário:** A quantidade de vítimas/pessoas em risco é exibida diretamente no card da tarefa. Isso permite que o voluntário saiba instantaneamente se o seu veículo (carro, barco ou jet-ski) comporta aquele grupo.
-
-### 6. 🏠 Automação de Abrigos (Sistema de Fluxo Completo)
-*   **Check-in Automatizado:** Ao finalizar uma missão com destino a um abrigo oficial, o sistema cria automaticamente o registro de entrada (`ShelterEntry`), atualizando a ocupação do abrigo em tempo real.
-*   **Capacidade Flexível:** O sistema permite o registro de pessoas mesmo além da capacidade nominal em situações extremas, mantendo a visibilidade real da superlotação para gestão de recursos e suprimentos.
+Esta é a interface **Premium** do ecossistema **VNW Resgate**, desenvolvida em Next.js para ser uma ferramenta de campo ágil, humana e resiliente. Projetada para ser utilizada por voluntários e pessoas em situação de risco durante operações de salvamento.
 
 ---
 
-## 🎨 Design System e UX
-*   **Aesthetics Premium:** Interface moderna com bordas de `2.5rem`, tipografia hierárquica (Plus Jakarta Sans) e micro-animações para reduzir o estresse cognitivo do usuário em situações de crise.
-*   **Filtros Geográficos:** Localização em tempo real via Haversine no frontend para mostrar apenas o que está no raio de atuação do voluntário.
+## 🎨 Filosofia de Design: "Objective & Light"
+
+Na V1.0, implementamos uma filosofia de design focada na **redução da carga cognitiva**. Em situações de estresse, cada segundo conta.
+
+*   **Hierarquia de Peso Visual:** Cards minimalistas que priorizam o status e o impacto (número de pessoas) antes de detalhes secundários.
+*   **Informação sob Demanda:** Detalhes técnicos, endereços longos e mensagens complexas ficam guardados em *Bottom Sheets* elegantes, liberando a interface principal para uma navegação fluida.
+*   **Ações Intuitivas:** Substituímos botões de texto por ícones universais de ação, inspirados em sistemas de despacho de alta performance.
 
 ---
 
-## 🗺️ Geolocalização e Inteligência Espacial
+## 🚀 Funcionalidades da V1.0 (Core Engine)
 
-O sistema de mapas do VNW Resgate não é apenas visual; ele utiliza lógica matemática para otimizar o tempo de resposta:
+### 1. 📲 Sistema de Notificações Onipresente
+*   **Monitoramento Global:** O app monitora mudanças de status em segundo plano, alertando o usuário instantaneamente através de Toasts, Badges no perfil e Banners de alerta na Home.
+*   **Centro de Dropdown:** Notificações acessíveis em qualquer página através de um menu suspenso integrado ao Header, mantendo o usuário sempre informado sobre o aceite de suas solicitações.
 
-###  algoritmo de Haversine
-*   **Precisão Geográfica:** Utilizamos a **Fórmula de Haversine** para calcular a distância ortodrômica entre dois pontos na superfície da Terra (latitude e longitude).
-*   **Filtragem Híbrida:** 
-    *   **Backend:** A API processa o raio de busca (`radiusKm`) diretamente no banco de dados para entregar apenas registros pertinentes, reduzindo o tráfego de dados.
-    *   **Frontend:** O mapa sincroniza em tempo real com a lista, recalculando as distâncias dinamicamente conforme o voluntário se movimenta.
+### 2. 🔌 Resiliência Offline & Fingerprinting (Identidade Invisível)
+*   **Identidade sem Fricção:** Em situações de crise, exigir um cadastro pode ser fatal. Implementamos um serviço de *Fingerprinting* que gera um **ID Exclusivo de Dispositivo** baseado em metadados do hardware e navegador.
+*   **Persistência de Sessão:** Esse ID é armazenado localmente e enviado em cada requisição, permitindo que o usuário acompanhe o status do seu resgate, receba notificações e atualize dados **sem nunca ter criado uma conta**.
+*   **Sincronização Híbrida:** Assim que a conexão é restaurada, o sistema de sincronização local garante que os pedidos "presos" no dispositivo sejam despachados para a API de forma automática.
 
-### 🔍 Filtros Dinâmicos de Proximidade
-*   **Raio Adaptável:** O usuário pode alternar entre raios de **1km, 2km, 5km ou 10km**, ideal para diferentes cenários (resgate a pé, de carro ou embarcação).
-*   **Pins Inteligentes:** 
-    *   **Pedidos (SOS):** As cores dos pins mudam conforme a criticidade (Urgente = Vermelho, Moderado = Laranja).
-    *   **Abrigos:** Os pins mudam de cor conforme a lotação real (Verde = Vagas, Vermelho = Lotação > 90%).
+### 3. 🔋 Economia de Bateria (Dark Mode Profundo)
+*   **Foco Mobile:** Design otimizado para telas OLED, utilizando tons de cinza profundos e pretos puros para estender a vida útil da bateria em áreas sem energia.
 
-### 📸 Integração com Câmera e Endereço
-*   **Geocodificação Reversa:** Ao mover o pin no mapa, o sistema utiliza OpenStreetMap (Nominatim) para converter coordenadas em endereços reais automaticamente.
-*   **Evidência Visual:** O sistema de captura de foto via câmera nativa vincula a imagem diretamente às coordenadas GPS, evitando erros de localização em áreas inundadas onde placas de rua podem estar submersas.
+### 4. 👤 Conexão Humana via Google Auth
+*   **Identificação Visual:** Integração com avatares do Google para que o solicitante veja o rosto do voluntário que está a caminho, aumentando a sensação de segurança.
+*   **Canal Direto:** Botões de ação imediata para chamadas telefônicas e WhatsApp diretamente no detalhe do pedido.
+
+### 5. 🏠 Gestão Inteligente de Abrigos
+*   **Visibilidade de Ocupação:** Barras de progresso dinâmicas que mostram a lotação dos abrigos em tempo real para voluntários no campo.
 
 ---
 
 ## 🛠️ Tecnologias
 *   **Frontend:** Next.js 14 (App Router)
-*   **Estado:** Redux Toolkit + Axios com interceptores JWT
-*   **PWA:** @ducanh2912/next-pwa
-*   **Estilização:** TailwindCSS (Custom Design System)
-*   **Mapas:** Leaflet / OpenStreetMap
+*   **Estado:** Redux Toolkit + Fingerprinting Device Auth
+*   **Notificações:** React Hot Toast + Context API de Monitoramento
+*   **Estilização:** CSS Vanilla & Tailwind (Design System Customizado)
+
+---
+
+## 🗺️ Roadmap para a V1.1 (Próximos Passos)
+
+Estamos preparando o terreno para expandir a inteligência da plataforma:
+
+*   **🛡️ Centro de Comando (Admin):** Área restrita para gestores de crise visualizarem o mapa de calor de pedidos pendentes em tempo real.
+*   **📊 Módulo de Analytics:** Gerador de relatórios automáticos sobre tempo médio de atendimento, itens mais solicitados e fluxo de pessoas nos abrigos.
+*   **💬 Chat Integrado:** Sistema de mensagens em tempo real (WebSockets) para coordenação direta dentro do app.
 
 ---
 
 ## 🚀 Como Rodar o Projeto
 
+### 💻 Desenvolvimento Local
 ```bash
 # 1. Instalar dependências
 npm install
 
-# 2. Configurar variáveis de ambiente (.env.local)
-# IMPORTANTE: A URL deve terminar com /api/v1 para que as rotas funcionem corretamente
-NEXT_PUBLIC_API_URL=http://localhost:4000/api/v1
-NEXT_PUBLIC_FIREBASE_API_KEY=...
-NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=...
-NEXT_PUBLIC_FIREBASE_PROJECT_ID=...
-NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=...
-NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=...
-NEXT_PUBLIC_FIREBASE_APP_ID=...
+# 2. Configurar o arquivo .env.local
+cp .env.example .env.local
+# Preencha o .env.local com suas chaves (Firebase, API URL, etc).
 
-# 3. Rodar em desenvolvimento
+# 3. Rodar o motor
 npm run dev
 ```
 
----
-
-## 🔑 Configurações Críticas (Firebase/Produção)
-
-Para que o sistema de autenticação e upload funcione corretamente em produção, você **deve**:
-
-1.  **Autorizar Domínios:** No console do Firebase, vá em *Authentication > Settings > Authorized Domains* e adicione a URL do seu deploy (ex: `vnw-resgate-ui.onrender.com`).
-2.  **Configurar CORS:** Se estiver utilizando o Firebase Storage para imagens, certifique-se de que as regras de CORS permitam o domínio do seu frontend.
-3.  **Variáveis de Ambiente:** Garanta que todas as chaves `NEXT_PUBLIC_FIREBASE_*` estejam preenchidas no painel de configurações do Render.
+### ☁️ Deploy em Produção (Render / Vercel)
+Para rodar em produção através do **Render**:
+1.  **Variáveis de Ambiente (OBRIGATÓRIO)**: Você deve configurar as variáveis de ambiente **no painel do seu Frontend** (não apenas na API). Use as chaves do seu `.env.example` como guia e cole na seção *Environment Variables* do painel do Render. Sem isso, o Firebase e a conexão com a API não funcionarão.
+2.  **Firebase Settings**: Certifique-se de que o domínio do seu deploy (ex: `meuapp.onrender.com`) esteja na lista de **Domínios Autorizados** no console do Firebase (*Authentication > Settings*).
 
 ---
+
+## 🔗 Links Úteis para Configuração
+*   **Firebase**: [Console do Firebase](https://console.firebase.google.com/) (Crie um projeto para habilitar o Google Auth).
+*   **Google Cloud**: [Cloud Console](https://console.cloud.google.com/) (Habilitar Drive API e criar Credenciais OAuth2).
 
 ---
 
