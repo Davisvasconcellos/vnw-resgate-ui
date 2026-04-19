@@ -9,6 +9,13 @@ export interface LocalRequest {
   created_at: string;
   sync_status: 'synced' | 'pending';
   address: string;
+  people_count?: number;
+  volunteer?: {
+    name: string;
+    phone?: string;
+    avatar_url?: string;
+  };
+  volunteer_message?: string;
 }
 
 export const getDeviceId = (): string => {
@@ -64,7 +71,10 @@ export const saveHelpRequest = (request: Partial<LocalRequest>) => {
     created_at: request.created_at || new Date().toISOString(),
     sync_status: request.sync_status || 'pending',
     address: request.address || '',
-    id_code: request.id_code
+    id_code: request.id_code,
+    people_count: request.people_count,
+    volunteer: request.volunteer,
+    volunteer_message: request.volunteer_message
   };
 
   if (index >= 0) {

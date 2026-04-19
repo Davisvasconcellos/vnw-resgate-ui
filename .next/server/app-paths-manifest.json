@@ -1,6 +1,8 @@
 {
-  "/help/page": "app/help/page.js",
-  "/help/my-requests/page": "app/help/my-requests/page.js",
+  "/_not-found/page": "app/_not-found/page.js",
   "/page": "app/page.js",
+  "/help/my-requests/page": "app/help/my-requests/page.js",
+  "/volunteer/tasks/page": "app/volunteer/tasks/page.js",
+  "/help/page": "app/help/page.js",
   "/assist/page": "app/assist/page.js"
 }

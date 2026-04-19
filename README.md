@@ -77,7 +77,8 @@ O sistema de mapas do VNW Resgate não é apenas visual; ele utiliza lógica mat
 npm install
 
 # 2. Configurar variáveis de ambiente (.env.local)
-NEXT_PUBLIC_API_URL=https://sua-api.render.com/api/v1
+# IMPORTANTE: A URL deve terminar com /api/v1 para que as rotas funcionem corretamente
+NEXT_PUBLIC_API_URL=http://localhost:4000/api/v1
 NEXT_PUBLIC_FIREBASE_API_KEY=...
 NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=...
 NEXT_PUBLIC_FIREBASE_PROJECT_ID=...

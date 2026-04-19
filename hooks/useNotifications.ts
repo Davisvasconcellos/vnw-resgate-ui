@@ -29,10 +29,22 @@ export function useNotifications() {
         !readList.includes(r.id_code)
       )
 
-      const newCount = unreadItems.length
+      // Memória de Toasts (IDs que já "apitaram")
+      const notified = localStorage.getItem('vnw_notified_ids')
+      const notifiedList: string[] = notified ? JSON.parse(notified) : []
+      
+      let hasNewToToast = false
+      const newNotifiedList = [...notifiedList]
 
-      // Se houver mais não lidas do que antes, avisa o usuário
-      if (newCount > prevCountRef.current) {
+      unreadItems.forEach(item => {
+        if (item.id_code && !notifiedList.includes(item.id_code)) {
+          hasNewToToast = true
+          newNotifiedList.push(item.id_code)
+        }
+      })
+
+      // Se houver IDs realmente novos, avisa o usuário
+      if (hasNewToToast) {
         toast.success(`🚨 Nova atualização no seu pedido de socorro!`, {
           duration: 6000,
           position: 'top-right',
@@ -44,13 +56,14 @@ export function useNotifications() {
             textTransform: 'uppercase',
             letterSpacing: '1px',
             borderRadius: '1rem',
-            border: '1px solid rgba(255,255,255,0.1)'
+            border: '2px solid #BA1A1A',
+            boxShadow: '0 20px 40px rgba(0,0,0,0.3)'
           }
         })
+        localStorage.setItem('vnw_notified_ids', JSON.stringify(newNotifiedList))
       }
 
-      prevCountRef.current = newCount
-      setUnreadCount(newCount)
+      setUnreadCount(unreadItems.length)
       setNotifications(unreadItems)
     } catch (e) {
       console.error('[Notifications] Erro ao sincronizar notificações', e)

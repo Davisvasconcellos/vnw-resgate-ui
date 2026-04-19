@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useI18n } from '@/components/i18n/I18nProvider'
+import { useNotifications } from '@/hooks/useNotifications'
 
 export default function HomePage() {
   const { language, setLanguage, t } = useI18n()
@@ -10,6 +11,7 @@ export default function HomePage() {
   const [isLogged, setIsLogged] = useState(false)
   const [userProfile, setUserProfile] = useState<any>(null)
   const [loading, setLoading] = useState(false)
+  const { unreadCount } = useNotifications()
 
   useEffect(() => {
     const token = localStorage.getItem('vnw_token')
@@ -107,8 +109,15 @@ export default function HomePage() {
       <header className="relative z-10 flex flex-col items-center pt-8 pb-4 px-6">
         <div className="relative group">
           {isLogged && userProfile?.avatar_url ? (
-            <Link href="/user-profile" className="block w-16 h-16 rounded-2xl overflow-hidden border-2 border-blue-500 shadow-lg shadow-blue-500/20 mb-4 animate-in zoom-in active:scale-90 transition-transform">
-              <img src={userProfile.avatar_url} alt="Profile" className="w-full h-full object-cover" />
+            <Link href="/user-profile" className="relative block w-16 h-16 rounded-2xl border-2 border-blue-500 shadow-lg shadow-blue-500/20 mb-4 animate-in zoom-in active:scale-90 transition-transform">
+              <div className="w-full h-full rounded-xl overflow-hidden">
+                <img src={userProfile.avatar_url} alt="Profile" className="w-full h-full object-cover" />
+              </div>
+              {unreadCount > 0 && (
+                <span className="absolute -top-2 -right-2 w-6 h-6 bg-red-600 text-white text-[11px] font-black rounded-full border-2 border-[#f8fafc] dark:border-[#0a1628] flex items-center justify-center animate-bounce shadow-lg">
+                  {unreadCount}
+                </span>
+              )}
             </Link>
           ) : (
             <div className="w-20 h-20 mb-4 animate-in zoom-in duration-700">
@@ -134,6 +143,21 @@ export default function HomePage() {
 
       <div className="relative z-10 flex-1 flex flex-col justify-center px-6 gap-3 pb-36 max-w-lg mx-auto w-full">
         {/* Informative Banner */}
+        {unreadCount > 0 && (
+           <Link href="/help/my-requests" className="mb-4 block animate-in slide-in-from-top-4 duration-500">
+             <div className="flex items-center gap-4 rounded-3xl px-6 py-5 bg-blue-600 shadow-xl shadow-blue-600/20 border border-blue-400/30">
+                <div className="w-10 h-10 rounded-2xl bg-white/20 flex items-center justify-center shrink-0">
+                   <span className="material-symbols-outlined text-white animate-pulse">notifications_active</span>
+                </div>
+                <div className="flex-1">
+                   <p className="text-white text-[10px] font-black uppercase tracking-widest mb-0.5">Atualização de Socorro</p>
+                   <p className="text-white/90 text-xs font-bold leading-tight">Você tem {unreadCount} {unreadCount === 1 ? 'notificação' : 'notificações'} no seu histórico.</p>
+                </div>
+                <span className="material-symbols-outlined text-white/50 text-[18px]">arrow_forward</span>
+             </div>
+           </Link>
+        )}
+
         {!isLogged && (
           <div className="mb-4 w-full flex items-start gap-4 rounded-3xl px-6 py-5 bg-white dark:bg-white/5 backdrop-blur-md border border-slate-200 dark:border-white/10 transition-all shadow-xl shadow-slate-200/50 dark:shadow-none">
             <div className="w-12 h-12 rounded-full bg-blue-50 dark:bg-blue-500/20 flex items-center justify-center shrink-0">
