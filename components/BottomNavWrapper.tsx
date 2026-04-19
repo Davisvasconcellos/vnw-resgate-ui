@@ -81,8 +81,8 @@ function BottomNavContent() {
     return <BottomNavRescue />
   }
 
-  // Rotas Públicas Standard (Ajuda, Abrigos, etc)
-  const PUBLIC_ROUTES = ['/help', '/help/shelters', '/help/phones']
+  // Rotas Públicas Standard (Ajuda, Abrigos, Meus Pedidos, etc)
+  const PUBLIC_ROUTES = ['/help', '/help/shelters', '/help/phones', '/help/my-requests']
   if (PUBLIC_ROUTES.includes(pathname)) {
     return <BottomNavPublic />
   }

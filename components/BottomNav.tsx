@@ -9,7 +9,7 @@ export default function BottomNav() {
   const { t } = useI18n()
 
   const isHome = pathname === '/'
-  const isBookings = pathname.startsWith('/my-bookings')
+  const isBookings = pathname.startsWith('/help/my-requests')
   const isProfile = pathname.startsWith('/user-profile')
 
   return (
@@ -32,7 +32,7 @@ export default function BottomNav() {
       </Link>
 
       <Link
-        href="/my-bookings"
+        href="/help/my-requests"
         className={`flex flex-col items-center justify-center rounded-full px-5 py-1.5 transition-transform duration-200 active:scale-95 ${
           isBookings
             ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-300'
@@ -43,7 +43,7 @@ export default function BottomNav() {
           className="material-symbols-outlined"
           style={{ fontVariationSettings: `'FILL' ${isBookings ? 1 : 0}` }}
         >
-          event_note
+          notifications
         </span>
         <span className="text-[11px] font-semibold mt-0.5">
           {t('nav.bookings')}

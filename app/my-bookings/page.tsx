@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import AppHeader from '@/components/headers/AppHeader'
 import BottomNav from '@/components/BottomNav'
-import { getLocalRequests, LocalRequest } from '@/services/fingerprint'
+import { getLocalRequests, LocalRequest, syncPendingRequests } from '@/services/fingerprint'
 import { api } from '@/services/api'
 import { useI18n } from '@/components/i18n/I18nProvider'
 import Link from 'next/link'
@@ -11,11 +11,18 @@ import Link from 'next/link'
 export default function MyRequestsPage() {
   const [requests, setRequests] = useState<LocalRequest[]>([])
   const [loading, setLoading] = useState(true)
+  const [syncing, setSyncing] = useState(false)
   const { t } = useI18n()
 
   useEffect(() => {
     const loadData = async () => {
       setLoading(true)
+      
+      // 1. Tentar sincronizar pedidos pendentes primeiro (Push)
+      setSyncing(true)
+      await syncPendingRequests()
+      setSyncing(false)
+
       try {
         const localData = getLocalRequests()
         let apiData: any[] = []

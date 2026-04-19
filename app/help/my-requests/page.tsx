@@ -1,129 +1,141 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import Link from 'next/link'
-import { api } from '@/services/api'
-import { getMyRequests } from '@/services/fingerprint'
 import AppHeader from '@/components/headers/AppHeader'
+import BottomNav from '@/components/BottomNav'
+import { getLocalRequests, LocalRequest, syncPendingRequests } from '@/services/fingerprint'
+import { api } from '@/services/api'
 import { useI18n } from '@/components/i18n/I18nProvider'
-
-interface RequestStatus {
-  id_code: string
-  type: string
-  status: 'pending' | 'viewed' | 'attending' | 'resolved'
-  created_at: string
-  is_verified?: boolean
-  volunteer_name?: string
-  volunteer_phone?: string
-}
+import Link from 'next/link'
 
 export default function MyRequestsPage() {
-  const { t } = useI18n()
-  const [requests, setRequests] = useState<RequestStatus[]>([])
+  const [requests, setRequests] = useState<LocalRequest[]>([])
   const [loading, setLoading] = useState(true)
+  const [syncing, setSyncing] = useState(false)
+  const { t } = useI18n()
 
   const [activeTab, setActiveTab] = useState<'active' | 'history'>('active')
 
-  const fetchStatuses = async () => {
+  const loadData = async () => {
     setLoading(true)
-    const codes = getMyRequests()
-    if (codes.length === 0) {
-      setRequests([])
-      setLoading(false)
-      return
-    }
+    
+    // 1. Tentar sincronizar pedidos pendentes primeiro (Push)
+    setSyncing(true)
+    await syncPendingRequests()
+    setSyncing(false)
 
     try {
-      const res = await api.get(`/requests?id_codes=${codes.join(',')}`)
-      if (res.data.success) {
-        setRequests(res.data.data)
+      const localData = getLocalRequests()
+      let apiData: any[] = []
+
+      // Se estiver logado, buscar dados da API
+      const storedUser = localStorage.getItem('vnw_user')
+      if (storedUser) {
+        try {
+          const res = await api.get('/requests/my')
+          apiData = res.data.data || []
+        } catch (e) {
+          console.error('Erro ao buscar pedidos da API, usando locais.', e)
+        }
       }
-    } catch (error) {
-      console.error('Erro ao buscar status:', error)
+
+      // Merge Inteligente: API ganha de Local se houver o mesmo id_code
+      const merged: LocalRequest[] = [...localData]
+
+      apiData.forEach((item: any) => {
+        const exists = merged.find(m => m.id_code === item.id_code)
+        if (!exists) {
+          merged.push({
+            id_code: item.id_code,
+            local_id: `api-${item.id_code}`,
+            type: item.type,
+            description: item.description,
+            status: item.status,
+            urgency: item.urgency,
+            created_at: item.created_at,
+            sync_status: 'synced',
+            address: item.address
+          })
+        } else {
+          const idx = merged.indexOf(exists)
+          merged[idx] = { ...exists, status: item.status, sync_status: 'synced' }
+        }
+      })
+
+      merged.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+      setRequests(merged)
     } finally {
       setLoading(false)
     }
   }
 
   useEffect(() => {
-    fetchStatuses()
+    loadData()
   }, [])
 
-  const filteredRequests = requests.filter(r => 
-    activeTab === 'active' ? r.status !== 'resolved' : r.status === 'resolved'
-  )
-
-  const getTypeColor = (type: string) => {
-    switch (type) {
-      case 'rescue': return '#ba1a1a'
-      case 'shelter': return '#1565C0'
-      case 'medical': return '#C62828'
-      case 'food': return '#E65100'
-      case 'transport': return '#0277BD'
-      default: return '#1565C0'
-    }
-  }
-
-  const getRequestInfo = (req: RequestStatus & { sub_type?: string, description?: string }) => {
-    switch (req.type) {
-      case 'rescue': return { label: 'Resgate Urgente', icon: 'sos' }
-      case 'shelter': return { label: 'Solicitação de Abrigo', icon: 'house' }
-      case 'medical': return { label: 'Auxílio Médico', icon: 'medical_services' }
-      case 'food': return { label: 'Suprimentos / Alimento', icon: 'restaurant' }
-      case 'transport': return { label: 'Transporte', icon: 'directions_car' }
-      case 'volunteer': return { label: 'Pedido de Voluntários', icon: 'groups' }
-      default: return { label: 'Pedido de Ajuda', icon: 'volunteer_activism' }
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'pending': return 'bg-slate-500/10 text-slate-500'
+      case 'viewed': return 'bg-blue-500/10 text-blue-500'
+      case 'attending': return 'bg-orange-500/10 text-orange-500'
+      case 'resolved': return 'bg-emerald-500/10 text-emerald-500'
+      default: return 'bg-slate-100 text-slate-400'
     }
   }
 
   return (
-    <main className="min-h-screen bg-slate-50 dark:bg-[#0a1628] pb-32 transition-colors">
-      <div className="bg-white dark:bg-[#0d2247] pt-16 pb-6 px-4 border-b border-slate-100 dark:border-white/5">
-        <div className="max-w-2xl mx-auto space-y-4">
-           {/* Navigation / Back */}
-          <Link href="/help?module=help" className="flex items-center gap-2 text-slate-500 hover:text-primary transition-colors group">
-            <div className="w-8 h-8 rounded-lg bg-slate-50 dark:bg-white/5 flex items-center justify-center group-hover:scale-110 transition-transform">
-              <span className="material-symbols-outlined text-[18px]">arrow_back</span>
+    <div className="bg-slate-50 dark:bg-[#0a1628] min-h-screen pb-32 transition-colors">
+      <AppHeader />
+      
+      <main className="pt-24 px-6 max-w-2xl mx-auto">
+        <header className="mb-8 flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-black font-headline tracking-tighter text-slate-900 dark:text-white uppercase leading-none">
+              Meus Pedidos
+            </h1>
+            
+            {/* Resumo de Atividade (Novo) */}
+            <div className="flex items-center gap-4 mt-4">
+              <div className="flex items-center gap-2 bg-blue-500/10 px-3 py-1.5 rounded-xl border border-blue-500/10">
+                 <span className="material-symbols-outlined text-[16px] text-blue-600">assignment_turned_in</span>
+                 <span className="text-[10px] font-black text-blue-700 uppercase tracking-widest">
+                   {requests.filter(r => r.status !== 'resolved' && r.status !== 'canceled').length} Ativos
+                 </span>
+              </div>
+              <div className="flex items-center gap-2 bg-red-500/10 px-3 py-1.5 rounded-xl border border-red-500/10 animate-in fade-in zoom-in duration-500">
+                 <span className="material-symbols-outlined text-[16px] text-red-600 font-bold">notifications_active</span>
+                 <span className="text-[10px] font-black text-red-700 uppercase tracking-widest">
+                   {requests.filter(r => r.status === 'attending').length} Notificações
+                 </span>
+              </div>
             </div>
-            <span className="text-[10px] font-black uppercase tracking-widest text-[#0d2247] dark:text-white opacity-60">Central de Ajuda</span>
-          </Link>
+          </div>
+          <button 
+            onClick={loadData}
+            disabled={loading}
+            className="w-12 h-12 rounded-2xl bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 flex items-center justify-center text-slate-600 dark:text-slate-300 active:scale-90 transition-all shadow-sm"
+          >
+            <span className={`material-symbols-outlined ${loading ? 'animate-spin' : ''}`}>refresh</span>
+          </button>
+        </header>
 
-          <header className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-extrabold font-headline text-slate-900 dark:text-white tracking-tight">
-                Minhas Solicitações
-              </h1>
-              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 font-medium">Acompanhe seus pedidos e histórico de suporte.</p>
-            </div>
-            <button 
-              onClick={fetchStatuses}
-              disabled={loading}
-              className="w-10 h-10 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 flex items-center justify-center text-slate-600 dark:text-slate-300 active:rotate-180 transition-transform duration-500"
-            >
-              <span className={`material-symbols-outlined ${loading ? 'animate-spin' : ''}`}>refresh</span>
-            </button>
-          </header>
-        </div>
-      </div>
-
-      <div className="px-4 py-6 max-w-2xl mx-auto space-y-6">
-        {/* Tabs Control */}
-        <div className="bg-white dark:bg-white/5 p-1 rounded-3xl border border-slate-100 dark:border-white/5 flex shadow-sm max-w-sm mx-auto">
+        {/* Tabs Control (Novo) */}
+        <div className="bg-slate-200/50 dark:bg-white/5 p-1 rounded-3xl mb-8 flex shadow-inner max-w-sm mx-auto">
           <button
             onClick={() => setActiveTab('active')}
             className={`flex-1 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all ${
               activeTab === 'active' 
-                ? 'bg-blue-50 text-blue-700 dark:bg-primary dark:text-white shadow-sm'
+                ? 'bg-white dark:bg-primary text-blue-700 dark:text-white shadow-sm'
                 : 'text-slate-400 dark:text-slate-500'
             }`}
           >
-            Aguardando ({requests.filter(r => r.status !== 'resolved').length})
+            Em Aberto ({requests.filter(r => r.status !== 'resolved').length})
           </button>
           <button
             onClick={() => setActiveTab('history')}
             className={`flex-1 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all ${
               activeTab === 'history' 
-                ? 'bg-blue-50 text-blue-700 dark:bg-primary dark:text-white shadow-sm'
+                ? 'bg-white dark:bg-primary text-blue-700 dark:text-white shadow-sm'
                 : 'text-slate-400 dark:text-slate-500'
             }`}
           >
@@ -132,133 +144,113 @@ export default function MyRequestsPage() {
         </div>
 
         {loading ? (
-          <div className="space-y-4">
-            {[1, 2].map(i => (
-              <div key={i} className="h-40 bg-white dark:bg-white/5 rounded-[2rem] animate-pulse border border-slate-100 dark:border-white/5" />
-            ))}
+          <div className="flex flex-col items-center justify-center py-20 text-center">
+            <div className="h-12 w-12 animate-spin rounded-full border-4 border-blue-500 border-t-transparent mb-4" />
+            <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Sincronizando dados...</p>
           </div>
-        ) : filteredRequests.length === 0 ? (
-          <div className="bg-white dark:bg-white/5 rounded-[2.5rem] p-10 text-center border border-slate-100 dark:border-white/10 shadow-sm mt-8">
-            <div className="w-20 h-20 bg-slate-50 dark:bg-white/5 rounded-full flex items-center justify-center mx-auto mb-6">
-              <span className="material-symbols-outlined text-slate-300 text-4xl">inventory_2</span>
+        ) : requests.filter(r => activeTab === 'active' ? r.status !== 'resolved' : r.status === 'resolved').length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-20 text-center bg-white dark:bg-white/5 rounded-[3rem] border-2 border-dashed border-slate-100 dark:border-white/5 p-10">
+            <div className="w-20 h-20 bg-slate-50 dark:bg-white/5 rounded-full flex items-center justify-center mb-6 text-slate-200">
+               <span className="material-symbols-outlined text-[48px]">receipt_long</span>
             </div>
-            <h3 className="text-lg font-bold text-slate-800 dark:text-white">Nenhum pedido aqui</h3>
-            <p className="text-sm text-slate-500 mt-2 font-medium px-4">
-               {activeTab === 'active' 
-                 ? 'Você não tem solicitações ativas no momento.' 
-                 : 'Seu histórico está vazio.'}
+            <h3 className="text-lg font-bold text-slate-900 dark:text-white">Sem pedidos aqui</h3>
+            <p className="text-xs text-slate-500 max-w-[200px] mt-2 font-medium">
+               {activeTab === 'active' ? 'Você não tem solicitações ativas no momento.' : 'Seu histórico está limpo.'}
             </p>
+            <Link href="/request" className="mt-8 px-10 py-4 bg-primary text-white rounded-2xl font-black uppercase tracking-widest text-xs shadow-xl shadow-primary/30 active:scale-95 transition-all">
+               Pedir Ajuda
+            </Link>
           </div>
         ) : (
           <div className="space-y-4">
-            {filteredRequests.map((req: any) => {
-              const info = getRequestInfo(req);
-              const color = getTypeColor(req.type);
-              return (
-                <div 
-                  key={req.id_code}
-                  className="bg-white dark:bg-white/5 rounded-[2.2rem] p-6 border border-slate-100 dark:border-white/5 shadow-sm relative overflow-hidden group"
-                >
-                  {/* Lateral Indicator Bar */}
-                  <div className="absolute right-0 top-0 bottom-0 w-1.5 transition-all group-hover:w-2.5" style={{ background: color }} />
-
-                  {/* Header: Icon + Title/Badges */}
-                  <div className="flex items-center gap-4 mb-4">
-                    <div className="shrink-0 w-14 h-14 rounded-2xl bg-slate-50 dark:bg-white/5 flex items-center justify-center text-slate-400 shadow-inner group-hover:scale-105 transition-transform">
-                      <span className="material-symbols-outlined text-[28px]" style={{ color: color }}>
-                        {info.icon}
-                      </span>
-                    </div>
-                    
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-0.5">
-                        <span className="px-2 py-0.5 rounded-lg text-[8px] font-black uppercase tracking-widest text-white" style={{ backgroundColor: color }}>
-                          {req.type.toUpperCase()}
-                        </span>
-                        {req.status === 'pending' && (
-                          <div className="flex items-center justify-center text-amber-500 animate-pulse bg-amber-50 dark:bg-amber-900/20 w-6 h-6 rounded-full group-hover:scale-110 transition-transform">
-                            <span className="material-symbols-outlined text-sm font-bold">schedule</span>
-                          </div>
-                        )}
-                        {req.is_verified && (
-                          <div className="flex items-center justify-center text-blue-500 bg-blue-50 dark:bg-blue-900/20 w-6 h-6 rounded-full group-hover:scale-110 transition-transform">
-                            <span className="material-symbols-outlined text-sm font-bold" style={{ fontVariationSettings: "'FILL' 1" }}>verified</span>
-                          </div>
-                        )}
-                      </div>
-                      <h3 className="font-extrabold text-xl text-slate-900 dark:text-white font-headline leading-tight">
-                        {info.label}
-                      </h3>
-                      {req.sub_type && (
-                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">🏷️ {req.sub_type}</p>
-                      )}
-                    </div>
+            {requests
+              .filter(r => activeTab === 'active' ? r.status !== 'resolved' : r.status === 'resolved')
+              .map((req) => (
+              <div 
+                key={req.local_id} 
+                className="bg-white dark:bg-[#0d2247] border border-slate-100 dark:border-white/5 rounded-[2.5rem] p-7 shadow-sm hover:shadow-md transition-all group relative overflow-hidden"
+              >
+                {/* Sync Badge */}
+                {req.sync_status === 'pending' && (
+                  <div className="absolute top-0 right-0 p-4">
+                     <span className="flex items-center gap-1.5 text-[9px] font-black bg-orange-500 text-white px-3 py-1 rounded-full uppercase shadow-lg shadow-orange-500/20">
+                       <span className="material-symbols-outlined text-[12px] animate-pulse">cloud_off</span>
+                       Offline
+                     </span>
                   </div>
+                )}
 
-                  {/* Body Content: Spans full width */}
-                  <div className="space-y-4">
-                    {req.description && (
-                       <div className="p-4 rounded-2xl bg-slate-50 dark:bg-white/5 border border-slate-100 dark:border-white/5 italic text-[11px] text-slate-600 dark:text-slate-300 leading-relaxed">
-                          "{req.description}"
-                       </div>
-                    )}
-
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-slate-50 dark:border-white/5">
-                       <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400 text-xs">
-                          <span className="material-symbols-outlined text-base">location_on</span>
-                          <span className="font-semibold truncate">{req.address || 'Localização não informada'}</span>
-                       </div>
-                       <div className="flex items-center gap-2 text-slate-400 text-xs">
-                          <span className="material-symbols-outlined text-base">event</span>
-                          <span className="text-[10px] font-bold uppercase tracking-wider">
-                             Cod: {req.id_code.split('-')[0].toUpperCase()} • {new Date(req.created_at).toLocaleDateString()}
+                <div className="flex items-start justify-between gap-4">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-4">
+                       <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${getStatusColor(req.status)} shadow-inner`}>
+                          <span className="material-symbols-outlined text-[28px]">
+                            {req.type === 'rescue' ? 'sos' : req.type === 'food' ? 'restaurant' : req.type === 'shelter' ? 'house' : 'medical_services'}
                           </span>
                        </div>
+                       <div>
+                          <span className={`text-[10px] font-black uppercase tracking-widest px-2.5 py-1 rounded-lg ${getStatusColor(req.status)}`}>
+                            {req.status === 'pending' ? 'Pendente' : req.status === 'attending' ? 'Atendimento' : req.status === 'resolved' ? 'Resolvido' : req.status}
+                          </span>
+                          <p className="text-[9px] text-slate-400 font-bold uppercase tracking-widest mt-1">
+                             Cod: {req.id_code ? req.id_code.split('-')[0].toUpperCase() : 'PENDENTE'}
+                          </p>
+                       </div>
+                    </div>
+                    
+                    <h2 className="font-headline font-black text-xl text-slate-900 dark:text-white tracking-tight">
+                       {req.type === 'rescue' ? 'Socorro Urgente' : req.type === 'shelter' ? 'Abrigo / Acolhimento' : 'Apoio Gerais'}
+                    </h2>
+                    
+                    <div className="mt-3 p-4 bg-slate-50 dark:bg-white/5 rounded-2xl italic text-[11px] text-slate-600 dark:text-slate-300 leading-relaxed border border-slate-100 dark:border-white/5">
+                       &quot;{req.description || 'Sem descrição'}&quot;
                     </div>
 
-                    {req.status === 'attending' && (
-                      <div className="flex items-center justify-between pt-4 border-t border-slate-50 dark:border-white/5">
-                         <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-full bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center text-blue-600">
-                              <span className="material-symbols-outlined text-[20px]">support_agent</span>
-                            </div>
-                            <div>
-                              <p className="text-[9px] font-black text-blue-600 uppercase tracking-widest">Equipe em campo</p>
-                              <p className="text-xs font-extrabold text-slate-700 dark:text-slate-200">Em atendimento</p>
-                            </div>
-                         </div>
-                         <Link href={`tel:${req.volunteer_phone || ''}`} className="flex items-center gap-3 px-6 py-2.5 bg-blue-600 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-lg shadow-blue-500/20 active:scale-95 transition-all">
-                           <span className="material-symbols-outlined text-sm font-bold">call</span>
-                           Contatar
-                         </Link>
-                      </div>
+                    {/* Mensagem do Salvador (Novo) */}
+                    {(req as any).volunteer_message && (
+                       <div className="mt-4 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-2xl border-l-4 border-blue-500 animate-in slide-in-from-left-2 duration-300">
+                          <div className="flex items-center gap-2 mb-2">
+                             <span className="material-symbols-outlined text-[14px] text-blue-600 font-bold">chat_bubble</span>
+                             <span className="text-[9px] font-black text-blue-600 uppercase tracking-widest">Resposta do Salvador</span>
+                          </div>
+                          <p className="text-[11px] font-bold text-blue-800 dark:text-blue-200 leading-relaxed italic">
+                             &quot;{(req as any).volunteer_message}&quot;
+                          </p>
+                       </div>
                     )}
 
-                    {req.status === 'pending' && (
-                      <div className="pt-2">
-                         <div className="flex items-center justify-between mb-2">
-                           <span className="text-[9px] font-black text-amber-500 uppercase tracking-widest">Buscando equipe...</span>
-                           <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Status: Pendente</span>
-                         </div>
-                         <div className="h-1.5 bg-slate-100 dark:bg-white/5 rounded-full overflow-hidden">
-                            <div className="h-full bg-amber-400 animate-pulse" style={{ width: '40%' }} />
-                         </div>
+                    <div className="mt-5 flex flex-wrap gap-5 items-center text-[10px] font-black uppercase tracking-widest text-slate-400">
+                      <div className="flex items-center gap-2">
+                        <span className="material-symbols-outlined text-[16px]">calendar_month</span>
+                        {new Date(req.created_at).toLocaleDateString()}
                       </div>
-                    )}
+                      <div className="flex items-center gap-2 max-w-[200px] truncate">
+                        <span className="material-symbols-outlined text-[16px]">map</span>
+                        {req.address}
+                      </div>
+                    </div>
                   </div>
                 </div>
-              )
-            })}
+
+                <div className="mt-8 pt-6 border-t border-slate-50 dark:border-white/5 flex items-center justify-between">
+                   <div className={`flex items-center gap-1.5 ${req.urgency === 'high' ? 'text-red-500' : 'text-slate-400'}`}>
+                      <span className="material-symbols-outlined text-sm font-bold">priority_high</span>
+                      <span className="text-[10px] font-black uppercase tracking-widest">
+                        {req.urgency === 'high' ? 'Urgência Crítica' : 'Normal'}
+                      </span>
+                   </div>
+                   <button className="flex items-center gap-2 text-[11px] font-black uppercase tracking-widest text-primary group-hover:gap-3 transition-all">
+                      Acompanhar
+                      <span className="material-symbols-outlined text-[18px]">chevron_right</span>
+                   </button>
+                </div>
+              </div>
+            ))}
           </div>
         )}
+      </main>
 
-        <div className="p-6 rounded-[2.5rem] bg-slate-100 dark:bg-white/5 border border-dashed border-slate-300 dark:border-white/10 text-center opacity-70">
-          <p className="text-[10px] text-slate-500 font-medium leading-relaxed uppercase tracking-tighter">
-            Estes registros são temporários e locais. 
-            Mantenha este aparelho com bateria para atualizações.
-          </p>
-        </div>
-      </div>
-    </main>
+      <BottomNav />
+    </div>
   )
 }

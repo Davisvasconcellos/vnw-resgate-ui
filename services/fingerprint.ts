@@ -4,7 +4,7 @@ export interface LocalRequest {
   local_id: string; // ID temporário para controle local
   type: string;
   description: string;
-  status: 'open' | 'in_progress' | 'closed' | 'canceled' | 'pending';
+  status: 'pending' | 'viewed' | 'attending' | 'resolved' | 'canceled';
   urgency: string;
   created_at: string;
   sync_status: 'synced' | 'pending';
@@ -90,4 +90,44 @@ export const saveMyRequest = (idCode: string) => {
 export const getMyRequests = (): string[] => {
   const list = getLocalRequests();
   return list.map(r => r.id_code).filter(Boolean) as string[];
+};
+
+// Nova função para subir pedidos pendentes (Push)
+import { api } from '@/services/api'
+export const syncPendingRequests = async () => {
+  if (typeof window === 'undefined') return;
+  
+  const storedUser = localStorage.getItem('vnw_user');
+  if (!storedUser) return; // Só sincroniza se estiver logado
+  
+  const localRequests = getLocalRequests();
+  const pending = localRequests.filter(r => r.sync_status === 'pending');
+  
+  if (pending.length === 0) return;
+
+  console.log(`[Sync] Sincronizando ${pending.length} pedidos pendentes...`);
+
+  for (const req of pending) {
+    try {
+      const payload = {
+        type: req.type,
+        description: req.description,
+        urgency: req.urgency,
+        address: req.address,
+        is_verified: true
+      };
+
+      const res = await api.post('/requests', payload);
+      if (res.data.success && res.data.data?.id_code) {
+        saveHelpRequest({
+          local_id: req.local_id,
+          id_code: res.data.data.id_code,
+          status: res.data.data.status || 'open',
+          sync_status: 'synced'
+        });
+      }
+    } catch (e) {
+      console.error('[Sync] Erro ao sincronizar pedido:', req.local_id, e);
+    }
+  }
 };
