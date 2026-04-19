@@ -54,11 +54,17 @@ function BottomNavContent() {
 
   // Caso especial: Página de mapa (nearby) só exibe barra se houver módulo explícito
   // Isso evita que um usuário veja a barra de gestão ao acessar o mapa de forma genérica
+  // Caso especial: Página de mapa (nearby) só exibe barra se houver módulo explícito
   if (pathname === '/nearby' && !moduleParam) {
     return null
   }
 
-  // Mapeamento direto de módulos via parâmetro (Prioridade Total)
+  // PRIORIDADE 0: Mural de Desaparecidos (Sempre tem sua barra exclusiva agora)
+  if (pathname === '/missing') {
+    return <BottomNavMissing onAddClick={() => window.dispatchEvent(new CustomEvent('open-add-missing'))} />
+  }
+
+  // Mapeamento direto de módulos via parâmetro
   if (moduleParam === 'help') return <BottomNavPublic />
   if (moduleParam === 'shelter') return <BottomNavShelter />
   if (moduleParam === 'transport') return <BottomNavTransport />
@@ -99,11 +105,6 @@ function BottomNavContent() {
   // Se for voluntário
   if (role === 'volunteer' && pathname.startsWith('/volunteer')) {
     return <BottomNavVolunteer />
-  }
-
-  // Caso especial: Desaparecidos (sempre tem sua barra ou a pública)
-  if (pathname === '/missing') {
-    return <BottomNavMissing onAddClick={() => window.dispatchEvent(new CustomEvent('open-add-missing'))} />
   }
 
   // Fallback seguro: Nenhuma barra genérica aparecendo do nada

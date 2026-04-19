@@ -12,7 +12,7 @@ import { useI18n } from '@/components/i18n/I18nProvider'
 import TextInput from '@/components/ui/TextInput'
 import AppHeader from '@/components/headers/AppHeader'
 import { api } from '@/services/api' // <-- HTTP Client real
-import { getDeviceId, saveMyRequest } from '@/services/fingerprint'
+import { getDeviceId, saveHelpRequest } from '@/services/fingerprint'
 import toast from 'react-hot-toast'
 
 type HelpType = 'rescue' | 'shelter' | 'medical' | 'food' | 'transport' | 'boat'
@@ -128,22 +128,36 @@ function RequestForm() {
     e.preventDefault()
     setSubmitting(true)
     
+    // 0. Gerar ID Local Temporário
+    const temporaryId = `loc-${Date.now()}`;
+    
+    // 1. Salvar IMEDIATAMENTE no LocalStorage (Offline-First)
+    // Isso garante que se a internet cair AGORA, o usuário já tem o registro local
+    saveHelpRequest({
+      local_id: temporaryId,
+      type: selectedType,
+      description: description,
+      status: 'pending',
+      urgency: urgency,
+      address: locationAddress,
+      sync_status: 'pending'
+    });
+
     try {
       let finalPhotoUrl = ''
       
-      // Fluxo 1: Fazer Upload da Imagem se existir
+      // Fluxo 1: Upload da Imagem
       if (photoFile) {
         const mainFolder = process.env.NEXT_PUBLIC_MAIN_FOLDER || 'uploads';
         const formData = new FormData()
         formData.append('file', photoFile)
         formData.append('folder', `${mainFolder}/rescue`)
         
-        // Chamada real para a API de upload
         const uploadRes = await api.post('/uploads', formData, { headers: { 'Content-Type': 'multipart/form-data' }})
         finalPhotoUrl = uploadRes.data.data.url || uploadRes.data.data.fileUrl;
       }
 
-      // Fluxo 2: Disparar Payload do Formulário para registrar Ajuda
+      // Fluxo 2: Payload para API
       const payload = {
         type: selectedType === 'volunteer' ? 'volunteer' : selectedType,
         sub_type: subTypes.join(', '),
@@ -164,19 +178,28 @@ function RequestForm() {
       const res = await api.post('/requests', payload)
       const newRequest = res.data.data;
       
+      // 3. Sucesso! Atualizar registro local para 'synced'
       if (newRequest?.id_code) {
-        saveMyRequest(newRequest.id_code);
+        saveHelpRequest({
+          local_id: temporaryId,
+          id_code: newRequest.id_code,
+          status: 'open',
+          sync_status: 'synced'
+        });
       }
       
       setSubmitted(true)
     } catch (error: any) {
-       if (error.response?.status === 429) {
-          toast.error(error.response.data.message || 'Muitos pedidos em pouco tempo. Aguarde.');
-          // Se o back devolveu o id_code do existente, podemos opcionalmente salvar ou redirecionar
-          return;
-       }
        console.error('Erro ao enviar pedido:', error)
-       toast.error('Erro ao enviar pedido. Tente novamente.')
+       
+       if (error.response?.status === 429) {
+          toast.error('Muitos pedidos em pouco tempo. Aguarde.');
+       } else {
+          // INTERNET CAIU OU ERRO DE SERVIDOR
+          // O dado já está salvo localmente como 'pending'
+          toast.success('Pedido salvo localmente! Tentaremos sincronizar quando houver conexão.', { duration: 5000 });
+          setSubmitted(true); // Permitimos que o usuário veja a tela de sucesso local
+       }
     } finally {
       setSubmitting(false)
     }
