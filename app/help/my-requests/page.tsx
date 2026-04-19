@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import AppHeader from '@/components/headers/AppHeader'
 import BottomNav from '@/components/BottomNav'
-import { getLocalRequests, LocalRequest, syncPendingRequests } from '@/services/fingerprint'
+import { getLocalRequests, LocalRequest, markAsRead, syncPendingRequests } from '@/services/fingerprint'
 import { api } from '@/services/api'
 import { useI18n } from '@/components/i18n/I18nProvider'
 import Link from 'next/link'
@@ -64,6 +64,13 @@ export default function MyRequestsPage() {
 
       merged.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
       setRequests(merged)
+      
+      // Limpar notificações (Marcar como lido)
+      merged.forEach(r => {
+        if (r.status === 'attending' && r.id_code) {
+          markAsRead(r.id_code);
+        }
+      });
     } finally {
       setLoading(false)
     }

@@ -9,6 +9,8 @@ import { useRouter } from 'next/navigation'
 import { auth } from '@/services/firebase'
 import { signOut } from 'firebase/auth'
 import { api } from '@/services/api'
+import { useNotifications } from '@/hooks/useNotifications'
+import NotificationDrawer from '@/components/NotificationDrawer'
 
 type Props = {
   avatarSrc?: string
@@ -23,10 +25,11 @@ const defaultAvatarSrc =
 export default function AppHeader({
   avatarSrc = defaultAvatarSrc,
   avatarAlt = 'Profile',
-  showNotificationDot = true,
 }: Props) {
   const { language, setLanguage, t } = useI18n()
+  const { unreadCount, notifications } = useNotifications()
   const [menuOpen, setMenuOpen] = useState(false)
+  const [drawerOpen, setDrawerOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement | null>(null)
   const buttonRef = useRef<HTMLButtonElement | null>(null)
   const router = useRouter()
@@ -104,14 +107,19 @@ export default function AppHeader({
           <span className="text-outline-variant/30 px-2 font-light">|</span>
         </div>
         <div className="flex items-center gap-3">
-          <div className="p-2 hover:bg-slate-100/50 dark:hover:bg-white/5 rounded-full transition-colors cursor-pointer relative">
+          <button 
+             onClick={() => setDrawerOpen(true)}
+             className="p-2 hover:bg-slate-100/50 dark:hover:bg-white/5 rounded-full transition-colors cursor-pointer relative"
+          >
             <span className="material-symbols-outlined text-on-surface-variant dark:text-slate-400">
               notifications
             </span>
-            {showNotificationDot ? (
-              <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-error rounded-full border border-white dark:border-[#0a1628]" />
-            ) : null}
-          </div>
+            {unreadCount > 0 && (
+              <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-600 text-white text-[10px] font-black rounded-full border-2 border-white dark:border-[#0a1628] flex items-center justify-center animate-in zoom-in duration-300">
+                {unreadCount}
+              </span>
+            )}
+          </button>
           <button
             ref={buttonRef}
             type="button"
@@ -187,6 +195,11 @@ export default function AppHeader({
           ) : null}
         </div>
       </div>
+      <NotificationDrawer 
+        isOpen={drawerOpen} 
+        onClose={() => setDrawerOpen(false)} 
+        notifications={notifications}
+      />
     </header>
   )
 }

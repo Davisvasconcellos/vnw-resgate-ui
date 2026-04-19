@@ -131,3 +131,27 @@ export const syncPendingRequests = async () => {
     }
   }
 };
+
+// Funções para o sistema de notificações (Lido/Não Lido)
+export const markAsRead = (idCode: string) => {
+  if (typeof window === 'undefined') return;
+  const read = localStorage.getItem('vnw_read_messages');
+  const list: string[] = read ? JSON.parse(read) : [];
+  if (!list.includes(idCode)) {
+    list.push(idCode);
+    localStorage.setItem('vnw_read_messages', JSON.stringify(list));
+  }
+};
+
+export const getUnreadCount = (requests: LocalRequest[]): number => {
+  if (typeof window === 'undefined') return 0;
+  const read = localStorage.getItem('vnw_read_messages');
+  const readList: string[] = read ? JSON.parse(read) : [];
+  
+  // Notificação = Tem mensagem do salvador OU status mudou AND não está na lista de lidos
+  return requests.filter(r => 
+    r.id_code && 
+    r.status === 'attending' && 
+    !readList.includes(r.id_code)
+  ).length;
+};

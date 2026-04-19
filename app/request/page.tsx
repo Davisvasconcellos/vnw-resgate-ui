@@ -183,7 +183,7 @@ function RequestForm() {
         saveHelpRequest({
           local_id: temporaryId,
           id_code: newRequest.id_code,
-          status: 'open',
+          status: 'pending',
           sync_status: 'synced'
         });
       }
