@@ -137,9 +137,9 @@ export default function MyRequestsPage() {
                        <span className={`material-symbols-outlined text-[18px] ${getStatusColor(req.status).split(' ')[1]}`}>
                          {req.type === 'rescue' ? 'sos' : req.type === 'food' ? 'restaurant' : req.type === 'shelter' ? 'house' : 'medical_services'}
                        </span>
-                       <span className={`text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded-md ${getStatusColor(req.status)}`}>
-                         {req.status === 'open' ? 'Aberto' : req.status === 'pending' ? 'Pendente' : 'Concluído'}
-                       </span>
+                        <span className={`text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded-md ${getStatusColor(req.status)}`}>
+                          {req.status === 'pending' ? 'Pendente' : req.status === 'attending' ? 'Em atendimento' : 'Concluído'}
+                        </span>
                     </div>
                     
                     <h2 className="font-headline font-black text-lg text-slate-900 dark:text-white leading-tight">

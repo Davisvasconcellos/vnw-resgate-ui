@@ -1,9 +1,6 @@
 {
-  "/help/my-requests/page": "app/help/my-requests/page.js",
-  "/request/page": "app/request/page.js",
-  "/nearby/page": "app/nearby/page.js",
-  "/missing/page": "app/missing/page.js",
   "/help/page": "app/help/page.js",
+  "/help/my-requests/page": "app/help/my-requests/page.js",
   "/page": "app/page.js",
   "/assist/page": "app/assist/page.js"
 }

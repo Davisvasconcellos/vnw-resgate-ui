@@ -11,20 +11,6 @@
       "static/chunks/_app-pages-browser_services_firebase_ts.js"
     ]
   },
-  "app\\request\\page.tsx -> @/components/ui/MapComponent": {
-    "id": "app\\request\\page.tsx -> @/components/ui/MapComponent",
-    "files": [
-      "static/css/_app-pages-browser_components_ui_MapComponent_tsx-_f8b20.css",
-      "static/chunks/_app-pages-browser_components_ui_MapComponent_tsx-_f8b20.js"
-    ]
-  },
-  "components\\ui\\InteractiveMap.tsx -> @/components/ui/MapComponent": {
-    "id": "components\\ui\\InteractiveMap.tsx -> @/components/ui/MapComponent",
-    "files": [
-      "static/css/_app-pages-browser_components_ui_MapComponent_tsx-_f8b21.css",
-      "static/chunks/_app-pages-browser_components_ui_MapComponent_tsx-_f8b21.js"
-    ]
-  },
   "store\\slices\\requestsSlice.ts -> @/app/mock-data": {
     "id": "store\\slices\\requestsSlice.ts -> @/app/mock-data",
     "files": [
