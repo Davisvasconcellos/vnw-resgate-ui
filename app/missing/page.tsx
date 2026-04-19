@@ -105,12 +105,12 @@ export default function MissingPage() {
       setFormData(prev => ({ ...prev, photo_url: url }))
       // Atualizamos para a URL final do servidor após o sucesso
       setPhotoPreview(url)
-      toast.success('Foto carregada pela API!')
+      toast.success(t('missingPage.photoSuccess'))
     } catch (error: any) {
       const msg = error.response?.data?.message || error.message;
       setDebugInfo(prev => prev + `\nERRO: ${msg}`);
       console.error('Erro no upload via API:', error.response?.data || error.message)
-      toast.error('Falha no upload da foto.')
+      toast.error(t('missingPage.photoError'))
     } finally {
       setUploading(false)
     }
@@ -125,7 +125,7 @@ export default function MissingPage() {
         status: 'missing'
       })
       if (res.data.success) {
-        toast.success('Registro criado com sucesso!')
+        toast.success(t('missingPage.registerSuccess'))
         setShowAddModal(false)
         setPhotoPreview(null)
         setFormData({
@@ -136,7 +136,7 @@ export default function MissingPage() {
         fetchPeople()
       }
     } catch (error) {
-      toast.error('Erro ao registrar. Tente novamente.')
+      toast.error(t('missingPage.registerError'))
     }
   }
 
@@ -233,7 +233,7 @@ export default function MissingPage() {
                    ) : (
                        <div className="w-full h-full flex flex-col items-center justify-center text-slate-300 gap-2">
                            <span className="material-symbols-outlined text-[48px]">person</span>
-                           <span className="text-[9px] font-black uppercase tracking-widest opacity-50">Sem foto</span>
+                           <span className="text-[9px] font-black uppercase tracking-widest opacity-50">{t('missingPage.noPhoto')}</span>
                        </div>
                    )}
                    
@@ -244,7 +244,7 @@ export default function MissingPage() {
                           ? 'bg-red-500/90 text-white border-white/20' 
                           : 'bg-emerald-500/90 text-white border-white/20'
                       }`}>
-                         {person.status}
+                         {t(`missingPage.tab${person.status.charAt(0).toUpperCase() + person.status.slice(1)}`)}
                       </div>
                    </div>
                 </div>
@@ -289,9 +289,9 @@ export default function MissingPage() {
                      <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${
                        selectedPerson.status === 'missing' ? 'bg-red-100 text-red-600' : 'bg-emerald-100 text-emerald-600'
                      }`}>
-                        {selectedPerson.status}
+                        {t(`missingPage.tab${selectedPerson.status.charAt(0).toUpperCase() + selectedPerson.status.slice(1)}`)}
                      </span>
-                     <span className="text-slate-400 text-xs font-bold">{selectedPerson.age} anos</span>
+                     <span className="text-slate-400 text-xs font-bold">{t('missingPage.age').replace('{age}', selectedPerson.age.toString())}</span>
                   </div>
 
                   <h2 className="text-4xl font-black text-slate-900 dark:text-white font-headline tracking-tighter mb-4 uppercase">
@@ -300,7 +300,7 @@ export default function MissingPage() {
 
                   <div className="space-y-6 text-left">
                     <div className="bg-slate-50 dark:bg-white/5 p-6 rounded-3xl border border-slate-100 dark:border-white/5">
-                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Descrição Física / Roupas</p>
+                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">{t('missingPage.descriptionLabel')}</p>
                         <p className="text-slate-700 dark:text-slate-300 italic leading-relaxed text-sm">"{selectedPerson.description}"</p>
                     </div>
 
@@ -334,7 +334,7 @@ export default function MissingPage() {
                           onClick={() => setSelectedPerson(null)}
                           className="w-full py-4 rounded-2xl bg-slate-100 dark:bg-white/10 text-slate-600 dark:text-slate-300 font-black text-xs uppercase tracking-[0.2em] active:scale-[0.98] transition-all"
                         >
-                          Fechar Detalhes
+                          {t('missingPage.closeDetails')}
                         </button>
                     </div>
                   </div>
@@ -375,7 +375,7 @@ export default function MissingPage() {
                        <span className="material-symbols-outlined text-[32px] group-hover:scale-110 transition-transform">add_photo_alternate</span>
                     )}
                     <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">
-                       {uploading ? 'Subindo...' : t('missingPage.addPhoto')}
+                       {uploading ? t('missingPage.uploading') : t('missingPage.addPhoto')}
                     </span>
                   </div>
                 )}

@@ -222,10 +222,10 @@ function OnboardingContent() {
           </Link>
           <div>
             <h1 className="text-3xl font-black text-slate-800 dark:text-white tracking-tight leading-tight font-headline">
-              {offer === 'volunteer' ? 'Sou Voluntário' : t(`onboarding.titles.${offer}`)}
+              {offer === 'volunteer' ? t('assistPage.types.volunteer') : t(`onboarding.titles.${offer}`)}
             </h1>
             <p className="mt-1.5 text-slate-500 dark:text-slate-400 font-body text-base font-medium">
-              {offer === 'volunteer' ? 'Marque as categorias que você possui recursos para ajudar.' : t(`onboarding.descs.${offer}`)}
+              {offer === 'volunteer' ? t('onboarding.descs.volunteer') : t(`onboarding.descs.${offer}`)}
             </p>
           </div>
         </section>
@@ -286,7 +286,7 @@ function OnboardingContent() {
                 className={`flex flex-col items-center gap-2 p-4 rounded-3xl border-2 transition-all ${hasCar ? 'border-orange-500 bg-orange-50 dark:bg-orange-900/20 text-orange-700 dark:text-orange-300' : 'border-slate-100 dark:border-white/5 bg-white dark:bg-white/5 text-slate-400'}`}
               >
                 <span className="material-symbols-outlined text-3xl">directions_car</span>
-                <span className="text-xs font-bold uppercase">Tenho Carro</span>
+                <span className="text-xs font-bold uppercase">{t('onboarding.volunteerForm.hasCar')}</span>
               </button>
               <button 
                 type="button"
@@ -294,7 +294,7 @@ function OnboardingContent() {
                 className={`flex flex-col items-center gap-2 p-4 rounded-3xl border-2 transition-all ${hasBoat ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300' : 'border-slate-100 dark:border-white/5 bg-white dark:bg-white/5 text-slate-400'}`}
               >
                 <span className="material-symbols-outlined text-3xl">directions_boat</span>
-                <span className="text-xs font-bold uppercase">Tenho Barco</span>
+                <span className="text-xs font-bold uppercase">{t('onboarding.volunteerForm.hasBoat')}</span>
               </button>
             </div>
 
@@ -303,26 +303,26 @@ function OnboardingContent() {
               <div className="bg-orange-50/50 dark:bg-orange-900/10 rounded-[2rem] p-6 border border-orange-100 dark:border-orange-900/30 space-y-4 animate-in fade-in slide-in-from-top-4">
                 <div className="flex items-center gap-2 text-orange-700 dark:text-orange-300 mb-2">
                   <span className="material-symbols-outlined">settings_suggest</span>
-                  <p className="font-bold text-sm uppercase tracking-wider">Dados do Veículo</p>
+                  <p className="font-bold text-sm uppercase tracking-wider">{t('onboarding.transportForm.dataTitle')}</p>
                 </div>
                 <div>
-                  <label className="text-[10px] font-bold uppercase tracking-wide text-slate-400 mb-1.5 block">Tipo de Veículo</label>
+                  <label className="text-[10px] font-bold uppercase tracking-wide text-slate-400 mb-1.5 block">{t('onboarding.transportForm.type')}</label>
                   <select value={carType} onChange={(e) => setCarType(e.target.value)} className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-3 text-sm font-semibold text-slate-800 dark:text-white outline-none">
-                    <option value="car">Carro comum</option>
-                    <option value="pickup">Picape / SUV</option>
-                    <option value="truck">Caminhão</option>
-                    <option value="van">Van / Micro-ônibus</option>
+                    <option value="car">{t('onboarding.transportForm.car')}</option>
+                    <option value="pickup">{t('onboarding.transportForm.pickup')}</option>
+                    <option value="truck">{t('onboarding.transportForm.truck')}</option>
+                    <option value="van">{t('onboarding.transportForm.van')}</option>
                   </select>
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="text-[10px] font-bold uppercase tracking-wide text-slate-400 mb-1.5 block">Vagas</label>
-                    <input type="number" value={carSeats} onChange={(e) => setCarSeats(Number(e.target.value))} className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-3 text-sm font-semibold" />
+                    <label className="text-[10px] font-bold uppercase tracking-wide text-slate-400 mb-1.5 block">{t('onboarding.transportForm.labelSeats')}</label>
+                    <input type="number" value={carSeats} onChange={(e) => setCarSeats(Number(e.target.value))} className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-3 text-sm font-semibold text-slate-800 dark:text-white outline-none" />
                   </div>
                   <div className="flex items-end">
                     <label className="flex items-center gap-2 flex-1 h-[46px] bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/10 rounded-xl px-3 group">
-                      <input type="checkbox" checked={carOffroad} onChange={(e) => setCarOffroad(e.target.checked)} className="w-4 h-4 rounded border-slate-300" />
-                      <span className="text-[11px] font-bold text-slate-600 dark:text-slate-300">4x4 / Offroad</span>
+                      <input type="checkbox" checked={carOffroad} onChange={(e) => setCarOffroad(e.target.checked)} className="w-4 h-4 rounded border-slate-300 text-primary" />
+                      <span className="text-[11px] font-bold text-slate-600 dark:text-slate-300">{t('onboarding.transportForm.offroad')}</span>
                     </label>
                   </div>
                 </div>
@@ -334,25 +334,25 @@ function OnboardingContent() {
               <div className="bg-blue-50/50 dark:bg-blue-900/10 rounded-[2rem] p-6 border border-blue-100 dark:border-blue-900/30 space-y-4 animate-in fade-in slide-in-from-top-4">
                 <div className="flex items-center gap-2 text-blue-700 dark:text-blue-300 mb-2">
                   <span className="material-symbols-outlined">water_drop</span>
-                  <p className="font-bold text-sm uppercase tracking-wider">Dados da Embarcação</p>
+                  <p className="font-bold text-sm uppercase tracking-wider">{t('onboarding.volunteerForm.dataTitle')}</p>
                 </div>
                 <div>
-                  <label className="text-[10px] font-bold uppercase tracking-wide text-slate-400 mb-1.5 block">Tipo</label>
+                  <label className="text-[10px] font-bold uppercase tracking-wide text-slate-400 mb-1.5 block">{t('onboarding.volunteerForm.typeTitle')}</label>
                   <select value={boatType} onChange={(e) => setBoatType(e.target.value)} className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-3 text-sm font-semibold text-slate-800 dark:text-white outline-none">
-                    <option value="motor">Barco a Motor</option>
-                    <option value="jet">Jet Ski</option>
-                    <option value="kayak">Caiaque / Canoa</option>
+                    <option value="motor">{t('onboarding.boatForm.motor')}</option>
+                    <option value="jet">{t('onboarding.boatForm.jet')}</option>
+                    <option value="kayak">{t('onboarding.boatForm.kayak')}</option>
                   </select>
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="text-[10px] font-bold uppercase tracking-wide text-slate-400 mb-1.5 block">Capacidade</label>
-                    <input type="number" value={boatSpots} onChange={(e) => setBoatSpots(Number(e.target.value))} className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-3 text-sm font-semibold" />
+                    <label className="text-[10px] font-bold uppercase tracking-wide text-slate-400 mb-1.5 block">{t('onboarding.volunteerForm.labelSpots')}</label>
+                    <input type="number" value={boatSpots} onChange={(e) => setBoatSpots(Number(e.target.value))} className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-3 text-sm font-semibold text-slate-800 dark:text-white outline-none" />
                   </div>
                   <div className="flex items-end">
                     <label className="flex items-center gap-2 flex-1 h-[46px] bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/10 rounded-xl px-3">
-                      <input type="checkbox" checked={boatVests} onChange={(e) => setBoatVests(e.target.checked)} className="w-4 h-4 rounded border-slate-300" />
-                      <span className="text-[11px] font-bold text-slate-600 dark:text-slate-300">Tem Coletes</span>
+                      <input type="checkbox" checked={boatVests} onChange={(e) => setBoatVests(e.target.checked)} className="w-4 h-4 rounded border-slate-300 text-primary" />
+                      <span className="text-[11px] font-bold text-slate-600 dark:text-slate-300">{t('onboarding.volunteerForm.labelVests')}</span>
                     </label>
                   </div>
                 </div>
@@ -361,13 +361,13 @@ function OnboardingContent() {
 
             {/* General Volunteer skills */}
             <div className="space-y-4">
-              <label className="text-xs font-bold uppercase tracking-wide text-slate-400 mb-2 block">Outras habilidades</label>
+              <label className="text-xs font-bold uppercase tracking-wide text-slate-400 mb-2 block">{t('onboarding.volunteerForm.skillsTitle')}</label>
               <div className="grid grid-cols-2 gap-2">
                 {[
-                  { id: 'sort', label: 'Triagem / Doação' },
-                  { id: 'health', label: 'Saúde / Médica' },
-                  { id: 'cook', label: 'Cozinha / Alimentos' },
-                  { id: 'clean', label: 'Limpeza / Pesada' },
+                  { id: 'sort', label: t('onboarding.volunteerForm.sort') },
+                  { id: 'health', label: t('onboarding.volunteerForm.health') },
+                  { id: 'cook', label: t('onboarding.volunteerForm.cook') },
+                  { id: 'clean', label: t('onboarding.volunteerForm.clean') },
                 ].map(item => (
                   <label key={item.id} className="flex items-center gap-2.5 bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl px-3 py-3 active:bg-slate-50 transition-colors cursor-pointer">
                     <input 
@@ -415,8 +415,8 @@ function OnboardingContent() {
                 <span className="material-symbols-outlined text-slate-600 dark:text-slate-300">close</span>
               </button>
               <div className="flex-1">
-                <p className="text-sm font-bold uppercase tracking-widest text-on-surface dark:text-white">Localização do Abrigo</p>
-                <p className="text-[10px] text-slate-500 font-bold uppercase tracking-tighter opacity-60">Digite o endereço ou mova o alfinete</p>
+                <p className="text-sm font-bold uppercase tracking-widest text-on-surface dark:text-white">{t('onboarding.volunteerForm.mapTitle')}</p>
+                <p className="text-[10px] text-slate-500 font-bold uppercase tracking-tighter opacity-60">{t('onboarding.volunteerForm.mapDesc')}</p>
               </div>
               <button 
                 type="button"
@@ -429,7 +429,7 @@ function OnboardingContent() {
                 }} 
                 className="px-5 py-2.5 bg-primary text-white rounded-xl font-bold uppercase tracking-wider text-xs active:scale-95 transition-transform shadow-md shadow-primary/30"
               >
-                Confirmar
+                {t('onboarding.volunteerForm.mapConfirm')}
               </button>
             </div>
             
@@ -440,7 +440,7 @@ function OnboardingContent() {
               <input
                 type="text"
                 autoFocus
-                placeholder="Rua, Número, Bairro, Cidade..."
+                placeholder={t('onboarding.volunteerForm.mapPlaceholder')}
                 value={locationAddress === 'Obtendo localização...' ? '' : locationAddress}
                 onChange={(e) => setLocationAddress(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && searchAddressForCoords()}

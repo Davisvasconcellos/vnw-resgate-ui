@@ -132,11 +132,11 @@ export default function HomePage() {
         
         <h1 className="text-3xl font-extrabold text-slate-900 dark:text-white font-headline text-center leading-tight transition-colors">
           {isLogged && userProfile?.name 
-            ? `Olá, ${userProfile.name.split(' ')[0]}` 
-            : 'VNW Resgate'}
+            ? `${t('home.hello')}, ${userProfile.name.split(' ')[0]}` 
+            : t('rescue.title')}
         </h1>
         <p className="text-slate-500 dark:text-white/60 text-sm mt-1 text-center font-medium">
-          Apoio em situações de enchente
+          {t('rescue.subtitle')}
         </p>
 
       </header>
@@ -150,8 +150,14 @@ export default function HomePage() {
                    <span className="material-symbols-outlined text-white animate-pulse">notifications_active</span>
                 </div>
                 <div className="flex-1">
-                   <p className="text-white text-[10px] font-black uppercase tracking-widest mb-0.5">Atualização de Socorro</p>
-                   <p className="text-white/90 text-xs font-bold leading-tight">Você tem {unreadCount} {unreadCount === 1 ? 'notificação' : 'notificações'} no seu histórico.</p>
+                   <p className="text-white text-[10px] font-black uppercase tracking-widest mb-0.5">{t('home.notificationBanner')}</p>
+                   <p className="text-white/90 text-xs font-bold leading-tight">
+                    {t('home.notificationCount')
+                      .replace('{count}', String(unreadCount))
+                      .replace('{plural}', unreadCount === 1 
+                        ? (language === 'pt-BR' ? 'notificação' : 'notification') 
+                        : (language === 'pt-BR' ? 'notificações' : 'notifications'))}
+                   </p>
                 </div>
                 <span className="material-symbols-outlined text-white/50 text-[18px]">arrow_forward</span>
              </div>
@@ -164,9 +170,9 @@ export default function HomePage() {
                <span className="material-symbols-outlined text-blue-600 dark:text-blue-400 text-[24px]">info</span>
             </div>
             <div>
-              <p className="text-slate-900 dark:text-slate-100 text-xs font-black leading-tight uppercase tracking-wider mb-1">Acesso Priorizado</p>
+              <p className="text-slate-900 dark:text-slate-100 text-xs font-black leading-tight uppercase tracking-wider mb-1">{t('home.accessPrioritized')}</p>
               <p className="text-slate-500 dark:text-slate-400 text-[11px] leading-snug">
-                O uso é livre, mas usuários logados ganham selo <span className="text-blue-600 dark:text-blue-400 font-bold uppercase tracking-tighter">Verificado</span> e suas solicitações são atendidas com maior agilidade.
+                {t('home.accessPrioritizedDesc').replace('{badge}', t('home.verified'))}
               </p>
             </div>
           </div>
@@ -180,8 +186,8 @@ export default function HomePage() {
               </span>
             </div>
             <div className="flex-1 relative z-10">
-              <p className="text-slate-900 dark:text-white font-black text-lg font-headline leading-tight">Preciso de ajuda</p>
-              <p className="text-slate-500 dark:text-slate-400 text-xs mt-0.5 font-medium">Resgate, médico, abrigo e mais</p>
+              <p className="text-slate-900 dark:text-white font-black text-lg font-headline leading-tight">{t('rescue.needHelp')}</p>
+              <p className="text-slate-500 dark:text-slate-400 text-xs mt-0.5 font-medium">{t('rescue.needHelpDesc')}</p>
             </div>
             <span className="material-symbols-outlined text-slate-300 dark:text-white/20 text-[20px] relative z-10 group-hover:translate-x-1 transition-transform">chevron_right</span>
           </div>
@@ -195,8 +201,8 @@ export default function HomePage() {
               </span>
             </div>
             <div className="flex-1 relative z-10">
-              <p className="text-slate-900 dark:text-white font-black text-lg font-headline leading-tight">Posso ajudar</p>
-              <p className="text-slate-500 dark:text-slate-400 text-xs mt-0.5 font-medium">Ofereça força de trabalho ou apoio</p>
+              <p className="text-slate-900 dark:text-white font-black text-lg font-headline leading-tight">{t('rescue.canHelp')}</p>
+              <p className="text-slate-500 dark:text-slate-400 text-xs mt-0.5 font-medium">{t('rescue.canHelpDesc')}</p>
             </div>
             <span className="material-symbols-outlined text-slate-300 dark:text-white/20 text-[20px] relative z-10 group-hover:translate-x-1 transition-transform">chevron_right</span>
           </div>
@@ -210,8 +216,8 @@ export default function HomePage() {
               </span>
             </div>
             <div className="flex-1 relative z-10">
-              <p className="text-slate-900 dark:text-white font-black text-lg font-headline leading-tight">Situação da região</p>
-              <p className="text-slate-500 dark:text-slate-400 text-xs mt-0.5 font-medium">Ver mapa e pedidos locais</p>
+              <p className="text-slate-900 dark:text-white font-black text-lg font-headline leading-tight">{t('rescue.nearbyStatus')}</p>
+              <p className="text-slate-500 dark:text-slate-400 text-xs mt-0.5 font-medium">{t('rescue.nearbyStatusDesc')}</p>
             </div>
             <span className="material-symbols-outlined text-slate-300 dark:text-white/20 text-[20px] relative z-10 group-hover:translate-x-1 transition-transform">chevron_right</span>
           </div>
@@ -234,14 +240,14 @@ export default function HomePage() {
                   <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
                   <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
                 </svg>
-                <span className="text-slate-800 dark:text-white font-black text-sm tracking-tight uppercase">Entrar com Google</span>
+                <span className="text-slate-800 dark:text-white font-black text-sm tracking-tight uppercase">{t('home.googleLogin')}</span>
               </>
             )}
           </button>
         ) : (
           <div className="mt-8 text-center animate-in fade-in slide-in-from-bottom-4 duration-700">
-             <p className="text-[10px] font-black text-blue-600 dark:text-blue-400 uppercase tracking-[0.2em] mb-1">Status Ativo</p>
-             <p className="text-slate-400 dark:text-white/20 text-[11px] font-medium italic">Você está logado e verificado pela rede.</p>
+             <p className="text-[10px] font-black text-blue-600 dark:text-blue-400 uppercase tracking-[0.2em] mb-1">{t('home.activeStatus')}</p>
+             <p className="text-slate-400 dark:text-white/20 text-[11px] font-medium italic">{t('home.activeStatusDesc')}</p>
           </div>
         )}
       </div>

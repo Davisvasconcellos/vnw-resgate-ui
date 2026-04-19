@@ -96,12 +96,12 @@ export default function SheltersPage() {
         {loading ? (
           <div className="flex flex-col items-center justify-center py-20 opacity-40">
             <div className="h-8 w-8 animate-spin rounded-full border-2 border-blue-500 border-t-transparent mb-4" />
-            <p className="text-xs font-bold uppercase tracking-widest">{t('loading') || 'Carregando abrigos...'}</p>
+            <p className="text-xs font-bold uppercase tracking-widest">{t('shelters.loading')}</p>
           </div>
         ) : shelters.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 bg-white dark:bg-white/5 rounded-3xl border border-dashed border-slate-200 dark:border-white/10">
              <span className="material-symbols-outlined text-[48px] text-slate-200 mb-4 font-variation-fill">holiday_village</span>
-             <p className="text-sm font-bold text-slate-400">{t('shelters.empty') || 'Nenhum abrigo encontrado por perto'}</p>
+             <p className="text-sm font-bold text-slate-400">{t('shelters.empty')}</p>
           </div>
         ) : (
           shelters.map((shelter) => {
@@ -122,7 +122,7 @@ export default function SheltersPage() {
                     </h2>
                     <p className="text-xs text-slate-400 mt-0.5 flex items-center gap-1">
                       <span className="material-symbols-outlined text-[14px]">location_on</span>
-                      {shelter.reference || 'Sem referência informada'}
+                      {shelter.reference || t('shelters.noReference')}
                     </p>
                   </div>
                   {distanceKm && (
@@ -140,7 +140,7 @@ export default function SheltersPage() {
                 {/* Address + Phone */}
                 <div className="mt-3 pt-3 border-t border-slate-100 dark:border-white/10 flex items-center justify-between">
                   <p className="text-xs text-slate-400 dark:text-slate-500 truncate flex-1 leading-tight">
-                    {shelter.address || 'Endereço não informado'}
+                    {shelter.address || t('shelters.noAddress')}
                   </p>
                   {shelter.phone && (
                     <a

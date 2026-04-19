@@ -43,13 +43,13 @@ export default function RoutesBoatsPage() {
         <section className="mb-6">
           <div className="flex items-center gap-2 mb-1">
              <span className="material-symbols-outlined text-cyan-600">directions_boat</span>
-             <span className="text-[10px] font-bold uppercase tracking-widest text-cyan-600">Resgate Náutico</span>
+             <span className="text-[10px] font-bold uppercase tracking-widest text-cyan-600">{t('routesBoats.badge')}</span>
           </div>
           <h1 className="text-3xl font-extrabold font-headline text-on-surface dark:text-white tracking-tight leading-tight">
-            Minhas Rotas de Barco
+            {t('routesBoats.title')}
           </h1>
           <p className="mt-2 text-on-surface-variant dark:text-slate-400 font-body">
-            Gerencie os resgates e transportes via água que você está realizando.
+            {t('routesBoats.subtitle')}
           </p>
         </section>
         
@@ -59,13 +59,13 @@ export default function RoutesBoatsPage() {
             onClick={() => setActiveTab('ongoing')}
             className={`flex-1 py-3 text-xs font-bold rounded-xl transition-all ${activeTab === 'ongoing' ? 'bg-white text-cyan-700 shadow-sm' : 'text-on-surface-variant dark:text-slate-400 hover:bg-white/50 dark:hover:bg-white/5'}`}
           >
-            Em curso ({routes.filter(r => r.status === 'ongoing').length})
+            {t('routesBoats.tabs.ongoing')} ({routes.filter(r => r.status === 'ongoing').length})
           </button>
           <button
             onClick={() => setActiveTab('finished')}
             className={`flex-1 py-3 text-xs font-bold rounded-xl transition-all ${activeTab === 'finished' ? 'bg-white text-secondary shadow-sm' : 'text-on-surface-variant dark:text-slate-400 hover:bg-white/50 dark:hover:bg-white/5'}`}
           >
-            Concluídos ({routes.filter(r => r.status === 'finished').length})
+            {t('routesBoats.tabs.finished')} ({routes.filter(r => r.status === 'finished').length})
           </button>
         </div>
       </div>
@@ -74,8 +74,7 @@ export default function RoutesBoatsPage() {
         {filtered.length === 0 ? (
           <div className="text-center py-20 bg-surface-container-lowest rounded-3xl border border-dashed border-outline-variant/30">
             <span className="material-symbols-outlined text-[48px] text-outline-variant/50 mb-3">sailing</span>
-            <p className="text-on-surface-variant font-medium text-sm">Nenhuma rota náutica ativa</p>
-            <p className="text-on-surface-variant dark:text-slate-400 font-medium text-sm">Nenhuma rota náutica ativa</p>
+            <p className="text-on-surface-variant font-medium text-sm">{t('routesBoats.noRoutes')}</p>
           </div>
         ) : (
           filtered.map(route => (
@@ -88,13 +87,13 @@ export default function RoutesBoatsPage() {
                       <div className="w-6 h-6 rounded-lg bg-cyan-50 flex items-center justify-center text-cyan-600">
                         <span className="material-symbols-outlined text-[14px]">anchor</span>
                       </div>
-                      Local: {route.location}
+                      {t('routesBoats.localLabel')}: {route.location}
                     </div>
                     <div className="text-xs text-on-surface-variant dark:text-slate-400 font-medium flex items-center gap-2">
                       <div className="w-6 h-6 rounded-lg bg-secondary/5 flex items-center justify-center text-secondary">
                         <span className="material-symbols-outlined text-[14px]">group</span>
                       </div>
-                      {route.people} resgatados
+                      {t('routesBoats.rescued').replace('{count}', route.people.toString())}
                     </div>
                   </div>
                 </div>
@@ -106,13 +105,13 @@ export default function RoutesBoatsPage() {
                     }}
                     className="shrink-0 bg-cyan-600 text-white font-bold px-5 py-3 rounded-2xl text-xs active:scale-95 transition-all shadow-lg shadow-cyan-600/10"
                   >
-                    Desembarque
+                    {t('routesBoats.actions.dropoff')}
                   </button>
                 )}
                 {route.status === 'finished' && (
                   <span className="text-xs font-bold text-secondary bg-secondary/10 px-4 py-2 rounded-xl flex items-center gap-1">
                     <span className="material-symbols-outlined text-[14px]">check_circle</span>
-                    Finalizado
+                    {t('routesBoats.actions.finished')}
                   </span>
                 )}
               </div>
@@ -127,8 +126,8 @@ export default function RoutesBoatsPage() {
           <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setShowCheckout(false)} />
           <div className="relative z-10 bg-white rounded-t-[2rem] px-5 pt-4 pb-32 reveal-pop">
             <div className="w-10 h-1 rounded-full bg-slate-200 mx-auto mb-5 shrink-0" />
-            <h2 className="text-xl font-bold text-slate-800 font-headline mb-1">Registrar Desembarque</h2>
-            <p className="text-sm text-slate-500 mb-6">Onde as pessoas do grupo {selectedRoute.name} foram deixadas com segurança?</p>
+            <h2 className="text-xl font-bold text-slate-800 font-headline mb-1">{t('routesBoats.checkout.title')}</h2>
+            <p className="text-sm text-slate-500 mb-6">{t('routesBoats.checkout.question').replace('{name}', selectedRoute.name)}</p>
 
             <div className="space-y-3">
               <button
@@ -139,8 +138,8 @@ export default function RoutesBoatsPage() {
                   <span className="material-symbols-outlined text-blue-600">house</span>
                 </div>
                 <div className="text-left flex-1">
-                  <p className="font-bold text-slate-800 text-sm">Levar ao Abrigo</p>
-                  <p className="text-xs text-slate-500">Destinado a um abrigo oficial via trapiche/cais.</p>
+                  <p className="font-bold text-slate-800 text-sm">{t('routesBoats.checkout.toShelter')}</p>
+                  <p className="text-xs text-slate-500">{t('routesBoats.checkout.toShelterDesc')}</p>
                 </div>
                 <span className="material-symbols-outlined text-slate-400">chevron_right</span>
               </button>
@@ -153,8 +152,8 @@ export default function RoutesBoatsPage() {
                   <span className="material-symbols-outlined text-emerald-600">check_circle</span>
                 </div>
                 <div className="text-left flex-1">
-                  <p className="font-bold text-slate-800 text-sm">Local Seguro</p>
-                  <p className="text-xs text-slate-500">Desembarque concluído em área seca/porto.</p>
+                  <p className="font-bold text-slate-800 text-sm">{t('routesBoats.checkout.toSafe')}</p>
+                  <p className="text-xs text-slate-500">{t('routesBoats.checkout.toSafeDesc')}</p>
                 </div>
               </button>
             </div>

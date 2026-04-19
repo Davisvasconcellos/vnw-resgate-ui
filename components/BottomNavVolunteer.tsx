@@ -23,7 +23,7 @@ export default function BottomNavVolunteer() {
           <div className="w-10 h-10 rounded-2xl group-hover:bg-primary/5 dark:group-hover:bg-white/5 flex items-center justify-center transition-colors">
             <span className="material-symbols-outlined text-[24px]">home</span>
           </div>
-          <span className="text-[10px] font-extrabold uppercase tracking-widest leading-none">Início</span>
+          <span className="text-[10px] font-extrabold uppercase tracking-widest leading-none">{t('nav.home')}</span>
         </Link>
 
         {/* Center Floating Opportunities Button - Voluntariado */}
@@ -34,7 +34,7 @@ export default function BottomNavVolunteer() {
           <div className="w-16 h-16 rounded-full flex items-center justify-center active:scale-90 transition-all border-4 border-white dark:border-[#0a1628] shadow-xl bg-primary text-white shadow-primary/40">
             <span className="material-symbols-outlined text-[32px] font-bold">volunteer_activism</span>
           </div>
-          <span className="text-[10px] font-black uppercase tracking-widest text-primary leading-none">Sou Voluntário</span>
+          <span className="text-[10px] font-black uppercase tracking-widest text-primary leading-none">{t('nav.iamVolunteer')}</span>
         </Link>
 
         {/* My Missions Button */}
@@ -54,7 +54,7 @@ export default function BottomNavVolunteer() {
               rocket_launch
             </span>
           </div>
-          <span className="text-[10px] font-extrabold uppercase tracking-widest leading-none">Minhas Missões</span>
+          <span className="text-[10px] font-extrabold uppercase tracking-widest leading-none">{t('nav.myMissions')}</span>
         </Link>
 
       </div>

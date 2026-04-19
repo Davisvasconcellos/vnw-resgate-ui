@@ -35,6 +35,10 @@ Na V1.0, implementamos uma filosofia de design focada na **redução da carga co
 ### 5. 🏠 Gestão Inteligente de Abrigos
 *   **Visibilidade de Ocupação:** Barras de progresso dinâmicas que mostram a lotação dos abrigos em tempo real para voluntários no campo.
 
+### 6. 🌍 Internacionalização de Missão Crítica (i18n)
+*   **Sistema Poliglota (PT-BR / EN):** Toda a interface, das notificações de SOS à gestão náutica, opera de forma dinâmica em múltiplos idiomas, permitindo a atuação de ajuda humanitária internacional e o suporte a refugiados ou turistas em áreas de risco.
+*   **Contexto Cultural:** Adaptação de termos técnicos para garantir que as instruções de salvamento sejam claras e universais.
+
 ---
 
 ## 🛠️ Tecnologias
@@ -52,6 +56,7 @@ Estamos preparando o terreno para expandir a inteligência da plataforma:
 *   **🛡️ Centro de Comando (Admin):** Área restrita para gestores de crise visualizarem o mapa de calor de pedidos pendentes em tempo real.
 *   **📊 Módulo de Analytics:** Gerador de relatórios automáticos sobre tempo médio de atendimento, itens mais solicitados e fluxo de pessoas nos abrigos.
 *   **💬 Chat Integrado:** Sistema de mensagens em tempo real (WebSockets) para coordenação direta dentro do app.
+*   **♿ Acessibilidade (A11y):** Implementação de suporte completo para leitores de tela, navegação por teclado e otimização de contraste para garantir que a ajuda chegue a todos, sem distinção.
 
 ---
 

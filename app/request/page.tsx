@@ -27,8 +27,8 @@ function RequestForm() {
     { value: 'shelter', label: t('request.shelter'), icon: 'house', description: t('request.shelterDesc'), color: '#1565C0' },
     { value: 'medical', label: t('request.medical'), icon: 'medical_services', description: t('request.medicalDesc'), color: '#C62828' },
     { value: 'food', label: t('request.food'), icon: 'restaurant', description: t('request.foodDesc'), color: '#E65100' },
-    { value: 'transport', label: 'Transporte', icon: 'directions_car', description: 'Ajuda com movimentação via terra ou água', color: '#0277BD' },
-    { value: 'volunteer', label: 'Voluntários', icon: 'groups', description: 'Preciso de braços para ajudar na ocorrência', color: '#2E7D32' },
+    { value: 'transport', label: t('request.transport'), icon: 'directions_car', description: t('request.transportDesc'), color: '#0277BD' },
+    { value: 'volunteer', label: t('request.volunteers'), icon: 'groups', description: t('request.volunteersDesc'), color: '#2E7D32' },
   ]
 
   const initialType = (searchParams.get('type') as HelpType) ?? 'rescue'
@@ -41,7 +41,7 @@ function RequestForm() {
   const [name, setName] = useState('')
   const [phone, setPhone] = useState('')
   const [locationStatus, setLocationStatus] = useState<'acquiring' | 'ready' | 'error'>('acquiring')
-  const [locationAddress, setLocationAddress] = useState('Obtendo localização...')
+  const [locationAddress, setLocationAddress] = useState(t('request.loadingLocation'))
   const [addressDetails, setAddressDetails] = useState({ street: '', number: '', complement: '', neighborhood: '', city: '', state: '', zipCode: '' })
   
   const [photoPreview, setPhotoPreview] = useState<string | null>(null)
@@ -108,7 +108,7 @@ function RequestForm() {
   useEffect(() => {
     const timer = setTimeout(() => {
       setLocationStatus('ready')
-      setLocationAddress('Rua dos Chernes, 180 - Canasvieiras, Florianópolis')
+      setLocationAddress('Sincronizando localização...')
     }, 1500)
     return () => clearTimeout(timer)
   }, [])
@@ -233,9 +233,9 @@ function RequestForm() {
               </div>
             )}
             <div className="flex justify-between items-center">
-              <span>Urgência</span>
+              <span>{t('request.urgencyLabel')}</span>
               <span className={`px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider ${urgency === 'high' ? 'text-red-700 bg-red-100' : urgency === 'medium' ? 'text-orange-700 bg-orange-100' : 'text-emerald-700 bg-emerald-100'}`}>
-                {urgency === 'high' ? 'Emergência' : urgency === 'medium' ? 'Moderado' : 'Monitorando'}
+                {urgency === 'high' ? t('request.urgencyEmergency') : urgency === 'medium' ? t('request.urgencyModerate') : t('request.urgencyMonitoring')}
               </span>
             </div>
             <div className="flex justify-between">
@@ -247,7 +247,7 @@ function RequestForm() {
               <span className="font-bold">{people}</span>
             </div>
             <div className="flex justify-between">
-              <span>Local</span>
+              <span>{t('request.local')}</span>
               <span className="font-bold text-right max-w-[180px] truncate">{locationAddress}</span>
             </div>
           </div>
@@ -270,7 +270,7 @@ function RequestForm() {
             <div className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-white/5 flex items-center justify-center group-hover:scale-110 transition-transform">
               <span className="material-symbols-outlined text-[20px]">arrow_back</span>
             </div>
-            <span className="text-xs font-bold uppercase tracking-widest">Voltar</span>
+            <span className="text-xs font-bold uppercase tracking-widest">{t('request.back')}</span>
           </Link>
         </div>
 
@@ -359,9 +359,9 @@ function RequestForm() {
 
         {/* DETALHES DO PEDIDO (Novo campo sugerido) */}
         <section className="animate-in fade-in slide-in-from-top-4 duration-500">
-           <p className="text-xs font-black uppercase tracking-widest text-slate-400 mb-3 ml-1">Descrição dos Detalhes</p>
+           <p className="text-xs font-black uppercase tracking-widest text-slate-400 mb-3 ml-1">{t('request.details')}</p>
            <textarea 
-             placeholder={selectedType === 'volunteer' ? 'Ex: Preciso de voluntários para limpar a escola X...' : 'Dê mais detalhes sobre sua necessidade aqui...'}
+             placeholder={selectedType === 'volunteer' ? t('request.detailsVolunteerPlaceholder') : t('request.detailsPlaceholder')}
              value={description}
              onChange={(e) => setDescription(e.target.value)}
              className="w-full min-h-[100px] p-4 rounded-3xl bg-white dark:bg-white/5 border border-slate-100 dark:border-white/10 outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all text-sm font-medium dark:text-white placeholder:text-slate-300 dark:placeholder:text-slate-600 shadow-sm"
@@ -370,12 +370,12 @@ function RequestForm() {
 
         {/* Urgency */}
         <section>
-          <p className="text-xs font-bold uppercase tracking-wide text-slate-400 mb-3">Grau de Urgência</p>
+          <p className="text-xs font-bold uppercase tracking-wide text-slate-400 mb-3">{t('request.urgencyLabel')}</p>
           <div className="flex gap-2">
             {[
-              { value: 'high', label: 'Emergência', icon: 'warning', color: 'text-error bg-error/10 border-error/20' },
-              { value: 'medium', label: 'Moderado', icon: 'priority_high', color: 'text-orange-600 bg-orange-50 border-orange-200 dark:bg-orange-500/10 dark:border-orange-500/20' },
-              { value: 'low', label: 'Monitorando', icon: 'info', color: 'text-emerald-600 bg-emerald-50 border-emerald-200 dark:bg-emerald-500/10 dark:border-emerald-500/20' }
+              { value: 'high', label: t('request.urgencyEmergency'), icon: 'warning', color: 'text-error bg-error/10 border-error/20' },
+              { value: 'medium', label: t('request.urgencyModerate'), icon: 'priority_high', color: 'text-orange-600 bg-orange-50 border-orange-200 dark:bg-orange-500/10 dark:border-orange-500/20' },
+              { value: 'low', label: t('request.urgencyMonitoring'), icon: 'info', color: 'text-emerald-600 bg-emerald-50 border-emerald-200 dark:bg-emerald-500/10 dark:border-emerald-500/20' }
             ].map(opt => (
               <button
                 key={opt.value}
@@ -515,7 +515,7 @@ function RequestForm() {
               <div className="w-12 h-1.5 bg-slate-200 dark:bg-white/10 rounded-full mx-auto mb-6" />
               <div className="flex items-center justify-between mb-2">
                  <h2 className="text-xl font-black text-slate-900 dark:text-white uppercase tracking-tight">
-                    {selectedType === 'transport' ? 'Tipo de Transporte' : 'Necessidade de Voluntários'}
+                    {selectedType === 'transport' ? t('request.transportTypeTitle') : t('request.volunteerNeedTitle')}
                  </h2>
                  <button 
                    onClick={() => setShowSubTypeModal(false)} 
@@ -525,7 +525,7 @@ function RequestForm() {
                     Ok
                  </button>
               </div>
-              <p className="text-xs text-slate-500 mb-6">Você pode selecionar várias opções.</p>
+              <p className="text-xs text-slate-500 mb-6">{t('request.selectMultiple')}</p>
               
               <div className="grid gap-3 mb-6">
                  {(selectedType === 'transport' 
@@ -586,8 +586,8 @@ function RequestForm() {
                 <span className="material-symbols-outlined text-slate-600 dark:text-slate-300">close</span>
               </button>
               <div className="flex-1">
-                <p className="text-sm font-bold uppercase tracking-widest text-on-surface dark:text-white">Localização</p>
-                <p className="text-[10px] text-slate-500">Mova o mapa ou complete os campos</p>
+                <p className="text-sm font-bold uppercase tracking-widest text-on-surface dark:text-white">{t('request.location')}</p>
+                <p className="text-[10px] text-slate-500">{t('request.mapInstruction')}</p>
               </div>
               <button 
                 type="button"

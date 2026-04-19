@@ -26,7 +26,7 @@ export default function BottomNavMissing({ onAddClick }: Props) {
           <div className="w-10 h-10 rounded-2xl group-hover:bg-primary/5 dark:group-hover:bg-white/5 flex items-center justify-center transition-colors">
             <span className="material-symbols-outlined text-[24px]">home</span>
           </div>
-          <span className="text-[10px] font-extrabold uppercase tracking-widest leading-none">Início</span>
+          <span className="text-[10px] font-extrabold uppercase tracking-widest leading-none">{t('nav.home')}</span>
         </Link>
 
         {/* Center: Floating Add Button (Purple) */}
@@ -47,7 +47,7 @@ export default function BottomNavMissing({ onAddClick }: Props) {
           <div className="w-10 h-10 rounded-2xl group-hover:bg-blue-50 dark:group-hover:bg-blue-900/20 flex items-center justify-center transition-colors">
             <span className="material-symbols-outlined text-[24px]">list_alt</span>
           </div>
-          <span className="text-[10px] font-extrabold uppercase tracking-widest leading-none">Pedidos</span>
+          <span className="text-[10px] font-extrabold uppercase tracking-widest leading-none">{t('nav.bookings')}</span>
         </Link>
 
       </div>

@@ -28,7 +28,7 @@ export default function BottomNavAssist() {
           }`}>
             <span className="material-symbols-outlined text-[24px]">home</span>
           </div>
-          <span className="text-[10px] font-extrabold uppercase tracking-widest leading-none">{t('navPublic.home')}</span>
+          <span className="text-[10px] font-extrabold uppercase tracking-widest leading-none">{t('nav.home')}</span>
         </Link>
 
         {/* Center Floating Maps Button */}
@@ -41,7 +41,7 @@ export default function BottomNavAssist() {
           </Link>
           <span className={`absolute -bottom-6 left-1/2 -translate-x-1/2 text-[10px] font-black uppercase tracking-widest leading-none transition-colors ${
             isNearby ? 'text-[#E65100] dark:text-orange-400' : 'text-on-surface-variant dark:text-slate-400 opacity-0'
-          }`}>Mapa</span>
+          }`}>{t('nav.map')}</span>
         </div>
 
         {/* Volunteer / Profile Button */}
@@ -52,7 +52,7 @@ export default function BottomNavAssist() {
           <div className="w-10 h-10 rounded-2xl group-hover:bg-green-50 dark:group-hover:bg-white/5 flex items-center justify-center transition-colors">
             <span className="material-symbols-outlined text-[24px] group-hover:text-[#2E7D32] dark:group-hover:text-green-400">volunteer_activism</span>
           </div>
-          <span className="text-[10px] font-extrabold uppercase tracking-widest group-hover:text-[#2E7D32] dark:group-hover:text-green-400 leading-none">Voluntário</span>
+          <span className="text-[10px] font-extrabold uppercase tracking-widest group-hover:text-[#2E7D32] dark:group-hover:text-green-400 leading-none">{t('nav.volunteer')}</span>
         </Link>
 
       </div>

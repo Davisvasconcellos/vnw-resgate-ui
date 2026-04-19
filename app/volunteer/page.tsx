@@ -62,11 +62,11 @@ const CATEGORY_ICONS = {
 }
 
 const CATEGORY_LABELS = {
-  clean: 'Limpeza',
-  sort: 'Triagem',
-  cook: 'Cozinha',
-  health: 'Apoio Saúde',
-  rescue: 'Resgate'
+  clean: 'volunteerOpportunities.categories.clean',
+  sort: 'volunteerOpportunities.categories.sort',
+  cook: 'volunteerOpportunities.categories.cook',
+  health: 'volunteerOpportunities.categories.health',
+  rescue: 'volunteerOpportunities.categories.rescue'
 }
 
 export default function VolunteerPage() {
@@ -88,13 +88,13 @@ export default function VolunteerPage() {
         <section className="mb-8 px-1">
           <div className="flex items-center gap-2 mb-2">
              <span className="material-symbols-outlined text-[#2E7D32] dark:text-[#66BB6A] text-[20px]">volunteer_activism</span>
-             <span className="text-[10px] font-black uppercase tracking-widest text-[#2E7D32] dark:text-[#66BB6A]">Área do Voluntário</span>
+             <span className="text-[10px] font-black uppercase tracking-widest text-[#2E7D32] dark:text-[#66BB6A]">{t('volunteerOpportunities.badge')}</span>
           </div>
           <h1 className="text-4xl font-extrabold font-headline text-on-surface dark:text-white tracking-tight leading-tight">
-            Oportunidades
+            {t('volunteerOpportunities.title')}
           </h1>
           <p className="mt-2 text-on-surface-variant dark:text-slate-400 font-body text-base">
-            Encontre locais que precisam da sua força de trabalho hoje.
+            {t('volunteerOpportunities.subtitle')}
           </p>
         </section>
 
@@ -118,7 +118,7 @@ export default function VolunteerPage() {
                 <div className="flex-1 min-w-0">
                   <div className="flex justify-between items-center mb-1">
                     <span className="text-[9px] font-bold uppercase tracking-widest text-[#2E7D32] dark:text-[#66BB6A]">
-                      {CATEGORY_LABELS[req.category]}
+                      {t(CATEGORY_LABELS[req.category])}
                     </span>
                     <span className="text-[10px] font-bold text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-white/10 px-2 py-0.5 rounded-full">
                       {req.distance}
@@ -140,7 +140,7 @@ export default function VolunteerPage() {
                       </div>
                     </div>
                     <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest">
-                      {req.volunteersEnrolled} / {req.volunteersNeeded} Vagas
+                      {req.volunteersEnrolled} / {req.volunteersNeeded} {t('volunteerOpportunities.slots')}
                     </span>
                   </div>
                 </div>
@@ -165,7 +165,7 @@ export default function VolunteerPage() {
               </div>
               <div>
                 <span className="text-[10px] font-bold uppercase tracking-widest text-[#2E7D32] dark:text-green-400">
-                  {CATEGORY_LABELS[selectedRequest.category]}
+                  {t(CATEGORY_LABELS[selectedRequest.category])}
                 </span>
                 <h2 className="text-2xl font-black text-slate-900 dark:text-white font-headline leading-tight">
                   {selectedRequest.title}
@@ -175,33 +175,33 @@ export default function VolunteerPage() {
 
             <div className="bg-slate-50 dark:bg-white/5 rounded-3xl p-4 flex items-center gap-4 mb-8">
               <div className="flex-1 border-r border-slate-200 dark:border-white/10">
-                <p className="text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-0.5">Localização</p>
+                <p className="text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-0.5">{t('volunteerOpportunities.labels.location')}</p>
                 <p className="text-sm font-bold text-slate-800 dark:text-white">{selectedRequest.location}</p>
               </div>
               <div className="flex-1 px-1">
-                <p className="text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-0.5">Urgência</p>
+                <p className="text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-0.5">{t('volunteerOpportunities.labels.urgency')}</p>
                 <div className="flex items-center gap-1.5">
                    <div className={`w-2 h-2 rounded-full ${selectedRequest.urgency === 'high' ? 'bg-red-500' : 'bg-orange-400'}`} />
                    <p className="text-sm font-extrabold text-slate-800 dark:text-white uppercase tracking-tight">
-                      {selectedRequest.urgency === 'high' ? 'Crítica' : 'Média'}
+                      {selectedRequest.urgency === 'high' ? t('volunteerOpportunities.urgencyLevels.critical') : t('volunteerOpportunities.urgencyLevels.medium')}
                    </p>
                 </div>
               </div>
             </div>
 
             <div className="mb-10">
-              <h4 className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-3 px-1">O que você fará</h4>
+              <h4 className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-3 px-1">{t('volunteerOpportunities.labels.whatToDo')}</h4>
               <p className="text-slate-600 dark:text-slate-300 text-base leading-relaxed font-body px-1">
                 {selectedRequest.description}
               </p>
               <ul className="mt-4 space-y-2 px-1">
                 <li className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 font-medium whitespace-nowrap">
-                  <span className="material-symbols-outlined text-emerald-500 text-[18px]">check_circle</span>
-                  Não precisa de experiência prévia
+                   <span className="material-symbols-outlined text-emerald-500 text-[18px]">check_circle</span>
+                   {t('volunteerOpportunities.requirements.noExperience')}
                 </li>
                 <li className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 font-medium whitespace-nowrap">
-                  <span className="material-symbols-outlined text-emerald-500 text-[18px]">check_circle</span>
-                  Equipamentos de proteção fornecidos no local
+                   <span className="material-symbols-outlined text-emerald-500 text-[18px]">check_circle</span>
+                   {t('volunteerOpportunities.requirements.safetyEquip')}
                 </li>
               </ul>
             </div>
@@ -212,9 +212,9 @@ export default function VolunteerPage() {
                className={`w-full py-4 rounded-2xl font-black text-white text-lg shadow-xl outline-none transition-all active:scale-95 flex items-center justify-center gap-2 ${enrolledIds.includes(selectedRequest.id) ? 'bg-slate-400 dark:bg-slate-700 shadow-none' : 'bg-[#2E7D32] hover:bg-[#1B5E20] shadow-[#2E7D32]/30'}`}
             >
               {enrolledIds.includes(selectedRequest.id) ? (
-                <>Candidatado ✓</>
+                <>{t('volunteerOpportunities.actions.applied')}</>
               ) : (
-                <>Aceitar e Iniciar</>
+                <>{t('volunteerOpportunities.actions.accept')}</>
               )}
             </button>
           </div>

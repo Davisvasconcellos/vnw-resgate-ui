@@ -24,7 +24,7 @@ export default function BottomNavPublic() {
           className="flex flex-col items-center gap-1 transition-all active:scale-90 group pb-1 min-w-[80px] text-slate-400 dark:text-slate-500"
         >
           <span className="material-symbols-outlined text-[26px]">home</span>
-          <span className="text-[10px] font-black uppercase tracking-widest leading-none">Início</span>
+          <span className="text-[10px] font-black uppercase tracking-widest leading-none">{t('nav.home')}</span>
         </button>
 
         {/* Center: Floating Add (+) */}
@@ -50,7 +50,7 @@ export default function BottomNavPublic() {
           className="flex flex-col items-center gap-1 transition-all active:scale-90 group pb-1 min-w-[80px] text-slate-400 dark:text-slate-500 hover:text-purple-600"
         >
           <span className="material-symbols-outlined text-[26px]">person_search</span>
-          <span className="text-[10px] font-black uppercase tracking-widest leading-none">Desaparecidos</span>
+          <span className="text-[10px] font-black uppercase tracking-widest leading-none">{t('nav.missing')}</span>
         </Link>
 
       </div>

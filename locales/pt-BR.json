@@ -6,8 +6,25 @@
   },
   "nav": {
     "home": "Início",
-    "bookings": "Reservas",
-    "profile": "Perfil"
+    "bookings": "Pedidos",
+    "profile": "Perfil",
+    "volunteer": "Voluntário",
+    "iamVolunteer": "Sou Voluntário",
+    "missions": "Missões",
+    "myMissions": "Minhas Missões",
+    "management": "Gestão",
+    "team": "Equipe",
+    "situation": "Situação",
+    "map": "Mapa",
+    "help": "Solicitar Ajuda",
+    "missing": "Desaparecidos"
+  },
+  "notifications": {
+      "title": "Notificações",
+      "empty": "Sem novidades",
+      "updated": "SOS Atualizado",
+      "inService": "Pedido de {type} em atendimento!",
+      "viewAll": "Ver todas"
   },
   "menu": {
     "profile": "Perfil",
@@ -39,7 +56,16 @@
     "service": "Serviço",
     "base": "Base",
     "addOnsTotal": "Total de extras",
-    "chooseExtras": "Escolher extras"
+    "chooseExtras": "Escolher extras",
+    "hello": "Olá",
+    "accessPrioritized": "Acesso Priorizado",
+    "accessPrioritizedDesc": "O uso é livre, mas usuários logados ganham selo {badge} e suas solicitações são atendidas com maior agilidade.",
+    "verified": "Verificado",
+    "activeStatus": "Status Ativo",
+    "activeStatusDesc": "Você está logado e verificado pela rede.",
+    "googleLogin": "Entrar com Google",
+    "notificationBanner": "Atualização de Socorro",
+    "notificationCount": "Você tem {count} {plural} no seu histórico."
   }
   ,
   "custom": {
@@ -97,7 +123,12 @@
     "phonesDesc": "Defesa Civil, SAMU, Bombeiros e mais",
     "missing": "Desaparecidos",
     "missingDesc": "Informe ou busque pessoas desaparecidas",
-    "urgent": "URGENTE"
+    "urgent": "URGENTE",
+    "centralTitle": "Central de Ajuda",
+    "centralSubtitle": "Escolha uma das opções abaixo para solicitar suporte ou consultar informações.",
+    "activeBadge": "{count} ativos",
+    "notesTitle": "Avisos e Transparência",
+    "notesDesc": "As solicitações feitas sem login são tratadas com prioridade normal. Usuários logados recebem o selo de identidade confirmada, o que facilita o aceite rápido pelos voluntários."
   },
   "request": {
     "title": "Solicitar ajuda",
@@ -127,7 +158,54 @@
     "medical": "Médico",
     "medicalDesc": "Preciso de cuidados",
     "food": "Alimento",
-    "foodDesc": "Preciso de água/comida"
+    "foodDesc": "Preciso de água/comida",
+    "transport": "Transporte",
+    "transportDesc": "Ajuda com movimentação via terra ou água",
+    "volunteers": "Voluntários",
+    "volunteersDesc": "Preciso de braços para ajudar na ocorrência",
+    "loadingLocation": "Obtendo localização...",
+    "errorTooMany": "Muitos pedidos em pouco tempo. Aguarde.",
+    "offlineSaved": "Pedido salvo localmente! Tentaremos sincronizar quando houver conexão.",
+    "urgencyLabel": "Grau de Urgência",
+    "urgencyEmergency": "Emergência",
+    "urgencyModerate": "Moderado",
+    "urgencyMonitoring": "Monitorando",
+    "local": "Local",
+    "back": "Voltar",
+    "details": "Descrição dos Detalhes",
+    "detailsPlaceholder": "Dê mais detalhes sobre sua necessidade aqui...",
+    "detailsVolunteerPlaceholder": "Ex: Preciso de voluntários para limpar a escola X...",
+    "transportTypeTitle": "Tipo de Transporte",
+    "volunteerNeedTitle": "Necessidade de Voluntários",
+    "selectMultiple": "Você pode selecionar várias opções.",
+    "finishSelection": "Concluir Seleção",
+    "mapInstruction": "Mova o mapa ou complete os campos"
+  },
+  "myRequestsPage": {
+    "title": "Meus Pedidos",
+    "active": "Ativos",
+    "history": "Histórico",
+    "empty": "Nada por aqui",
+    "noDescription": "Sem descrição detalhada.",
+    "detailTitle": "Detalhes do Pedido",
+    "location": "Localização",
+    "impact": "Impacto",
+    "peopleCount": "{count} Pessoas",
+    "onWay": "A caminho",
+    "readyToSupport": "Pronto para apoiar",
+    "volunteerMsg": "Mensagem do Salvador",
+    "markAsResolved": "Marcar como Resolvido",
+    "resolvedConfirm": "Sim, Resolvido",
+    "cancel": "Cancelar",
+    "request": "Solicitação",
+    "toastSuccess": "Pedido marcado como resolvido!",
+    "toastError": "Erro ao atualizar pedido."
+  },
+  "status": {
+    "pending": "Pendente",
+    "attending": "Em atendimento",
+    "resolved": "Resolvido",
+    "viewed": "Visualizado"
   },
   "shelters": {
     "title": "Abrigos disponíveis",
@@ -135,7 +213,11 @@
     "requestBtn": "Solicitar abrigo com urgência",
     "call": "Ligar",
     "full": "Capacidade esgotada — procure outro abrigo",
-    "distance": "{km} km"
+    "distance": "{km} km",
+    "loading": "Carregando abrigos...",
+    "empty": "Nenhum abrigo encontrado por perto",
+    "noReference": "Sem referência informada",
+    "noAddress": "Endereço não informado"
   },
   "missingPage": {
     "title": "Busca de Pessoas",
@@ -163,7 +245,16 @@
     "formReporterName": "Seu nome",
     "formReporterRelation": "Parentesco (Ex: Mãe)",
     "formReporterPhone": "Telefone",
-    "formSubmit": "Registrar Desaparecimento"
+    "formSubmit": "Registrar Desaparecimento",
+    "photoSuccess": "Foto carregada pela API!",
+    "photoError": "Falha no upload da foto.",
+    "registerSuccess": "Registro criado com sucesso!",
+    "registerError": "Erro ao registrar. Tente novamente.",
+    "syncing": "Sincronizando banco...",
+    "noPhoto": "Sem foto",
+    "descriptionLabel": "Descrição Física / Roupas",
+    "closeDetails": "Fechar Detalhes",
+    "uploading": "Subindo..."
   },
   "phonesPage": {
     "title": "Telefones úteis",
@@ -176,9 +267,10 @@
     "loginAlert": "Voluntários precisam fazer login para acessar o dashboard de pedidos e dar início ao atendimento.",
     "missingBanner": "Pessoas Desaparecidas",
     "missingDesc": "Consulte ou informe familiares e perdidos",
+    "statsTitle": "Hoje",
     "statVolunteers": "Voluntários ativos",
     "statOpen": "Pedidos em aberto",
-    "statToday": "Atendidos hoje",
+    "statToday": "Pessoas impactadas",
     "types": {
       "shelter": "Abrigo",
       "shelterDesc": "Tenho espaço em casa para acolher pessoas",
@@ -188,7 +280,12 @@
       "boatDesc": "Tenho embarcação para resgatar pessoas em áreas alagadas",
       "volunteer": "Voluntário",
       "volunteerDesc": "Quero ajudar como voluntário em abrigos ou no campo"
-    }
+    },
+    "mapLabel": "Mapa Operacional",
+    "mapDesc": "Visão tática de todos os incidentes da região no mapa.",
+    "missionsLabel": "Minhas Missões",
+    "missionsDesc": "Quadro com as ocorrências e resgates que você assumiu (Barco, Rodas ou Abrigo).",
+    "chooseHelp": "Escolha como ajudar"
   },
   "onboarding": {
     "title": "Cadastro",
@@ -204,7 +301,7 @@
       "shelter": "Preencha as informações do local que irá receber as famílias.",
       "transport": "Informe os dados do seu veículo para ajudar no transporte.",
       "boat": "Informe os dados da embarcação para apoiar em resgates.",
-      "volunteer": "Conte-nos como você pode ajudar."
+      "volunteer": "Marque as categorias que você possui recursos para ajudar."
     },
     "shelterForm": {
       "name": "Nome do Local",
@@ -234,7 +331,9 @@
       "region": "Região de atuação base",
       "regionPlace": "Bairro ou cidade",
       "offroad": "Veículo com tração 4x4 / Off-road",
-      "offroadDesc": "Consegue acessar áreas difíceis ou com lama"
+      "offroadDesc": "Consegue acessar áreas difíceis ou com lama",
+      "dataTitle": "Dados do Veículo",
+      "labelSeats": "Vagas"
     },
     "boatForm": {
       "type": "Tipo de Embarcação",
@@ -259,7 +358,18 @@
       "full": "Integral",
       "morning": "Manhã",
       "afternoon": "Tarde",
-      "night": "Noite / Madrugada"
+      "night": "Noite / Madrugada",
+      "hasCar": "Tenho Carro",
+      "hasBoat": "Tenho Barco",
+      "dataTitle": "Dados da Embarcação",
+      "typeTitle": "Tipo",
+      "labelSpots": "Capacidade",
+      "labelVests": "Tem Coletes",
+      "skillsTitle": "Outras habilidades",
+      "mapTitle": "Localização do Abrigo",
+      "mapDesc": "Digite o endereço ou mova o alfinete",
+      "mapConfirm": "Confirmar",
+      "mapPlaceholder": "Rua, Número, Bairro, Cidade..."
     }
   },
   "shelterManage": {
@@ -285,7 +395,15 @@
     "confirmBtn": "Confirmar Responsabilidade",
     "checkinBtn": "Realizar Check-in de Entrada",
     "checkoutBtn": "Registrar Check-out (Saída)",
-    "undo": "Desfazer ou mover para aguardando"
+    "undo": "Desfazer ou mover para aguardando",
+    "notInformed": "Não informado",
+    "recent": "Recente",
+    "labels": {
+        "name": "Nome",
+        "namePlace": "Ex: Família Silva, José, Maria",
+        "phone": "Telefone",
+        "peopleCount": "Quantidade de Pessoas"
+    }
   },
   "navVolunteer": {
     "myTasks": "Minhas Tarefas",
@@ -312,6 +430,7 @@
     "title": "Seu Perfil",
     "settings": "Configurações",
     "language": "Idioma",
+    "languageDesc": "Selecione seu idioma",
     "theme": "Modo Econômico (Dark)",
     "themeDesc": "Economiza bateria em telas OLED, crucial em áreas sem energia.",
     "light": "Claro",
@@ -322,6 +441,213 @@
       "transport": "Motorista Voluntário",
       "boat": "Condutor de Embarcação",
       "volunteer": "Voluntário"
+    }
+  },
+  "login": {
+    "title": "Acesse como voluntário",
+    "googleBtn": "Entrar com Google",
+    "comingSoon": "Em breve",
+    "emailLogin": "Login Email",
+    "createAccount": "Criar Conta",
+    "terms": "Ao fazer login você concorda com os termos de uso e se compromete a atuar como voluntário de forma responsável.",
+    "apiError": "Falha ao autenticar com a API.",
+    "authError": "Erro na autenticação: "
+  },
+  "nearbyPage": {
+    "title": "Situação próxima",
+    "locationActive": "Localização ativa",
+    "gettingLocation": "Obtendo localização...",
+    "radiusLabel": "Raio:",
+    "statusLabel": "Status:",
+    "statuses": {
+      "all": "Todos",
+      "pending": "Pendentes",
+      "attending": "Em atendimento"
+    },
+    "legend": {
+        "available": "Disponível",
+        "nearFull": "Quase cheio",
+        "fullUrgent": "Lotado / Urgente"
+    },
+    "tabs": {
+        "requests": "Pedidos",
+        "shelters": "Abrigos"
+    },
+    "empty": "Nenhum registro encontrado num raio de {radius}km desta área",
+    "mapLocation": "Localização no Mapa",
+    "urgency": {
+        "high": "Emergência",
+        "medium": "Moderado",
+        "low": "Monitorar"
+    },
+    "attendBtn": "Atender",
+    "modalAttend": {
+        "title": "Confirmar Missão",
+        "messageLabel": "Mensagem para o solicitante",
+        "messagePlace": "Ex: Estou a caminho com um barco. Chego em 10 minutos.",
+        "warning": "Ao confirmar, este pedido será vinculado a você e aparecerá em suas missões ativas.",
+        "confirm": "Confirmar Aceite",
+        "cancel": "Cancelar"
+    }
+  },
+  "volunteerTasks": {
+    "title": "Minhas Missões",
+    "searchPlace": "Buscar missão ou local...",
+    "tabs": {
+        "opportunities": "Novas",
+        "ongoing": "Ativas",
+        "finished": "Histórico"
+    },
+    "noTasks": "Nenhuma missão encontrada",
+    "shelterOccupation": "Ocupação do Abrigo",
+    "requesterFallback": "Solicitante",
+    "noDescription": "Sem descrição.",
+    "labels": {
+        "description": "Descrição",
+        "address": "Endereço"
+    },
+    "actions": {
+        "navigate": "Navegar GPS",
+        "call": "Ligar",
+        "complete": "Concluir Missão"
+    },
+    "checkout": {
+        "title": "Desfecho",
+        "question": "Onde o solicitante foi deixado?",
+        "officialShelter": "Abrigo Oficial",
+        "officialShelterDesc": "Ponto de acolhimento",
+        "safePlace": "Local Seguro",
+        "safePlaceDesc": "Casa de parentes ou área seca",
+        "chooseShelter": "Escolher Abrigo"
+    },
+    "toasts": {
+        "accepted": "Missão aceita!",
+        "errorAccept": "Erro ao aceitar missão.",
+        "completed": "Missão concluída!",
+        "shiftFinished": "Turno finalizado!",
+        "errorFinish": "Erro ao finalizar turno."
+    }
+  },
+  "userProfile": {
+    "noLocation": "Localização não definida",
+    "myData": "Meus Dados",
+    "phone": "Telefone",
+    "addressTitle": "Endereço",
+    "map": "Mapa",
+    "street": "Rua / Logradouro",
+    "number": "Número",
+    "complement": "Complemento",
+    "neighborhood": "Bairro",
+    "city": "Cidade",
+    "state": "UF",
+    "zipCode": "CEP",
+    "save": "Salvar Alterações",
+    "saving": "Salvando...",
+    "cancel": "Cancelar",
+    "residentialAddress": "Endereço Residencial",
+    "noAddress": "Nenhum endereço cadastrado. Clique em editar para adicionar.",
+    "active": "Ativo",
+    "settings": "Configurações",
+    "language": "Idioma",
+    "theme": "Tema",
+    "themeLight": "Claro",
+    "themeDark": "Escuro",
+    "backHome": "Voltar ao Início",
+    "logout": "Sair da conta",
+    "selectOnMap": "Selecione no Mapa",
+    "moveMapWarning": "Mova o mapa para posicionar exatamente",
+    "confirmLocation": "Confirmar Localização"
+  },
+  "routesBoats": {
+    "badge": "Resgate Náutico",
+    "title": "Minhas Rotas de Barco",
+    "subtitle": "Gerencie os resgates e transportes via água que você está realizando.",
+    "tabs": {
+        "ongoing": "Em curso",
+        "finished": "Concluídos"
+    },
+    "noRoutes": "Nenhuma rota náutica ativa",
+    "localLabel": "Local",
+    "rescued": "{count} resgatados",
+    "actions": {
+        "dropoff": "Desembarque",
+        "finished": "Finalizado"
+    },
+    "checkout": {
+        "title": "Registrar Desembarque",
+        "question": "Onde as pessoas do grupo {name} foram deixadas com segurança?",
+        "toShelter": "Levar ao Abrigo",
+        "toShelterDesc": "Destinado a um abrigo oficial via trapiche/cais.",
+        "toSafe": "Local Seguro",
+        "toSafeDesc": "Desembarque concluído em área seca/porto."
+    }
+  },
+  "volunteerOpportunities": {
+    "badge": "Área do Voluntário",
+    "title": "Oportunidades",
+    "subtitle": "Encontre locais que precisam da sua força de trabalho hoje.",
+    "slots": "Vagas",
+    "labels": {
+        "location": "Localização",
+        "urgency": "Urgência",
+        "whatToDo": "O que você fará"
+    },
+    "urgencyLevels": {
+        "critical": "Crítica",
+        "medium": "Média",
+        "low": "Baixa"
+    },
+    "categories": {
+        "clean": "Limpeza",
+        "sort": "Triagem",
+        "cook": "Cozinha",
+        "health": "Apoio Saúde",
+        "rescue": "Resgate"
+    },
+    "requirements": {
+        "noExperience": "Não precisa de experiência prévia",
+        "safetyEquip": "Equipamentos de proteção fornecidos no local"
+    },
+    "actions": {
+        "applied": "Candidatado ✓",
+        "accept": "Aceitar e Iniciar"
+    }
+  },
+  "shelterTeam": {
+    "title": "Gestão de Equipe",
+    "subtitle": "Solicite reforços ou gerencie seus voluntários atuais.",
+    "tabs": {
+        "request": "Solicitar",
+        "pending": "Solicitados",
+        "team": "Equipe"
+    },
+    "categories": {
+        "sorting": "Triagem e Organização (Roupas/Alimentos)",
+        "cleaning": "Limpeza e Manutenção de Espaços",
+        "health": "Saúde / Enfermagem / Psicologia",
+        "tactical": "Suporte Tático em Resgates",
+        "cooking": "Cozinha e Preparo de Refeições"
+    },
+    "actions": {
+        "sendInvites": "Enviar Convites ({count})",
+        "removeTeam": "Remover da Equipe",
+        "deleteRequest": "Remover Solicitação"
+    },
+    "status": {
+        "active": "ATIVO",
+        "finished": "CONCLUÍDO",
+        "free": "Livres",
+        "noOpenSlots": "Nenhuma vaga aberta no momento.",
+        "noVolunteers": "Nenhum voluntário na sua equipe ainda.",
+        "noVolunteersDesc": "As missões aceitas aparecerão aqui agrupadas por usuário."
+    },
+    "messages": {
+        "sendSuccess": "Solicitações enviadas com sucesso!",
+        "sendError": "Erro ao enviar solicitações",
+        "removed": "Voluntário removido",
+        "removeError": "Erro ao remover voluntário",
+        "confirmRemove": "Tem certeza que deseja remover este voluntário da equipe? Todas as atividades vinculadas a ele neste abrigo serão removidas.",
+        "shelterNotFound": "Abrigo não identificado"
     }
   }
 }

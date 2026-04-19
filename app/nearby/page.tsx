@@ -8,6 +8,7 @@ import CapacityBar from '@/components/ui/CapacityBar'
 import StatusBadge from '@/components/ui/StatusBadge'
 import InteractiveMap from '@/components/ui/InteractiveMap'
 import { api } from '@/services/api'
+import { useI18n } from '@/components/i18n/I18nProvider'
 
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState, AppDispatch } from '@/store'
@@ -17,10 +18,10 @@ import { fetchRequests } from '@/store/slices/requestsSlice'
 type Tab = 'shelters' | 'requests'
 
 const RADIUS_OPTIONS = [1, 2, 5, 10]
-const STATUS_OPTIONS = [
-  { id: 'all', label: 'Todos' },
-  { id: 'pending', label: 'Pendentes' },
-  { id: 'attending', label: 'Em atendimento' }
+const STATUS_OPTIONS = (t: any) => [
+  { id: 'all', label: t('nearbyPage.statuses.all') },
+  { id: 'pending', label: t('nearbyPage.statuses.pending') },
+  { id: 'attending', label: t('nearbyPage.statuses.attending') }
 ]
 
 function getShelterPinColor(pct: number) {
@@ -50,6 +51,7 @@ function getDistanceFromLatLonInKm(lat1: number, lon1: number, lat2: number, lon
 }
 
 function NearbyContent() {
+  const { t } = useI18n()
   const router = useRouter()
   const searchParams = useSearchParams()
   const moduleParam = searchParams.get('module')
@@ -84,11 +86,11 @@ function NearbyContent() {
         setSelectedPin(null)
         router.push('/volunteer/tasks')
       } else {
-        alert('Erro ao aceitar pedido. Verifique se você está logado.')
+        alert(t('login.apiError'))
       }
     } catch (error) {
       console.error('Attend error:', error)
-      alert('Erro de conexão com o servidor.')
+      alert(t('registerError'))
     } finally {
       setIsSubmitting(false)
     }
@@ -96,13 +98,13 @@ function NearbyContent() {
 
   useEffect(() => {
     // Simula obter navegação nativa e dispara para Redux chamarem backend
-    const t = setTimeout(() => {
+    const timer = setTimeout(() => {
        setLocationReady(true)
        // Puxamos um raio de 5000km (ou muito largo) para o mapa enxergar TODO O BRASIL
        dispatch(fetchShelters({ lat: mapCenter[0], lng: mapCenter[1], radiusKm: 5000 }))
        dispatch(fetchRequests({ lat: mapCenter[0], lng: mapCenter[1], radiusKm: 5000 }))
     }, 1600)
-    return () => clearTimeout(t)
+    return () => clearTimeout(timer)
   }, [dispatch, mapCenter]) // Removido radius para evitar refetching agressivo
 
   // 1. Processa TODOS os itens para apresentar no MAPA
@@ -136,14 +138,14 @@ function NearbyContent() {
           <div className="flex items-center justify-between mb-4">
             <div>
               <h1 className="text-3xl font-extrabold text-on-surface dark:text-white font-headline tracking-tight transition-colors">
-                Situação próxima
+                {t('nearbyPage.title')}
               </h1>
               <div className="flex items-center gap-2 mt-1.5">
                 {locationReady ? (
                   <>
                     <div className="flex items-center gap-1 text-secondary">
                       <span className="material-symbols-outlined text-[14px]" style={{ fontVariationSettings: `'FILL' 1` }}>location_on</span>
-                      <span className="text-xs font-bold leading-none uppercase tracking-wider">Localização ativa</span>
+                      <span className="text-xs font-bold leading-none uppercase tracking-wider">{t('nearbyPage.locationActive')}</span>
                     </div>
                     <span className="text-outline-variant/30 text-xs mx-0.5">·</span>
                     <span className="text-on-surface-variant dark:text-outline-variant text-[11px] font-medium leading-none truncate max-w-[150px]">Canasvieiras, Florianópolis</span>
@@ -151,7 +153,7 @@ function NearbyContent() {
                 ) : (
                   <>
                     <div className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-primary/30 border-t-primary" />
-                    <span className="text-primary text-[11px] font-bold uppercase tracking-wider">Obtendo localização…</span>
+                    <span className="text-primary text-[11px] font-bold uppercase tracking-wider">{t('nearbyPage.gettingLocation')}</span>
                   </>
                 )}
               </div>
@@ -169,7 +171,7 @@ function NearbyContent() {
       {/* Filters Overlay */}
       <div className="px-4 py-4 bg-surface/50 dark:bg-white/5 border-b border-outline-variant/5">
         <div className="flex items-center gap-2">
-          <span className="text-on-surface-variant dark:text-outline-variant text-[10px] font-extrabold uppercase tracking-widest shrink-0">Raio:</span>
+          <span className="text-on-surface-variant dark:text-outline-variant text-[10px] font-extrabold uppercase tracking-widest shrink-0">{t('nearbyPage.radiusLabel')}</span>
           <div className="flex gap-1.5 overflow-x-auto no-scrollbar pb-1">
             {RADIUS_OPTIONS.map((r) => (
               <button
@@ -183,9 +185,9 @@ function NearbyContent() {
           </div>
         </div>
         <div className="flex items-center gap-2 mt-3">
-          <span className="text-slate-500 dark:text-white/40 text-[10px] font-extrabold uppercase tracking-widest shrink-0">Status:</span>
+          <span className="text-slate-500 dark:text-white/40 text-[10px] font-extrabold uppercase tracking-widest shrink-0">{t('nearbyPage.statusLabel')}</span>
           <div className="flex gap-1.5 overflow-x-auto no-scrollbar pb-1">
-            {STATUS_OPTIONS.map((st) => (
+            {STATUS_OPTIONS(t).map((st: any) => (
               <button
                 key={st.id}
                 onClick={() => setStatusFilter(st.id)}
@@ -215,15 +217,15 @@ function NearbyContent() {
         <div className="absolute bottom-3 right-3 rounded-xl px-3 py-2 flex flex-col gap-1 bg-white/90 dark:bg-black/60 shadow-md dark:shadow-none backdrop-blur-md transition-colors">
           <div className="flex items-center gap-1.5">
             <div className="w-2 h-2 rounded-full bg-emerald-500" />
-            <span className="text-[10px] text-slate-600 dark:text-white/60 font-semibold transition-colors">Disponível</span>
+            <span className="text-[10px] text-slate-600 dark:text-white/60 font-semibold transition-colors">{t('nearbyPage.legend.available')}</span>
           </div>
           <div className="flex items-center gap-1.5">
             <div className="w-2 h-2 rounded-full bg-orange-500" />
-            <span className="text-[10px] text-slate-600 dark:text-white/60 font-semibold transition-colors">Quase cheio</span>
+            <span className="text-[10px] text-slate-600 dark:text-white/60 font-semibold transition-colors">{t('nearbyPage.legend.nearFull')}</span>
           </div>
           <div className="flex items-center gap-1.5">
             <div className="w-2 h-2 rounded-full bg-red-600" />
-            <span className="text-[10px] text-slate-600 dark:text-white/60 font-semibold transition-colors">Lotado / Urgente</span>
+            <span className="text-[10px] text-slate-600 dark:text-white/60 font-semibold transition-colors">{t('nearbyPage.legend.fullUrgent')}</span>
           </div>
         </div>
       </div>
@@ -240,8 +242,8 @@ function NearbyContent() {
                 <p className="text-xs text-slate-500 mb-6">{selectedShelter.reference} · {selectedShelter.distanceKm} km</p>
                 <CapacityBar current={selectedShelter.occupied} total={selectedShelter.capacity} />
                 <div className="flex gap-3 mt-6">
-                  <a href={`tel:${selectedShelter.phone}`} className="flex-1 flex items-center justify-center gap-2 font-bold text-blue-600 bg-blue-50 py-3.5 rounded-xl active:scale-95 transition-transform"><span className="material-symbols-outlined text-[18px]">call</span>Ligar</a>
-                  <button className="flex-1 flex items-center justify-center gap-2 bg-blue-600 text-white font-bold py-3.5 rounded-xl active:scale-95 transition-transform"><span className="material-symbols-outlined text-[18px]">directions</span>Rotas</button>
+                  <a href={`tel:${selectedShelter.phone}`} className="flex-1 flex items-center justify-center gap-2 font-bold text-blue-600 bg-blue-50 py-3.5 rounded-xl active:scale-95 transition-transform"><span className="material-symbols-outlined text-[18px]">call</span>{t('shelters.call')}</a>
+                  <button className="flex-1 flex items-center justify-center gap-2 bg-blue-600 text-white font-bold py-3.5 rounded-xl active:scale-95 transition-transform"><span className="material-symbols-outlined text-[18px]">directions</span>{t('nearbyPage.attendBtn')}</button>
                 </div>
               </div>
             )}
@@ -309,7 +311,7 @@ function NearbyContent() {
                     className="flex-[2] bg-blue-600 text-white font-black py-4 rounded-2xl flex items-center justify-center gap-3 shadow-lg active:scale-95 transition-all text-sm uppercase tracking-widest"
                   >
                     <span className="material-symbols-outlined">directions_car</span>
-                    Atender
+                    {t('nearbyPage.attendBtn')}
                   </button>
                   <a 
                     href={`tel:${selectedRequest.reporter_phone || selectedRequest.phone}`}
@@ -336,23 +338,23 @@ function NearbyContent() {
                 <span className="material-symbols-outlined text-[32px]">volunteer_activism</span>
               </div>
               <div>
-                <h2 className="text-xl font-black text-slate-800 dark:text-white font-headline leading-tight">Confirmar Missão</h2>
+                <h2 className="text-xl font-black text-slate-800 dark:text-white font-headline leading-tight">{t('nearbyPage.modalAttend.title')}</h2>
                 <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">{HELP_TYPE_LABELS[selectedRequest.type]?.label || selectedRequest.type} · {selectedRequest.id_code?.slice(0,8)}</p>
               </div>
             </div>
 
             <div className="bg-slate-50 dark:bg-white/5 rounded-2xl p-4 border border-slate-100 dark:border-white/5 mb-6">
-               <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Mensagem para o solicitante</p>
+               <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">{t('nearbyPage.modalAttend.messageLabel')}</p>
                <textarea
                  value={volunteerMessage}
                  onChange={(e) => setVolunteerMessage(e.target.value)}
-                 placeholder="Ex: Estou a caminho com um barco. Chego em 10 minutos."
+                 placeholder={t('nearbyPage.modalAttend.messagePlace')}
                  className="w-full bg-transparent border-none p-0 text-sm font-semibold text-slate-700 dark:text-white placeholder:text-slate-400 outline-none resize-none h-24"
                />
             </div>
 
             <p className="text-[11px] text-slate-500 dark:text-slate-400 mb-8 italic leading-relaxed text-center px-4">
-              Ao confirmar, este pedido será vinculado a você e aparecerá em suas missões ativas.
+              {t('nearbyPage.modalAttend.warning')}
             </p>
 
             <div className="flex flex-col gap-3">
@@ -366,7 +368,7 @@ function NearbyContent() {
                 ) : (
                   <>
                     <span className="material-symbols-outlined">check_circle</span>
-                    Confirmar Aceite
+                    {t('nearbyPage.modalAttend.confirm')}
                   </>
                 )}
               </button>
@@ -376,7 +378,7 @@ function NearbyContent() {
                  disabled={isSubmitting}
                  className="w-full py-4 text-slate-400 font-bold text-xs uppercase tracking-widest"
               >
-                Cancelar
+                {t('nearbyPage.modalAttend.cancel')}
               </button>
             </div>
           </div>
@@ -385,8 +387,8 @@ function NearbyContent() {
 
       {/* Tabs */}
       <div className="flex gap-2 px-4 mt-4">
-        <button onClick={() => { setTab('requests'); setSelectedPin(null) }} className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-2xl text-sm font-bold transition-all border ${tab === 'requests' ? 'bg-red-50 dark:bg-red-900/40 text-red-700 dark:text-red-300 border-red-200 dark:border-red-500/20' : 'bg-white dark:bg-white/5 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-white/5'}`}><span className="material-symbols-outlined text-[18px]">sos</span>Pedidos</button>
-        <button onClick={() => { setTab('shelters'); setSelectedPin(null) }} className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-2xl text-sm font-bold transition-all border ${tab === 'shelters' ? 'bg-blue-50 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-500/20' : 'bg-white dark:bg-white/5 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-white/5'}`}><span className="material-symbols-outlined text-[18px]">house</span>Abrigos</button>
+        <button onClick={() => { setTab('requests'); setSelectedPin(null) }} className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-2xl text-sm font-bold transition-all border ${tab === 'requests' ? 'bg-red-50 dark:bg-red-900/40 text-red-700 dark:text-red-300 border-red-200 dark:border-red-500/20' : 'bg-white dark:bg-white/5 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-white/5'}`}><span className="material-symbols-outlined text-[18px]">sos</span>{t('nearbyPage.tabs.requests')}</button>
+        <button onClick={() => { setTab('shelters'); setSelectedPin(null) }} className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-2xl text-sm font-bold transition-all border ${tab === 'shelters' ? 'bg-blue-50 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-500/20' : 'bg-white dark:bg-white/5 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-white/5'}`}><span className="material-symbols-outlined text-[18px]">house</span>{t('nearbyPage.tabs.shelters')}</button>
       </div>
 
       <div className="px-4 mt-3 space-y-2.5">
@@ -412,7 +414,7 @@ function NearbyContent() {
                 {tab === 'requests' && (
                   <div className="space-y-0.5">
                     <p className="text-[11px] text-slate-500 font-bold truncate transition-colors">
-                        {item.address || 'Localização no Mapa'}
+                        {item.address || t('nearbyPage.mapLocation')}
                     </p>
                     {item.description && (
                         <p className="text-[10px] text-slate-400 font-medium truncate leading-tight">
@@ -431,7 +433,7 @@ function NearbyContent() {
                 <div className="flex items-center gap-2">
                   <StatusBadge status={item.status} size="sm" />
                   <span className={`px-2 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-wider ${item.urgency === 'high' ? 'text-red-700 bg-red-100 dark:bg-red-900/30 dark:text-red-400' : item.urgency === 'medium' ? 'text-orange-700 bg-orange-100 dark:bg-orange-900/30 dark:text-orange-400' : 'text-emerald-700 bg-emerald-100 dark:bg-emerald-900/30 dark:text-emerald-400'}`}>
-                    {item.urgency === 'high' ? 'Emergência' : item.urgency === 'medium' ? 'Moderado' : 'Monitorar'}
+                    {t(`nearbyPage.urgency.${item.urgency || 'low'}`)}
                   </span>
                 </div>
                 <div className="flex items-center gap-4 text-[11px] text-slate-500 dark:text-slate-400 font-medium">
@@ -450,7 +452,7 @@ function NearbyContent() {
         ))}
         {/* Caso a lista fique vazia ao reduzir o raio */}
         {(tab === 'requests' ? listRequests : listShelters).length === 0 && (
-           <p className="text-center text-xs text-slate-500 py-6">Nenhum registro encontrado num raio de {radius}km desta área</p>
+           <p className="text-center text-xs text-slate-500 py-6">{t('nearbyPage.empty').replace('{radius}', radius.toString())}</p>
         )}
       </div>
 

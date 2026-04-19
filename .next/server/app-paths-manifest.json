@@ -1,7 +1,8 @@
 {
   "/_not-found/page": "app/_not-found/page.js",
-  "/template/page": "app/template/page.js",
-  "/template2/page": "app/template2/page.js",
-  "/template3/page": "app/template3/page.js",
-  "/help/my-requests/page": "app/help/my-requests/page.js"
+  "/volunteer/tasks/page": "app/volunteer/tasks/page.js",
+  "/help/page": "app/help/page.js",
+  "/page": "app/page.js",
+  "/request/page": "app/request/page.js",
+  "/assist/page": "app/assist/page.js"
 }

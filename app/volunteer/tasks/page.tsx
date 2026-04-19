@@ -7,14 +7,14 @@ import { api } from '@/services/api'
 import ProtectedRoute from '@/components/ProtectedRoute'
 import toast from 'react-hot-toast'
 
-const CapacityBar = ({ current, total }: { current: number; total: number }) => {
+const CapacityBar = ({ current, total, t }: { current: number; total: number; t: any }) => {
   const percentage = Math.min(Math.round((current / total) * 100), 100);
   const isFull = percentage >= 100;
 
   return (
     <div className="w-full space-y-1.5 animate-in fade-in duration-500">
       <div className="flex justify-between items-end">
-        <span className="text-[9px] font-black uppercase tracking-widest text-slate-400">Ocupação do Abrigo</span>
+        <span className="text-[9px] font-black uppercase tracking-widest text-slate-400">{t('volunteerTasks.shelterOccupation')}</span>
         <span className={`text-[10px] font-black ${isFull ? 'text-red-500' : percentage > 80 ? 'text-orange-500' : 'text-blue-600'}`}>
           {percentage}%
         </span>
@@ -43,6 +43,9 @@ export default function VolunteerTasksPage() {
   const [allShelters, setAllShelters] = useState<any[]>([])
   const [isSelectingShelter, setIsSelectingShelter] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
+  const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null)
+  const [radiusKm, setRadiusKm] = useState<number>(10)
+  const [showLocationMap, setShowLocationMap] = useState(false)
 
   const refreshData = async () => {
     setLoading(true)
@@ -54,7 +57,7 @@ export default function VolunteerTasksPage() {
         ...help_requests.map((r: any) => ({
           ...r,
           id: r.id_code,
-          reporter_name: r.reporter_name || r.requester?.name || 'Solicitante',
+          reporter_name: r.reporter_name || r.requester?.name || t('volunteerTasks.requesterFallback'),
           reporter_phone: r.reporter_phone || r.requester?.phone || 'N/A',
           status: (r.status === 'attending' || r.status === 'ongoing') ? 'ongoing' : (r.status === 'completed' || r.status === 'resolved') ? 'finished' : r.status
         })),
@@ -71,11 +74,16 @@ export default function VolunteerTasksPage() {
       ]
       setTasks(unifiedTasks)
 
-      const resOpps = await api.get('/requests?status=pending&radiusKm=100')
+      const oppsParams: any = { status: 'pending', radiusKm };
+      if (userLocation) {
+        oppsParams.lat = userLocation.lat;
+        oppsParams.lng = userLocation.lng;
+      }
+      const resOpps = await api.get('/requests', { params: oppsParams })
       setOpportunities(resOpps.data.data.map((o: any) => ({
         ...o,
         id: o.id_code,
-        reporter_name: o.reporter_name || o.requester?.name || 'Solicitante',
+        reporter_name: o.reporter_name || o.requester?.name || t('volunteerTasks.requesterFallback'),
         reporter_phone: o.reporter_phone || o.requester?.phone || 'N/A'
       })))
 
@@ -89,18 +97,52 @@ export default function VolunteerTasksPage() {
     }
   }
 
+  const [locationStatus, setLocationStatus] = useState<'idle' | 'acquiring' | 'active' | 'error'>('idle');
+
+  useEffect(() => {
+    if (activeTab === 'opportunities' && !userLocation) {
+      setLocationStatus('acquiring');
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (pos) => {
+            setUserLocation({ lat: pos.coords.latitude, lng: pos.coords.longitude });
+            setLocationStatus('active');
+          },
+          (err) => {
+            console.error('Location error', err);
+            setLocationStatus('error');
+          },
+          { 
+            enableHighAccuracy: true, 
+            timeout: 15000, 
+            maximumAge: 0 
+          }
+        );
+      } else {
+        setLocationStatus('error');
+      }
+    }
+  }, [activeTab]);
+
+  const handleMapConfirm = (center: [number, number]) => {
+    setUserLocation({ lat: center[0], lng: center[1] });
+    setLocationStatus('active');
+    setShowLocationMap(false);
+    toast.success('Localização base definida manualmente');
+  }
+
   useEffect(() => {
     refreshData()
-  }, [])
+  }, [userLocation, radiusKm])
 
   const handleAcceptOpportunity = async (oppId: string) => {
     try {
       await api.put(`/requests/${oppId}/status`, { status: 'attending' })
-      toast.success('Missão aceita!')
+      toast.success(t('volunteerTasks.toasts.accepted'))
       setActiveTab('ongoing')
       refreshData()
     } catch (e) {
-      toast.error('Erro ao aceitar missão.')
+      toast.error(t('volunteerTasks.toasts.errorAccept'))
     }
   }
 
@@ -110,7 +152,7 @@ export default function VolunteerTasksPage() {
       const payload: any = { status: 'completed', dropoff: dest }
       if (shelterId) payload.shelter_id = shelterId
       await api.put(`/requests/${selectedTask.id}/status`, payload)
-      toast.success('Missão concluída!')
+      toast.success(t('volunteerTasks.toasts.completed'))
       refreshData()
       setShowCheckout(false); setShowDetail(false); setIsSelectingShelter(false);
       setSelectedTask(null)
@@ -124,10 +166,10 @@ export default function VolunteerTasksPage() {
   const handleFinishVolunteerTask = async (assignmentId: number) => {
     try {
       await api.put(`/volunteers/missions/${assignmentId}/status`, { status: 'finished' })
-      toast.success('Turno finalizado!')
+      toast.success(t('volunteerTasks.toasts.shiftFinished'))
       refreshData()
     } catch (e) {
-      toast.error('Erro ao finalizar turno.')
+      toast.error(t('volunteerTasks.toasts.errorFinish'))
     }
   }
 
@@ -185,7 +227,7 @@ export default function VolunteerTasksPage() {
               <Link href="/assist" className="w-10 h-10 rounded-full bg-slate-50 dark:bg-white/5 flex items-center justify-center text-slate-400">
                 <span className="material-symbols-outlined text-[20px]">arrow_back</span>
               </Link>
-              <h1 className="text-xl font-black text-slate-800 dark:text-white uppercase tracking-tighter">Minhas Missões</h1>
+              <h1 className="text-xl font-black text-slate-800 dark:text-white uppercase tracking-tighter">{t('volunteerTasks.title')}</h1>
             </div>
             <button onClick={refreshData} className="w-10 h-10 rounded-full bg-slate-50 dark:bg-white/5 flex items-center justify-center text-slate-400 active:rotate-180 transition-all duration-500">
                <span className={`material-symbols-outlined text-[20px] ${loading ? 'animate-spin' : ''}`}>refresh</span>
@@ -197,7 +239,7 @@ export default function VolunteerTasksPage() {
               <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-300">search</span>
               <input 
                 type="text"
-                placeholder="Buscar missão ou local..."
+                placeholder={t('volunteerTasks.searchPlace')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full bg-slate-50 dark:bg-white/5 border border-slate-100 dark:border-white/10 rounded-2xl py-3 pl-12 pr-4 text-xs font-bold text-slate-700 dark:text-white placeholder:text-slate-400 outline-none"
@@ -205,6 +247,40 @@ export default function VolunteerTasksPage() {
             </div>
           </div>
         </div>
+
+        {/* Radius Selector - Only for Opportunities */}
+        {activeTab === 'opportunities' && (
+          <div className="px-5 pt-4 max-w-2xl mx-auto w-full overflow-x-auto no-scrollbar">
+            <div className="flex items-center gap-2">
+              <button 
+                onClick={() => setShowLocationMap(true)}
+                className={`shrink-0 w-10 h-10 rounded-2xl flex items-center justify-center transition-all active:scale-90 border-2 ${locationStatus === 'active' ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20' : locationStatus === 'acquiring' ? 'bg-blue-500/10 text-blue-500 animate-pulse border-blue-500/20' : 'bg-white dark:bg-white/5 text-slate-300 border-slate-100 dark:border-white/10'}`}
+              >
+                <span className="material-symbols-outlined text-[22px]">
+                  {locationStatus === 'active' ? 'location_on' : locationStatus === 'acquiring' ? 'radar' : 'location_searching'}
+                </span>
+              </button>
+              {[1, 5, 10, 50].map((r) => (
+                <button
+                  key={r}
+                  onClick={() => setRadiusKm(r)}
+                  className={`shrink-0 px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border transition-all ${
+                    radiusKm === r 
+                      ? 'bg-primary border-primary text-white shadow-lg shadow-primary/20 scale-105' 
+                      : 'bg-white dark:bg-white/5 border-slate-100 dark:border-white/10 text-slate-400'
+                  }`}
+                >
+                  {r}km
+                </button>
+              ))}
+              <span className="text-[10px] font-bold text-slate-300 dark:text-slate-600 uppercase tracking-widest ml-2 truncate">
+                {locationStatus === 'acquiring' ? 'Obtendo...' : 
+                 locationStatus === 'active' ? 'Ativo' : 
+                 locationStatus === 'error' ? 'Erro GPS' : 'GPS off'}
+              </span>
+            </div>
+          </div>
+        )}
 
         <div className="px-5 pt-6 max-w-2xl mx-auto w-full flex-1">
           <div className="flex bg-slate-200/50 dark:bg-white/5 p-1 rounded-2xl mb-8 border border-slate-200/20">
@@ -218,7 +294,7 @@ export default function VolunteerTasksPage() {
                     : 'text-slate-400'
                 }`}
               >
-                {tabCounts[tab]} {tab === 'opportunities' ? 'Novas' : tab === 'ongoing' ? 'Ativas' : 'Histórico'}
+                {tabCounts[tab]} {t(`volunteerTasks.tabs.${tab}`)}
               </button>
             ))}
           </div>
@@ -231,7 +307,7 @@ export default function VolunteerTasksPage() {
             ) : displayItems.length === 0 ? (
               <div className="text-center py-20 opacity-20">
                  <span className="material-symbols-outlined text-4xl mb-2">inbox</span>
-                 <p className="text-[10px] font-black uppercase tracking-widest">Nenhuma missão</p>
+                 <p className="text-[10px] font-black uppercase tracking-widest">{t('volunteerTasks.noTasks')}</p>
               </div>
             ) : (
               displayItems.map((item: any) => (
@@ -255,6 +331,12 @@ export default function VolunteerTasksPage() {
                       </h3>
                     </div>
                     <div className="flex items-center gap-1.5 text-slate-300">
+                       {item.distance !== undefined && (
+                         <div className="flex items-center gap-1 px-2 py-1 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 mr-2">
+                           <span className="material-symbols-outlined text-[14px]">near_me</span>
+                           <span className="text-[9px] font-black">{parseFloat(item.distance).toFixed(1)}km</span>
+                         </div>
+                       )}
                        {item.urgency === 'high' && <span className="material-symbols-outlined text-red-500 text-[18px]">priority_high</span>}
                        {item.is_verified && <span className="material-symbols-outlined text-blue-500 text-[18px]" style={{ fontVariationSettings: "'FILL' 1" }}>verified</span>}
                     </div>
@@ -270,7 +352,7 @@ export default function VolunteerTasksPage() {
                   {/* Capacity if Shelter */}
                   {item.type === 'shelter' && item.capacity > 0 && (
                     <div className="mb-4">
-                      <CapacityBar current={item.occupied} total={item.capacity} />
+                      <CapacityBar current={item.occupied} total={item.capacity} t={t} />
                     </div>
                   )}
 
@@ -313,7 +395,7 @@ export default function VolunteerTasksPage() {
                   {/* Bottom: Address (Always Last) */}
                   <div className="pt-3 border-t border-slate-50 dark:border-white/5 flex items-center gap-2 text-slate-400">
                     <span className="material-symbols-outlined text-[14px]">location_on</span>
-                    <p className="text-[10px] font-bold truncate flex-1 uppercase tracking-tight">{item.address || 'Localização no Mapa'}</p>
+                    <p className="text-[10px] font-bold truncate flex-1 uppercase tracking-tight">{item.address || t('nearbyPage.mapLocation')}</p>
                   </div>
                 </div>
               ))
@@ -345,23 +427,23 @@ export default function VolunteerTasksPage() {
 
                 <div className="space-y-6">
                   <div>
-                    <p className="text-[10px] font-black text-slate-300 dark:text-white/20 uppercase tracking-widest mb-2">Descrição</p>
-                    <p className="text-sm font-medium text-slate-700 dark:text-slate-200 leading-relaxed italic">&quot;{selectedTask.description || 'Sem descrição.'}&quot;</p>
+                    <p className="text-[10px] font-black text-slate-300 dark:text-white/20 uppercase tracking-widest mb-2">{t('volunteerTasks.labels.description')}</p>
+                    <p className="text-sm font-medium text-slate-700 dark:text-slate-200 leading-relaxed italic">&quot;{selectedTask.description || t('volunteerTasks.noDescription')}&quot;</p>
                   </div>
 
                   <div className="bg-slate-50 dark:bg-white/5 p-5 rounded-3xl border border-slate-100 dark:border-white/5">
-                    <p className="text-[10px] font-black text-slate-300 dark:text-white/20 uppercase tracking-widest mb-2">Endereço</p>
+                    <p className="text-[10px] font-black text-slate-300 dark:text-white/20 uppercase tracking-widest mb-2">{t('volunteerTasks.labels.address')}</p>
                     <p className="text-sm font-bold text-slate-900 dark:text-white mb-4">{selectedTask.address}</p>
                     <a href={`https://www.google.com/maps/dir/?api=1&destination=${selectedTask.lat},${selectedTask.lng}`} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2 w-full py-4 bg-primary text-white rounded-2xl font-black text-[10px] uppercase tracking-widest shadow-lg active:scale-95 transition-all">
                        <span className="material-symbols-outlined text-[18px]">directions</span>
-                       Navegar GPS
+                       {t('volunteerTasks.actions.navigate')}
                     </a>
                   </div>
 
                   {activeTab !== 'opportunities' && (
                     <div className="flex gap-4">
                       <a href={`tel:${selectedTask.reporter_phone}`} className="flex-1 py-4 bg-emerald-500 text-white rounded-2xl flex items-center justify-center gap-2 font-black text-[10px] uppercase tracking-widest shadow-lg">
-                        <span className="material-symbols-outlined">call</span> Ligar
+                        <span className="material-symbols-outlined">call</span> {t('volunteerTasks.actions.call')}
                       </a>
                     </div>
                   )}
@@ -376,7 +458,7 @@ export default function VolunteerTasksPage() {
                       }}
                       className="w-full py-5 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-[2rem] font-black text-xs uppercase tracking-widest"
                     >
-                      Concluir Missão
+                      {t('volunteerTasks.actions.complete')}
                     </button>
                   )}
                 </div>
@@ -392,8 +474,8 @@ export default function VolunteerTasksPage() {
               
               {!isSelectingShelter ? (
                 <>
-                  <h2 className="text-2xl font-black text-slate-800 dark:text-white uppercase tracking-tighter mb-2">Desfecho</h2>
-                  <p className="text-xs text-slate-500 mb-8 font-bold uppercase tracking-widest">Onde o solicitante foi deixado?</p>
+                  <h2 className="text-2xl font-black text-slate-800 dark:text-white uppercase tracking-tighter mb-2">{t('volunteerTasks.checkout.title')}</h2>
+                  <p className="text-xs text-slate-500 mb-8 font-bold uppercase tracking-widest">{t('volunteerTasks.checkout.question')}</p>
 
                   <div className="space-y-3">
                     <button onClick={() => setIsSelectingShelter(true)} className="w-full flex items-center gap-4 bg-slate-50 dark:bg-white/5 p-5 rounded-[2rem] border border-slate-100 dark:border-white/5 group active:scale-95 transition-all">
@@ -401,8 +483,8 @@ export default function VolunteerTasksPage() {
                           <span className="material-symbols-outlined text-[28px]">house</span>
                        </div>
                        <div className="text-left">
-                          <p className="font-black text-slate-800 dark:text-white">Abrigo Oficial</p>
-                          <p className="text-[10px] font-bold text-slate-400 uppercase">Ponto de acolhimento</p>
+                          <p className="font-black text-slate-800 dark:text-white">{t('volunteerTasks.checkout.officialShelter')}</p>
+                          <p className="text-[10px] font-bold text-slate-400 uppercase">{t('volunteerTasks.checkout.officialShelterDesc')}</p>
                        </div>
                     </button>
                     <button onClick={() => handleComplete('safe')} className="w-full flex items-center gap-4 bg-slate-50 dark:bg-white/5 p-5 rounded-[2rem] border border-slate-100 dark:border-white/5 group active:scale-95 transition-all">
@@ -410,8 +492,8 @@ export default function VolunteerTasksPage() {
                           <span className="material-symbols-outlined text-[28px]">verified_user</span>
                        </div>
                        <div className="text-left">
-                          <p className="font-black text-slate-800 dark:text-white">Local Seguro</p>
-                          <p className="text-[10px] font-bold text-slate-400 uppercase">Casa de parentes ou área seca</p>
+                          <p className="font-black text-slate-800 dark:text-white">{t('volunteerTasks.checkout.safePlace')}</p>
+                          <p className="text-[10px] font-bold text-slate-400 uppercase">{t('volunteerTasks.checkout.safePlaceDesc')}</p>
                        </div>
                     </button>
                   </div>
@@ -422,7 +504,7 @@ export default function VolunteerTasksPage() {
                      <button onClick={() => setIsSelectingShelter(false)} className="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center text-slate-400">
                         <span className="material-symbols-outlined">arrow_back</span>
                      </button>
-                     <h2 className="text-xl font-black dark:text-white uppercase tracking-tighter">Escolher Abrigo</h2>
+                     <h2 className="text-xl font-black dark:text-white uppercase tracking-tighter">{t('volunteerTasks.checkout.chooseShelter')}</h2>
                   </div>
                   <div className="max-h-[40vh] overflow-y-auto space-y-2.5 pr-1">
                     {allShelters.map((sh: any) => (
@@ -437,7 +519,52 @@ export default function VolunteerTasksPage() {
             </div>
           </div>
         )}
+        {/* MODAL DE MAPA PARA DEFINIR LOCALIZAÇÃO BASE */}
+        {showLocationMap && (
+          <div className="fixed inset-0 z-[200] bg-surface dark:bg-[#0a1628] flex flex-col">
+            <div className="flex items-center justify-between p-4 glass-header border-b border-slate-100 dark:border-white/5">
+              <div className="flex items-center gap-3">
+                <button 
+                  onClick={() => setShowLocationMap(false)} 
+                  className="w-10 h-10 flex items-center justify-center rounded-xl bg-slate-100 dark:bg-white/5 active:scale-95"
+                >
+                  <span className="material-symbols-outlined text-slate-600 dark:text-slate-300">close</span>
+                </button>
+                <div>
+                  <p className="text-sm font-black uppercase tracking-widest text-on-surface dark:text-white">Sua Base de Atuação</p>
+                  <p className="text-[10px] text-slate-500">Mova o mapa para definir o centro da sua busca</p>
+                </div>
+              </div>
+              <button 
+                onClick={() => {
+                   const mapEl = document.querySelector('.leaflet-container') as any;
+                   if (mapEl && mapEl._leaflet_id) {
+                      // Se não conseguir pegar do componente, o MapComponent já tem o onUpdateCenter
+                   }
+                }}
+                id="confirm-loc-btn"
+                className="px-5 py-2.5 bg-primary text-white rounded-xl font-bold uppercase tracking-wider text-xs active:scale-95 transition-transform shadow-md shadow-primary/30"
+              >
+                Confirmar
+              </button>
+            </div>
+            <div className="flex-1 relative bg-slate-100 dark:bg-slate-900">
+               {/* Usamos o componente de mapa dinâmico */}
+               <MapComponentWithNoSSR 
+                  onUpdateCenter={(center) => {
+                     // Adicionamos um listener temporário no botão de confirmar para capturar o ponto
+                     const btn = document.getElementById('confirm-loc-btn');
+                     if (btn) btn.onclick = () => handleMapConfirm(center);
+                  }}
+               />
+            </div>
+          </div>
+        )}
       </main>
     </ProtectedRoute>
   );
 }
+
+// Importação dinâmica do mapa para evitar erros de SSR neste contexto
+import dynamic from 'next/dynamic'
+const MapComponentWithNoSSR = dynamic(() => import('@/components/ui/MapComponent'), { ssr: false })

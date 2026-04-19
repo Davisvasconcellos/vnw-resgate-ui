@@ -76,7 +76,7 @@ export default function ProfilePage() {
                 </div>
                 <div>
                   <p className="text-sm font-extrabold text-on-surface font-headline">{t('profilePage.language')}</p>
-                  <p className="text-[10px] text-on-surface-variant font-medium uppercase tracking-wider">Language selection</p>
+                  <p className="text-[10px] text-on-surface-variant font-medium uppercase tracking-wider">{t('profilePage.languageDesc')}</p>
                 </div>
               </div>
               <div className="flex bg-surface-container-low p-1.5 rounded-2xl shadow-inner border border-outline-variant/5">

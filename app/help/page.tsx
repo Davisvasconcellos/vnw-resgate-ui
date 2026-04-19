@@ -40,7 +40,7 @@ export default function HelpPage() {
       border: 'rgba(21,101,192,0.2)',
       href: '/help/my-requests',
       span: 'col-span-2',
-      badge: activeRequestsCount > 0 ? `${activeRequestsCount} ativos` : null
+      badge: activeRequestsCount > 0 ? t('help.activeBadge').replace('{count}', String(activeRequestsCount)) : null
     },
     {
       label: t('help.missing') || 'Pessoas Desaparecidas',
@@ -82,10 +82,10 @@ export default function HelpPage() {
         {/* Intro Section */}
         <section className="px-1">
           <h1 className="text-4xl font-extrabold font-headline text-on-surface dark:text-white tracking-tight leading-tight">
-             Central de Ajuda
+             {t('help.centralTitle')}
           </h1>
           <p className="mt-2 text-on-surface-variant dark:text-slate-400 font-body text-base font-medium">
-             Escolha uma das opções abaixo para solicitar suporte ou consultar informações.
+             {t('help.centralSubtitle')}
           </p>
         </section>
 
@@ -157,10 +157,9 @@ export default function HelpPage() {
         <div className="p-6 rounded-[2rem] bg-slate-50 dark:bg-white/5 border border-slate-100 dark:border-white/5 flex items-start gap-4 opacity-80">
            <span className="material-symbols-outlined text-primary text-[24px]">info</span>
            <div>
-             <p className="text-xs font-black text-slate-800 dark:text-white uppercase tracking-widest mb-1">Avisos e Transparência</p>
+             <p className="text-xs font-black text-slate-800 dark:text-white uppercase tracking-widest mb-1">{t('help.notesTitle')}</p>
              <p className="text-[11px] text-slate-500 font-medium leading-relaxed">
-               As solicitações feitas sem login são tratadas com prioridade normal. 
-               Usuários logados recebem o selo de identidade confirmada, o que facilita o aceite rápido pelos voluntários.
+               {t('help.notesDesc')}
              </p>
            </div>
         </div>

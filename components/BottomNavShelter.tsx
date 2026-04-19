@@ -23,7 +23,7 @@ export default function BottomNavShelter({ onCheckinClick }: { onCheckinClick?: 
           <div className="w-10 h-10 rounded-2xl group-hover:bg-primary/5 dark:group-hover:bg-white/5 flex items-center justify-center transition-colors">
             <span className="material-symbols-outlined text-[24px]">home</span>
           </div>
-          <span className="text-[10px] font-extrabold uppercase tracking-widest">{t('navPublic.home')}</span>
+          <span className="text-[10px] font-extrabold uppercase tracking-widest">{t('nav.home')}</span>
         </Link>
 
         {/* Center Floating Checkin Button */}
@@ -58,7 +58,7 @@ export default function BottomNavShelter({ onCheckinClick }: { onCheckinClick?: 
               grid_view
             </span>
           </div>
-          <span className="text-[10px] font-extrabold uppercase tracking-widest leading-none">Gestão</span>
+          <span className="text-[10px] font-extrabold uppercase tracking-widest leading-none">{t('nav.management')}</span>
         </Link>
 
         {/* Team Button */}
@@ -78,7 +78,7 @@ export default function BottomNavShelter({ onCheckinClick }: { onCheckinClick?: 
               group
             </span>
           </div>
-          <span className="text-[10px] font-extrabold uppercase tracking-widest leading-none">Equipe</span>
+          <span className="text-[10px] font-extrabold uppercase tracking-widest leading-none">{t('nav.team')}</span>
         </Link>
 
       </div>

@@ -1,9 +1,9 @@
 {
   "pages": {
-    "/help/my-requests/page": [
+    "/request/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/help/my-requests/page.js"
+      "static/chunks/app/request/page.js"
     ],
     "/layout": [
       "static/chunks/webpack.js",
@@ -11,20 +11,25 @@
       "static/css/app/layout.css",
       "static/chunks/app/layout.js"
     ],
-    "/template/page": [
+    "/help/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/template/page.js"
+      "static/chunks/app/help/page.js"
     ],
-    "/template2/page": [
+    "/volunteer/tasks/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/template2/page.js"
+      "static/chunks/app/volunteer/tasks/page.js"
     ],
-    "/template3/page": [
+    "/assist/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/template3/page.js"
+      "static/chunks/app/assist/page.js"
+    ],
+    "/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/page.js"
     ],
     "/_not-found/page": [
       "static/chunks/webpack.js",

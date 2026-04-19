@@ -80,12 +80,12 @@ export default function MyRequestsPage() {
     try {
       setLoading(true)
       await api.put(`/requests/${id_code}/status`, { status: 'resolved' })
-      toast.success('Pedido marcado como resolvido!')
+      toast.success(t('myRequestsPage.toastSuccess'))
       setSelectedRequest(null)
       setConfirmingResolve(false)
       loadData()
     } catch (e) {
-      toast.error('Erro ao atualizar pedido.')
+      toast.error(t('myRequestsPage.toastError'))
     } finally {
       setLoading(false)
     }
@@ -102,12 +102,12 @@ export default function MyRequestsPage() {
 
   const getTypeLabel = (type: string) => {
     switch(type) {
-      case 'rescue': return 'Socorro';
-      case 'food': return 'Alimento';
-      case 'shelter': return 'Abrigo';
-      case 'medical': return 'Médico';
-      case 'transport': return 'Transporte';
-      default: return 'Ajuda';
+      case 'rescue': return t('request.rescue');
+      case 'food': return t('request.food');
+      case 'shelter': return t('request.shelter');
+      case 'medical': return t('request.medical');
+      case 'transport': return t('request.transport');
+      default: return t('request.type');
     }
   }
 
@@ -118,7 +118,7 @@ export default function MyRequestsPage() {
       <main className="pt-24 px-6 max-w-2xl mx-auto">
         <header className="mb-6 flex items-center justify-between">
           <h1 className="text-2xl font-black font-headline tracking-tighter text-slate-900 dark:text-white uppercase leading-none">
-            Meus Pedidos
+            {t('myRequestsPage.title')}
           </h1>
           <button 
             onClick={loadData}
@@ -139,7 +139,7 @@ export default function MyRequestsPage() {
                 : 'text-slate-400'
             }`}
           >
-            Ativos ({requests.filter(r => r.status !== 'resolved').length})
+            {t('myRequestsPage.active')} ({requests.filter(r => r.status !== 'resolved').length})
           </button>
           <button
             onClick={() => setActiveTab('history')}
@@ -149,7 +149,7 @@ export default function MyRequestsPage() {
                 : 'text-slate-400'
             }`}
           >
-            Histórico ({requests.filter(r => r.status === 'resolved').length})
+            {t('myRequestsPage.history')} ({requests.filter(r => r.status === 'resolved').length})
           </button>
         </div>
 
@@ -160,7 +160,7 @@ export default function MyRequestsPage() {
         ) : requests.filter(r => activeTab === 'active' ? r.status !== 'resolved' : r.status === 'resolved').length === 0 ? (
           <div className="py-20 text-center opacity-30">
              <span className="material-symbols-outlined text-[48px] mb-2">inbox</span>
-             <p className="text-[10px] font-black uppercase tracking-widest">Nada por aqui</p>
+             <p className="text-[10px] font-black uppercase tracking-widest">{t('myRequestsPage.empty')}</p>
           </div>
         ) : (
           <div className="space-y-3">
@@ -192,7 +192,7 @@ export default function MyRequestsPage() {
                 </div>
 
                 <p className="text-[12px] text-slate-500 dark:text-slate-400 leading-snug line-clamp-2 mb-3 px-1">
-                   {req.description || 'Sem descrição detalhada.'}
+                   {req.description || t('myRequestsPage.noDescription')}
                 </p>
 
                 <div className="flex items-center justify-between px-1">
@@ -240,7 +240,7 @@ export default function MyRequestsPage() {
 
             <div className="space-y-6">
               <div className="px-1">
-                <p className="text-[10px] font-black text-slate-300 dark:text-white/20 uppercase tracking-widest mb-2">Solicitação</p>
+                <p className="text-[10px] font-black text-slate-300 dark:text-white/20 uppercase tracking-widest mb-2">{t('myRequestsPage.request')}</p>
                 <p className="text-[15px] font-medium text-slate-700 dark:text-slate-200 leading-relaxed italic">
                   &quot;{selectedRequest.description}&quot;
                 </p>
@@ -248,12 +248,12 @@ export default function MyRequestsPage() {
 
               <div className="flex gap-6 px-1 py-4 border-y border-slate-50 dark:border-white/5">
                 <div>
-                  <p className="text-[9px] font-black text-slate-300 dark:text-white/20 uppercase tracking-widest mb-1">Localização</p>
+                  <p className="text-[9px] font-black text-slate-300 dark:text-white/20 uppercase tracking-widest mb-1">{t('myRequestsPage.location')}</p>
                   <p className="text-[11px] font-bold dark:text-white">{selectedRequest.address}</p>
                 </div>
                 <div className="shrink-0">
-                  <p className="text-[9px] font-black text-slate-300 dark:text-white/20 uppercase tracking-widest mb-1">Impacto</p>
-                  <p className="text-[11px] font-bold dark:text-white">{selectedRequest.people_count || 1} Pessoas</p>
+                  <p className="text-[9px] font-black text-slate-300 dark:text-white/20 uppercase tracking-widest mb-1">{t('myRequestsPage.impact')}</p>
+                  <p className="text-[11px] font-bold dark:text-white">{t('myRequestsPage.peopleCount').replace('{count}', String(selectedRequest.people_count || 1))}</p>
                 </div>
               </div>
 
@@ -299,7 +299,7 @@ export default function MyRequestsPage() {
                   
                   {selectedRequest.volunteer_message && (
                     <div className="mt-4 px-1">
-                      <p className="text-[10px] font-black text-slate-300 dark:text-white/20 uppercase tracking-widest mb-2">Mensagem do Salvador</p>
+                      <p className="text-[10px] font-black text-slate-300 dark:text-white/20 uppercase tracking-widest mb-2">{t('myRequestsPage.volunteerMsg')}</p>
                       <p className="text-sm font-bold italic leading-relaxed text-blue-600 dark:text-blue-400">
                         &quot;{selectedRequest.volunteer_message}&quot;
                       </p>
@@ -316,13 +316,13 @@ export default function MyRequestsPage() {
                         onClick={() => setConfirmingResolve(false)}
                         className="flex-1 py-4 bg-slate-100 dark:bg-white/5 text-slate-600 dark:text-slate-400 rounded-2xl text-[10px] font-black uppercase tracking-widest"
                       >
-                        Cancelar
+                        {t('myRequestsPage.cancel')}
                       </button>
                       <button 
                         onClick={() => selectedRequest.id_code && handleResolve(selectedRequest.id_code)}
                         className="flex-[2] py-4 bg-emerald-600 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-xl shadow-emerald-600/20"
                       >
-                        Sim, Resolvido
+                        {t('myRequestsPage.resolvedConfirm')}
                       </button>
                     </div>
                   ) : (
@@ -330,7 +330,7 @@ export default function MyRequestsPage() {
                       onClick={() => setConfirmingResolve(true)}
                       className="w-full py-5 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-[2rem] text-[11px] font-black uppercase tracking-widest shadow-xl active:scale-95 transition-all"
                     >
-                      Marcar como Resolvido
+                      {t('myRequestsPage.markAsResolved')}
                     </button>
                   )}
                 </div>

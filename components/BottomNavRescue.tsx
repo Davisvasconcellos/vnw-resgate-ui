@@ -2,33 +2,35 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-
-const NAV_ITEMS = [
-  {
-    href: '/request',
-    icon: 'sos',
-    label: 'Solicitar ajuda',
-    activeOn: ['/request'],
-    accent: true, // destaque especial — botão central
-  },
-  {
-    href: '/',
-    icon: 'home',
-    label: 'Início',
-    activeOn: ['/'],
-    accent: false,
-  },
-  {
-    href: '/nearby',
-    icon: 'radar',
-    label: 'Situação',
-    activeOn: ['/nearby'],
-    accent: false,
-  },
-]
+import { useI18n } from '@/components/i18n/I18nProvider'
 
 export default function BottomNavRescue() {
   const pathname = usePathname()
+  const { t } = useI18n()
+
+  const NAV_ITEMS = [
+    {
+      href: '/request',
+      icon: 'sos',
+      label: t('nav.help'),
+      activeOn: ['/request'],
+      accent: true,
+    },
+    {
+      href: '/',
+      icon: 'home',
+      label: t('nav.home'),
+      activeOn: ['/'],
+      accent: false,
+    },
+    {
+      href: '/nearby',
+      icon: 'radar',
+      label: t('nav.situation'),
+      activeOn: ['/nearby'],
+      accent: false,
+    },
+  ]
 
   return (
     <nav className="fixed bottom-0 left-0 w-full z-50 bg-[#0A1628]/95 backdrop-blur-3xl border-t border-white/10 shadow-[0_-8px_32px_rgba(0,0,0,0.3)] pb-safe">

@@ -44,7 +44,7 @@ function ShelterManageContent() {
     phone: e.phone,
     people: e.people || e.people_count || 1,
     status: e.status,
-    updatedAt: e.updatedAt || 'Recente',
+    updatedAt: e.updatedAt || t('shelterManage.recent'),
     assumeMessage: e.assume_message || e.assumeMessage
   }))
 
@@ -123,7 +123,7 @@ function ShelterManageContent() {
     try {
       await api.post(`/shelters/${shelterIdCode}/entries`, {
         name: name.trim(),
-        phone: phone.trim() || 'Não informado',
+        phone: phone.trim() || t('shelterManage.notInformed'),
         people_count: people,
         status: 'present'
       })
@@ -398,18 +398,18 @@ function ShelterManageContent() {
 
               <div className="space-y-4">
                 <div>
-                  <label className="text-xs font-bold uppercase tracking-wide text-slate-400 mb-1.5 block">Nome</label>
+                  <label className="text-xs font-bold uppercase tracking-wide text-slate-400 mb-1.5 block">{t('shelterManage.labels.name')}</label>
                   <input
                     type="text"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    placeholder="Ex: Família Silva, José, Maria"
+                    placeholder={t('shelterManage.labels.namePlace')}
                     className="w-full rounded-xl bg-slate-50 border border-slate-200 px-4 py-3.5 text-slate-800 font-semibold text-sm outline-none focus:border-blue-400 transition-colors"
                   />
                 </div>
 
                 <div>
-                  <label className="text-xs font-bold uppercase tracking-wide text-slate-400 mb-1.5 block">Telefone</label>
+                  <label className="text-xs font-bold uppercase tracking-wide text-slate-400 mb-1.5 block">{t('shelterManage.labels.phone')}</label>
                   <input
                     type="tel"
                     value={phone}
@@ -420,7 +420,7 @@ function ShelterManageContent() {
                 </div>
 
                 <div>
-                  <label className="text-xs font-bold uppercase tracking-wide text-slate-400 mb-1.5 block">Quantidade de Pessoas</label>
+                  <label className="text-xs font-bold uppercase tracking-wide text-slate-400 mb-1.5 block">{t('shelterManage.labels.peopleCount')}</label>
                   <div className="flex items-center gap-4 bg-slate-50 rounded-xl p-3 border border-slate-200">
                     <button type="button" onClick={() => setPeople(Math.max(1, people - 1))} className="w-12 h-12 rounded-xl bg-white border border-slate-200 font-bold text-slate-700 text-2xl active:scale-95 transition-transform shrink-0">−</button>
                     <div className="flex-1 text-center flex flex-col">

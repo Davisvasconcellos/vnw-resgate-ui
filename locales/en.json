@@ -6,8 +6,25 @@
   },
   "nav": {
     "home": "Home",
-    "bookings": "Bookings",
-    "profile": "Profile"
+    "bookings": "Requests",
+    "profile": "Profile",
+    "volunteer": "Volunteer",
+    "iamVolunteer": "I'm a Volunteer",
+    "missions": "Missions",
+    "myMissions": "My Missions",
+    "management": "Management",
+    "team": "Team",
+    "situation": "Status",
+    "map": "Map",
+    "help": "Get Help",
+    "missing": "Missing"
+  },
+  "notifications": {
+      "title": "Notifications",
+      "empty": "No updates",
+      "updated": "SOS Updated",
+      "inService": "{type} request in service!",
+      "viewAll": "View all"
   },
   "menu": {
     "profile": "Profile",
@@ -39,7 +56,16 @@
     "service": "Service",
     "base": "Base",
     "addOnsTotal": "Add-ons total",
-    "chooseExtras": "Choose extras"
+    "chooseExtras": "Choose extras",
+    "hello": "Hello",
+    "accessPrioritized": "Prioritized Access",
+    "accessPrioritizedDesc": "Usage is free, but logged-in users get a {badge} badge and their requests are handled faster.",
+    "verified": "Verified",
+    "activeStatus": "Active Status",
+    "activeStatusDesc": "You are logged in and verified by the network.",
+    "googleLogin": "Sign in with Google",
+    "notificationBanner": "Rescue Update",
+    "notificationCount": "You have {count} {plural} in your history."
   }
   ,
   "custom": {
@@ -97,7 +123,12 @@
     "phonesDesc": "Civil Defense, Ambulance, Fire Dept",
     "missing": "Missing Persons",
     "missingDesc": "Report or search for missing people",
-    "urgent": "URGENT"
+    "urgent": "URGENT",
+    "centralTitle": "Help Center",
+    "centralSubtitle": "Choose one of the options below to request support or check information.",
+    "activeBadge": "{count} active",
+    "notesTitle": "Notices and Transparency",
+    "notesDesc": "Requests made without logging in are handled with normal priority. Logged-in users receive the confirmed identity badge, which facilitates rapid acceptance by volunteers."
   },
   "request": {
     "title": "Request help",
@@ -127,7 +158,54 @@
     "medical": "Medical",
     "medicalDesc": "I need medical care",
     "food": "Food",
-    "foodDesc": "I need water/food"
+    "foodDesc": "I need water/food",
+    "transport": "Transport",
+    "transportDesc": "Help with movement via land or water",
+    "volunteers": "Volunteers",
+    "volunteersDesc": "I need hands to help with the occurrence",
+    "loadingLocation": "Fetching location...",
+    "errorTooMany": "Too many requests. Please wait.",
+    "offlineSaved": "Request saved locally! We will sync when connected.",
+    "urgencyLabel": "Urgency Level",
+    "urgencyEmergency": "Emergency",
+    "urgencyModerate": "Moderate",
+    "urgencyMonitoring": "Monitoring",
+    "local": "Local",
+    "back": "Back",
+    "details": "Detail Description",
+    "detailsPlaceholder": "Provide more details about your need here...",
+    "detailsVolunteerPlaceholder": "Ex: Need volunteers to clean school X...",
+    "transportTypeTitle": "Transport Type",
+    "volunteerNeedTitle": "Volunteer Need",
+    "selectMultiple": "You can select multiple options.",
+    "finishSelection": "Finish Selection",
+    "mapInstruction": "Move the map or fill the fields"
+  },
+  "myRequestsPage": {
+    "title": "My Requests",
+    "active": "Active",
+    "history": "History",
+    "empty": "Nothing here",
+    "noDescription": "No detailed description.",
+    "detailTitle": "Request Details",
+    "location": "Location",
+    "impact": "Impact",
+    "peopleCount": "{count} People",
+    "onWay": "On the way",
+    "readyToSupport": "Ready to support",
+    "volunteerMsg": "Salvador Message",
+    "markAsResolved": "Mark as Resolved",
+    "resolvedConfirm": "Yes, Resolved",
+    "cancel": "Cancel",
+    "request": "Request",
+    "toastSuccess": "Request marked as resolved!",
+    "toastError": "Error updating request."
+  },
+  "status": {
+    "pending": "Pending",
+    "attending": "Attending",
+    "resolved": "Resolved",
+    "viewed": "Viewed"
   },
   "shelters": {
     "title": "Available Shelters",
@@ -135,7 +213,11 @@
     "requestBtn": "Request shelter urgently",
     "call": "Call",
     "full": "Capacity exhausted — look for another shelter",
-    "distance": "{km} km"
+    "distance": "{km} km",
+    "loading": "Loading shelters...",
+    "empty": "No shelters found nearby",
+    "noReference": "No reference provided",
+    "noAddress": "Address not informed"
   },
   "missingPage": {
     "title": "Person Search",
@@ -163,7 +245,16 @@
     "formReporterName": "Your name",
     "formReporterRelation": "Relationship (Ex: Mother)",
     "formReporterPhone": "Phone",
-    "formSubmit": "Register Disappearance"
+    "formSubmit": "Register Disappearance",
+    "photoSuccess": "Photo uploaded via API!",
+    "photoError": "Failed to upload photo.",
+    "registerSuccess": "Registry created successfully!",
+    "registerError": "Error registering. Please try again.",
+    "syncing": "Syncing database...",
+    "noPhoto": "No photo",
+    "descriptionLabel": "Physical Description / Clothing",
+    "closeDetails": "Close Details",
+    "uploading": "Uploading..."
   },
   "phonesPage": {
     "title": "Useful Phones",
@@ -176,9 +267,10 @@
     "loginAlert": "Volunteers need to log in to access the request dashboard and start serving.",
     "missingBanner": "Missing Pesons",
     "missingDesc": "Consult or report family members and missing people",
+    "statsTitle": "Today",
     "statVolunteers": "Active volunteers",
     "statOpen": "Open requests",
-    "statToday": "Served today",
+    "statToday": "People impacted",
     "types": {
       "shelter": "Shelter",
       "shelterDesc": "I have space at home to welcome people",
@@ -188,7 +280,12 @@
       "boatDesc": "I have a vessel to rescue people in flooded areas",
       "volunteer": "Volunteer",
       "volunteerDesc": "I want to help as a volunteer in shelters or in the field"
-    }
+    },
+    "mapLabel": "Operational Map",
+    "mapDesc": "Tactical view of all incidents in the region on the map.",
+    "missionsLabel": "My Missions",
+    "missionsDesc": "Centralized board with all the occurrences and rescues you took on.",
+    "chooseHelp": "Choose how to help"
   },
   "onboarding": {
     "title": "Registration",
@@ -202,9 +299,9 @@
     },
     "descs": {
       "shelter": "Fill in the information of the location that will receive families.",
-      "transport": "Inform your vehicle details to help with transport.",
-      "boat": "Inform the vessel details to support rescues.",
-      "volunteer": "Tell us how you can help."
+      "transport": "Provide your vehicle data to help with transport.",
+      "boat": "Provide the vessel data to support rescues.",
+      "volunteer": "Check the categories you have resources to help with."
     },
     "shelterForm": {
       "name": "Location Name",
@@ -259,7 +356,18 @@
       "full": "Full time",
       "morning": "Morning",
       "afternoon": "Afternoon",
-      "night": "Night / Dawn"
+      "night": "Night / Dawn",
+      "hasCar": "I have a Car",
+      "hasBoat": "I have a Boat",
+      "dataTitle": "Vessel Data",
+      "typeTitle": "Type",
+      "labelSpots": "Capacity",
+      "labelVests": "Have Vests",
+      "skillsTitle": "Other skills",
+      "mapTitle": "Shelter Location",
+      "mapDesc": "Enter the address or move the pin",
+      "mapConfirm": "Confirm",
+      "mapPlaceholder": "Street, Number, Neighborhood, City..."
     }
   },
   "shelterManage": {
@@ -285,7 +393,15 @@
     "confirmBtn": "Confirm Responsibility",
     "checkinBtn": "Perform Entry Check-in",
     "checkoutBtn": "Register Check-out",
-    "undo": "Undo or move to waiting"
+    "undo": "Undo or move to waiting",
+    "notInformed": "Not informed",
+    "recent": "Recent",
+    "labels": {
+        "name": "Name",
+        "namePlace": "Ex: Silva Family, John, Mary",
+        "phone": "Phone number",
+        "peopleCount": "Number of People"
+    }
   },
   "routesPage": {
     "title": "My Rescues",
@@ -308,6 +424,7 @@
     "title": "Your Profile",
     "settings": "Settings",
     "language": "Language",
+    "languageDesc": "Select your language",
     "theme": "Economy Mode (Dark)",
     "themeDesc": "Saves battery on OLED screens, crucial in power-off areas.",
     "light": "Light",
@@ -323,5 +440,212 @@
   "navVolunteer": {
     "myTasks": "My Tasks",
     "opportunities": "Opportunities"
+  },
+  "login": {
+    "title": "Access as volunteer",
+    "googleBtn": "Sign in with Google",
+    "comingSoon": "Coming soon",
+    "emailLogin": "Email Login",
+    "createAccount": "Create Account",
+    "terms": "By logging in, you agree to the terms of use and commit to acting as a volunteer responsibly.",
+    "apiError": "Failed to authenticate with API.",
+    "authError": "Authentication error: "
+  },
+  "nearbyPage": {
+    "title": "Nearby situation",
+    "locationActive": "Active location",
+    "gettingLocation": "Getting location...",
+    "radiusLabel": "Radius:",
+    "statusLabel": "Status:",
+    "statuses": {
+      "all": "All",
+      "pending": "Pending",
+      "attending": "In progress"
+    },
+    "legend": {
+        "available": "Available",
+        "nearFull": "Almost full",
+        "fullUrgent": "Full / Urgent"
+    },
+    "tabs": {
+        "requests": "Requests",
+        "shelters": "Shelters"
+    },
+    "empty": "No records found in a {radius}km radius of this area",
+    "mapLocation": "Location on Map",
+    "urgency": {
+        "high": "Emergency",
+        "medium": "Moderate",
+        "low": "Monitor"
+    },
+    "attendBtn": "Attend",
+    "modalAttend": {
+        "title": "Confirm Mission",
+        "messageLabel": "Message to requester",
+        "messagePlace": "Ex: I'm on my way with a boat. Arriving in 10 minutes.",
+        "warning": "By confirming, this request will be linked to you and will appear in your active missions.",
+        "confirm": "Confirm Acceptance",
+        "cancel": "Cancel"
+    }
+  },
+  "volunteerTasks": {
+    "title": "My Missions",
+    "searchPlace": "Search mission or location...",
+    "tabs": {
+        "opportunities": "New",
+        "ongoing": "Active",
+        "finished": "History"
+    },
+    "noTasks": "No missions found",
+    "shelterOccupation": "Shelter Occupation",
+    "requesterFallback": "Requester",
+    "noDescription": "No description.",
+    "labels": {
+        "description": "Description",
+        "address": "Address"
+    },
+    "actions": {
+        "navigate": "Navigate GPS",
+        "call": "Call",
+        "complete": "Complete Mission"
+    },
+    "checkout": {
+        "title": "Outcome",
+        "question": "Where was the requester left?",
+        "officialShelter": "Official Shelter",
+        "officialShelterDesc": "Reception point",
+        "safePlace": "Safe Place",
+        "safePlaceDesc": "Relatives' house or dry area",
+        "chooseShelter": "Choose Shelter"
+    },
+    "toasts": {
+        "accepted": "Mission accepted!",
+        "errorAccept": "Error accepting mission.",
+        "completed": "Mission completed!",
+        "shiftFinished": "Shift finished!",
+        "errorFinish": "Error finishing shift."
+    }
+  },
+  "userProfile": {
+    "noLocation": "No location defined",
+    "myData": "My Data",
+    "phone": "Phone",
+    "addressTitle": "Address",
+    "map": "Map",
+    "street": "Street / Road",
+    "number": "Number",
+    "complement": "Complement",
+    "neighborhood": "Neighborhood",
+    "city": "City",
+    "state": "State",
+    "zipCode": "ZIP Code",
+    "save": "Save Changes",
+    "saving": "Saving...",
+    "cancel": "Cancel",
+    "residentialAddress": "Residential Address",
+    "noAddress": "No address registered. Click edit to add.",
+    "active": "Active",
+    "settings": "Settings",
+    "language": "Language",
+    "theme": "Theme",
+    "themeLight": "Light",
+    "themeDark": "Dark",
+    "backHome": "Back to Home",
+    "logout": "Sign out",
+    "selectOnMap": "Select on Map",
+    "moveMapWarning": "Move the map to position exactly",
+    "confirmLocation": "Confirm Location"
+  },
+  "routesBoats": {
+    "badge": "Naval Rescue",
+    "title": "My Boat Routes",
+    "subtitle": "Manage the aquatic rescues and transports you are performing.",
+    "tabs": {
+        "ongoing": "Ongoing",
+        "finished": "Completed"
+    },
+    "noRoutes": "No active nautical routes",
+    "localLabel": "Location",
+    "rescued": "{count} rescued",
+    "actions": {
+        "dropoff": "Drop-off",
+        "finished": "Finished"
+    },
+    "checkout": {
+        "title": "Register Drop-off",
+        "question": "Where were the people from group {name} safely left?",
+        "toShelter": "Take to Shelter",
+        "toShelterDesc": "Destined to an official shelter via pier/cais.",
+        "toSafe": "Safe Place",
+        "toSafeDesc": "Drop-off completed in dry area/port."
+    }
+  },
+  "volunteerOpportunities": {
+    "badge": "Volunteer Area",
+    "title": "Opportunities",
+    "subtitle": "Find locations that need your workforce today.",
+    "slots": "Slots",
+    "labels": {
+        "location": "Location",
+        "urgency": "Urgency",
+        "whatToDo": "What you will do"
+    },
+    "urgencyLevels": {
+        "critical": "Critical",
+        "medium": "Medium",
+        "low": "Low"
+    },
+    "categories": {
+        "clean": "Cleaning",
+        "sort": "Sorting",
+        "cook": "Kitchen",
+        "health": "Health Support",
+        "rescue": "Rescue"
+    },
+    "requirements": {
+        "noExperience": "No prior experience needed",
+        "safetyEquip": "Safety equipment provided on site"
+    },
+    "actions": {
+        "applied": "Applied ✓",
+        "accept": "Accept and Start"
+    }
+  },
+  "shelterTeam": {
+    "title": "Team Management",
+    "subtitle": "Request reinforcements or manage your current volunteers.",
+    "tabs": {
+        "request": "Request",
+        "pending": "Requested",
+        "team": "Team"
+    },
+    "categories": {
+        "sorting": "Sorting and Organization (Clothes/Food)",
+        "cleaning": "Cleaning and Space Maintenance",
+        "health": "Health / Nursing / Psychology",
+        "tactical": "Tactical Rescue Support",
+        "cooking": "Kitchen and Meal Preparation"
+    },
+    "actions": {
+        "sendInvites": "Send Invites ({count})",
+        "removeTeam": "Remove from Team",
+        "deleteRequest": "Delete Request"
+    },
+    "status": {
+        "active": "ACTIVE",
+        "finished": "FINISHED",
+        "free": "Free",
+        "noOpenSlots": "No open slots at the moment.",
+        "noVolunteers": "No volunteers in your team yet.",
+        "noVolunteersDesc": "Accepted missions will appear here grouped by user."
+    },
+    "messages": {
+        "sendSuccess": "Requests sent successfully!",
+        "sendError": "Error sending requests",
+        "removed": "Volunteer removed",
+        "removeError": "Error removing volunteer",
+        "confirmRemove": "Are you sure you want to remove this volunteer from the team? All activities linked to them in this shelter will be removed.",
+        "shelterNotFound": "Shelter not identified"
+    }
   }
 }

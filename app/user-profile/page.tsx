@@ -170,7 +170,7 @@ export default function UserProfile() {
               location_on
             </span>
             <span className="text-on-surface-variant dark:text-slate-400 text-sm font-medium">
-              {userData?.address_city ? `${userData.address_city}, ${userData.address_state}` : 'Localização não definida'}
+              {userData?.address_city ? `${userData.address_city}, ${userData.address_state}` : t('userProfile.noLocation')}
             </span>
           </div>
         </section>
@@ -182,12 +182,12 @@ export default function UserProfile() {
                 <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
                   <span className="material-symbols-outlined text-[24px]">contact_phone</span>
                 </div>
-                <p className="text-sm font-black uppercase tracking-widest text-[#1565C0] dark:text-blue-400">Meus Dados</p>
+                <p className="text-sm font-black uppercase tracking-widest text-[#1565C0] dark:text-blue-400">{t('userProfile.myData')}</p>
               </div>
 
               <div className="space-y-4">
                 <div>
-                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5 ml-1">Telefone</p>
+                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5 ml-1">{t('userProfile.phone')}</p>
                   <TextInput value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="(00) 00000-0000" />
                 </div>
               </div>
@@ -199,49 +199,49 @@ export default function UserProfile() {
                   <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
                     <span className="material-symbols-outlined text-[24px]">map</span>
                   </div>
-                  <p className="text-sm font-black uppercase tracking-widest text-[#1565C0] dark:text-blue-400">Endereço</p>
+                  <p className="text-sm font-black uppercase tracking-widest text-[#1565C0] dark:text-blue-400">{t('userProfile.addressTitle')}</p>
                 </div>
                 <button 
                   onClick={() => setShowMap(true)}
                   className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 text-[10px] font-black uppercase tracking-wider"
                 >
                   <span className="material-symbols-outlined text-xs">pin_drop</span>
-                  Mapa
+                  {t('userProfile.map')}
                 </button>
               </div>
 
               <div className="grid grid-cols-1 gap-4">
                 <div>
-                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5 ml-1">Rua / Logradouro</p>
+                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5 ml-1">{t('userProfile.street')}</p>
                   <TextInput value={address.street} onChange={(e) => setAddress({...address, street: e.target.value})} placeholder="Ex: Rua das Amoreiras" />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5 ml-1">Número</p>
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5 ml-1">{t('userProfile.number')}</p>
                     <TextInput value={address.number} onChange={(e) => setAddress({...address, number: e.target.value})} placeholder="100" />
                   </div>
                   <div>
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5 ml-1">Complemento</p>
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5 ml-1">{t('userProfile.complement')}</p>
                     <TextInput value={address.complement} onChange={(e) => setAddress({...address, complement: e.target.value})} placeholder="Apt 201" />
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                    <div>
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5 ml-1">Bairro</p>
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5 ml-1">{t('userProfile.neighborhood')}</p>
                     <TextInput value={address.neighborhood} onChange={(e) => setAddress({...address, neighborhood: e.target.value})} placeholder="Centro" />
                   </div>
                   <div>
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5 ml-1">Cidade</p>
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5 ml-1">{t('userProfile.city')}</p>
                     <TextInput value={address.city} onChange={(e) => setAddress({...address, city: e.target.value})} placeholder="Porto Alegre" />
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                    <div>
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5 ml-1">UF</p>
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5 ml-1">{t('userProfile.state')}</p>
                     <TextInput value={address.state} onChange={(e) => setAddress({...address, state: e.target.value.toUpperCase()})} maxLength={2} placeholder="RS" />
                   </div>
                   <div>
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5 ml-1">CEP</p>
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5 ml-1">{t('userProfile.zipCode')}</p>
                     <TextInput value={address.zipCode} onChange={(e) => setAddress({...address, zipCode: e.target.value})} placeholder="00000-000" />
                   </div>
                 </div>
@@ -253,14 +253,14 @@ export default function UserProfile() {
                 onClick={() => setIsEditing(false)}
                 className="w-full py-4 rounded-2xl bg-slate-100 dark:bg-white/10 text-slate-600 dark:text-white font-black uppercase text-[10px] tracking-widest active:scale-95 transition-transform"
                >
-                 Cancelar
+                 {t('userProfile.cancel')}
                </button>
                <button 
                 onClick={handleSave}
                 disabled={loading}
                 className="w-full py-4 rounded-2xl bg-[#1565C0] text-white font-black uppercase text-[10px] tracking-widest active:scale-95 transition-transform shadow-lg shadow-blue-500/20 disabled:opacity-50"
                >
-                 {loading ? 'Salvando...' : 'Salvar Alterações'}
+                 {loading ? t('userProfile.saving') : t('userProfile.save')}
                </button>
             </div>
           </section>
@@ -287,7 +287,7 @@ export default function UserProfile() {
                 <div className="bg-slate-50 dark:bg-white/5 rounded-2xl p-4 border border-slate-100 dark:border-white/10">
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex-1">
-                      <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-1">Endereço Residencial</p>
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-1">{t('userProfile.residentialAddress')}</p>
                       {userData?.address_street ? (
                         <>
                           <p className="font-bold text-sm text-slate-800 dark:text-white">
@@ -298,12 +298,12 @@ export default function UserProfile() {
                           </p>
                         </>
                       ) : (
-                        <p className="text-sm text-slate-400 italic">Nenhum endereço cadastrado. Clique em editar para adicionar.</p>
+                        <p className="text-sm text-slate-400 italic">{t('userProfile.noAddress')}</p>
                       )}
                     </div>
                     {userData?.address_street && (
                       <span className="text-[10px] font-bold uppercase tracking-widest text-[#1565C0] bg-blue-50 dark:bg-blue-900/40 px-3 py-1.5 rounded-full">
-                        Ativo
+                        {t('userProfile.active')}
                       </span>
                     )}
                   </div>
@@ -317,13 +317,13 @@ export default function UserProfile() {
                 <div className="w-10 h-10 rounded-xl bg-orange-500/10 flex items-center justify-center text-orange-500">
                   <span className="material-symbols-outlined text-[24px]">settings</span>
                 </div>
-                <p className="text-sm font-black uppercase tracking-widest">Configurações</p>
+                <p className="text-sm font-black uppercase tracking-widest">{t('userProfile.settings')}</p>
               </div>
 
               <div className="space-y-6">
                 {/* Idioma */}
                 <div>
-                  <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-3 ml-1">Idioma / Language</p>
+                  <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-3 ml-1">{t('userProfile.language')}</p>
                   <div className="grid grid-cols-2 gap-3">
                     <button 
                       onClick={() => setLanguage('pt-BR')}
@@ -350,7 +350,7 @@ export default function UserProfile() {
 
                 {/* Tema */}
                 <div>
-                  <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-3 ml-1">Tema / Theme</p>
+                  <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-3 ml-1">{t('userProfile.theme')}</p>
                   <div className="grid grid-cols-2 gap-3">
                     <button 
                       onClick={() => toggleTheme('light')}
@@ -361,7 +361,7 @@ export default function UserProfile() {
                       }`}
                     >
                       <span className="material-symbols-outlined text-[18px]">light_mode</span>
-                      Claro
+                      {t('userProfile.themeLight')}
                     </button>
                     <button 
                       onClick={() => toggleTheme('dark')}
@@ -372,7 +372,7 @@ export default function UserProfile() {
                       }`}
                     >
                       <span className="material-symbols-outlined text-[18px]">dark_mode</span>
-                      Escuro
+                      {t('userProfile.themeDark')}
                     </button>
                   </div>
                 </div>
@@ -385,14 +385,14 @@ export default function UserProfile() {
                 className="w-full flex items-center justify-center gap-2 bg-slate-50 dark:bg-white/5 text-slate-700 dark:text-white border border-slate-200 dark:border-white/10 font-black py-4 rounded-2xl active:scale-95 transition-transform text-xs uppercase tracking-[0.1em]"
               >
                 <span className="material-symbols-outlined text-[18px]">home</span>
-                Voltar ao Início
+                {t('userProfile.backHome')}
               </Link>
 
               <button 
                 onClick={handleLogout} 
                 className="w-full py-4 text-red-500 font-extrabold uppercase tracking-[0.2em] text-[10px] hover:bg-red-50 dark:hover:bg-red-500/10 rounded-2xl transition-colors"
               >
-                Sair da conta
+                {t('userProfile.logout')}
               </button>
             </div>
           </section>
@@ -404,7 +404,7 @@ export default function UserProfile() {
         <div className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-6 animate-in fade-in">
            <div className="bg-white dark:bg-[#0d2247] w-full max-w-2xl sm:rounded-[2.5rem] overflow-hidden flex flex-col h-[90vh] sm:h-[80vh] shadow-2xl animate-in slide-in-from-bottom-8 duration-500">
               <div className="p-6 flex items-center justify-between border-b border-slate-100 dark:border-white/10 shrink-0">
-                <h3 className="text-xl font-headline font-black text-slate-900 dark:text-white">Selecione no Mapa</h3>
+                <h3 className="text-xl font-headline font-black text-slate-900 dark:text-white">{t('userProfile.selectOnMap')}</h3>
                 <button onClick={() => setShowMap(false)} className="w-10 h-10 rounded-full bg-slate-50 dark:bg-white/5 flex items-center justify-center text-slate-400">
                   <span className="material-symbols-outlined">close</span>
                 </button>
@@ -422,7 +422,7 @@ export default function UserProfile() {
                 {/* FORMULARIO COMPACTO - PERFIL */}
                 <div className="space-y-3 mb-4">
                   <div>
-                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1 ml-1">Rua / Logradouro</p>
+                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1 ml-1">{t('userProfile.street')}</p>
                     <TextInput 
                       value={address.street} 
                       onChange={(e) => setAddress({...address, street: e.target.value})} 
@@ -433,7 +433,7 @@ export default function UserProfile() {
                   
                   <div className="grid grid-cols-3 gap-2">
                     <div>
-                      <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1 ml-1">Nº</p>
+                      <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1 ml-1">{t('userProfile.number').slice(0,2)}.</p>
                       <TextInput 
                         value={address.number} 
                         onChange={(e) => setAddress({...address, number: e.target.value})} 
@@ -442,7 +442,7 @@ export default function UserProfile() {
                       />
                     </div>
                     <div>
-                      <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1 ml-1">Compl.</p>
+                      <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1 ml-1">{t('userProfile.complement').slice(0,5)}.</p>
                       <TextInput 
                         value={address.complement} 
                         onChange={(e) => setAddress({...address, complement: e.target.value})} 
@@ -451,7 +451,7 @@ export default function UserProfile() {
                       />
                     </div>
                     <div>
-                      <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1 ml-1">UF</p>
+                      <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1 ml-1">{t('userProfile.state')}</p>
                       <TextInput 
                         value={address.state} 
                         onChange={(e) => setAddress({...address, state: e.target.value.toUpperCase()})} 
@@ -464,7 +464,7 @@ export default function UserProfile() {
 
                   <div className="grid grid-cols-3 gap-2 pb-1">
                     <div>
-                      <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1 ml-1">Bairro</p>
+                      <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1 ml-1">{t('userProfile.neighborhood')}</p>
                       <TextInput 
                         value={address.neighborhood} 
                         onChange={(e) => setAddress({...address, neighborhood: e.target.value})} 
@@ -473,7 +473,7 @@ export default function UserProfile() {
                       />
                     </div>
                     <div>
-                      <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1 ml-1">Cidade</p>
+                      <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1 ml-1">{t('userProfile.city')}</p>
                       <TextInput 
                         value={address.city} 
                         onChange={(e) => setAddress({...address, city: e.target.value})} 
@@ -482,7 +482,7 @@ export default function UserProfile() {
                       />
                     </div>
                     <div>
-                      <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1 ml-1">CEP</p>
+                      <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1 ml-1">{t('userProfile.zipCode')}</p>
                       <TextInput 
                         value={address.zipCode} 
                         onChange={(e) => setAddress({...address, zipCode: e.target.value})} 
@@ -493,7 +493,7 @@ export default function UserProfile() {
                   </div>
                 </div>
 
-                <p className="text-[10px] font-black uppercase text-slate-400 mb-4 tracking-widest text-center">Mova o mapa para posicionar exatamente</p>
+                <p className="text-[10px] font-black uppercase text-slate-400 mb-4 tracking-widest text-center">{t('userProfile.moveMapWarning')}</p>
                 <button 
                   onClick={() => {
                     reverseGeocode(pickedLoc);
@@ -501,7 +501,7 @@ export default function UserProfile() {
                   }}
                   className="w-full py-4 bg-[#1565C0] text-white rounded-2xl font-black uppercase text-xs tracking-widest shadow-xl shadow-blue-500/20 active:scale-95 transition-transform"
                 >
-                  Confirmar Localização
+                  {t('userProfile.confirmLocation')}
                 </button>
               </div>
            </div>

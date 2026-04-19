@@ -17,11 +17,11 @@ type VolunteerCategory = {
 }
 
 const INITIAL_CATEGORIES: VolunteerCategory[] = [
-  { id: 'sorting', label: 'Triagem e Organização (Roupas/Alimentos)', icon: 'inventory_2', count: 0 },
-  { id: 'cleaning', label: 'Limpeza e Manutenção de Espaços', icon: 'cleaning_services', count: 0 },
-  { id: 'health', label: 'Saúde / Enfermagem / Psicologia', icon: 'medical_services', count: 0 },
-  { id: 'tactical', label: 'Suporte Tático em Resgates', icon: 'pool', count: 0 },
-  { id: 'cooking', label: 'Cozinha e Preparo de Refeições', icon: 'restaurant', count: 0 },
+  { id: 'sorting', label: 'shelterTeam.categories.sorting', icon: 'inventory_2', count: 0 },
+  { id: 'cleaning', label: 'shelterTeam.categories.cleaning', icon: 'cleaning_services', count: 0 },
+  { id: 'health', label: 'shelterTeam.categories.health', icon: 'medical_services', count: 0 },
+  { id: 'tactical', label: 'shelterTeam.categories.tactical', icon: 'pool', count: 0 },
+  { id: 'cooking', label: 'shelterTeam.categories.cooking', icon: 'restaurant', count: 0 },
 ]
 
 
@@ -64,16 +64,16 @@ export default function ShelterTeam() {
 
   const handleSendInvites = async () => {
     const shelterId = profile?.managed_shelters?.[0]?.id_code
-    if (!shelterId) return toast.error('Abrigo não identificado')
+    if (!shelterId) return toast.error(t('shelterTeam.messages.shelterNotFound'))
 
     const needs = categories
       .filter(cat => cat.count > 0)
-      .map(cat => ({ label: cat.label, count: cat.count }))
+      .map(cat => ({ label: t(cat.label), count: cat.count }))
 
     setLoading(true)
     try {
       await api.post(`/shelters/${shelterId}/broadcast-needs`, { needs })
-      toast.success('Solicitações enviadas com sucesso!', {
+      toast.success(t('shelterTeam.messages.sendSuccess'), {
         icon: '🚀',
         style: { borderRadius: '1rem', background: '#333', color: '#fff' }
       })
@@ -81,7 +81,7 @@ export default function ShelterTeam() {
       if (activeTab === 'request') setActiveTab('pending')
     } catch (error) {
       console.error('Error sending invites', error)
-      toast.error('Erro ao enviar solicitações')
+      toast.error(t('shelterTeam.messages.sendError'))
     } finally {
       setLoading(false)
     }
@@ -92,10 +92,10 @@ export default function ShelterTeam() {
     if (!shelterId) return
     try {
       await api.delete(`/shelters/${shelterId}/broadcast-needs/${requestIdCode}`)
-      toast.success('Solicitação removida')
+      toast.success(t('shelterTeam.actions.deleteRequest'))
       fetchBroadcasts()
     } catch (e) {
-      toast.error('Erro ao remover')
+      toast.error(t('shelterTeam.messages.removeError'))
     }
   }
 
@@ -103,14 +103,14 @@ export default function ShelterTeam() {
     const shelterId = profile?.managed_shelters?.[0]?.id_code
     if (!shelterId || !userIdCode) return
     
-    if (!confirm('Tem certeza que deseja remover este voluntário da equipe? Todas as atividades vinculadas a ele neste abrigo serão removidas.')) return
+    if (!confirm(t('shelterTeam.messages.confirmRemove'))) return
 
     try {
       await api.delete(`/shelters/${shelterId}/volunteers/${userIdCode}`)
-      toast.success('Voluntário removido')
+      toast.success(t('shelterTeam.messages.removed'))
       fetchBroadcasts()
     } catch (e) {
-      toast.error('Erro ao remover voluntário')
+      toast.error(t('shelterTeam.messages.removeError'))
     }
   }
 
@@ -126,10 +126,10 @@ export default function ShelterTeam() {
           </Link>
           <div>
             <h1 className="text-3xl font-black text-slate-800 dark:text-white tracking-tight leading-tight font-headline">
-              Gestão de Equipe
+              {t('shelterTeam.title')}
             </h1>
             <p className="mt-1.5 text-slate-500 dark:text-slate-400 font-body text-base font-medium">
-              Solicite reforços ou gerencie seus voluntários atuais.
+              {t('shelterTeam.subtitle')}
             </p>
           </div>
         </section>
@@ -140,9 +140,9 @@ export default function ShelterTeam() {
         {/* Toggle Tabs */}
         <div className="flex bg-slate-100 dark:bg-white/5 p-1 rounded-[1.5rem] shadow-sm border border-slate-200/50 dark:border-white/5 mb-8 overflow-x-auto scrollbar-hide shrink-0">
           {[
-            { id: 'request', label: 'Solicitar' },
-            { id: 'pending', label: 'Solicitados' },
-            { id: 'team', label: 'Equipe' }
+            { id: 'request', label: t('shelterTeam.tabs.request') },
+            { id: 'pending', label: t('shelterTeam.tabs.pending') },
+            { id: 'team', label: t('shelterTeam.tabs.team') }
           ].map((tab: any) => (
             <button
               key={tab.id}
@@ -171,7 +171,7 @@ export default function ShelterTeam() {
                   <div className="w-12 h-12 rounded-2xl bg-[#1565C0]/10 flex items-center justify-center text-[#1565C0] group-hover:bg-[#1565C0] group-hover:text-white transition-colors border border-[#1565C0]/10">
                     <span className="material-symbols-outlined text-[24px]">{cat.icon}</span>
                   </div>
-                  <p className="text-sm font-bold text-slate-800 dark:text-white pr-4 leading-tight">{cat.label}</p>
+                  <p className="text-sm font-bold text-slate-800 dark:text-white pr-4 leading-tight">{t(cat.label)}</p>
                 </div>
 
                 <div className="flex items-center gap-3 bg-slate-100 dark:bg-black/20 rounded-2xl p-1.5 border border-slate-200 dark:border-white/5">
@@ -206,7 +206,7 @@ export default function ShelterTeam() {
               ) : (
                 <>
                    <span className="material-symbols-outlined text-[20px]">send</span>
-                   Enviar Convites ({totalNeeded})
+                   {t('shelterTeam.actions.sendInvites').replace('{count}', totalNeeded.toString())}
                 </>
               )}
             </button>
@@ -217,7 +217,7 @@ export default function ShelterTeam() {
                <div className="text-center py-20 bg-white/50 dark:bg-white/5 rounded-[2.5rem] border border-dashed border-slate-200 dark:border-white/10 opacity-60">
                  <span className="material-symbols-outlined text-slate-300 dark:text-white/10 text-6xl mb-4">history</span>
                  <p className="text-slate-500 dark:text-slate-400 font-bold px-10 uppercase text-[10px] tracking-widest">
-                   Nenhuma vaga aberta no momento.
+                   {t('shelterTeam.status.noOpenSlots')}
                  </p>
                </div>
              ) : (
@@ -234,7 +234,7 @@ export default function ShelterTeam() {
                            </p>
                            <div className="mt-1 flex items-center gap-2">
                               <span className={`text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded-lg ${b.accepted_count >= b.total_slots ? 'bg-emerald-100 text-emerald-600' : 'bg-blue-100 text-blue-600'}`}>
-                                {b.total_slots - b.accepted_count} / {b.total_slots} Livres
+                                {b.total_slots - b.accepted_count} / {b.total_slots} {t('shelterTeam.status.free')}
                               </span>
                               {b.accepted_count >= b.total_slots && (
                                 <span className="material-symbols-outlined text-emerald-500 text-[14px]">check_circle</span>
@@ -264,7 +264,7 @@ export default function ShelterTeam() {
                     <div className="flex flex-wrap gap-2 mt-2">
                       {member.activities.map((act: any) => (
                         <span key={act.id} className={`text-[9px] font-black uppercase tracking-widest px-2.5 py-1 rounded-lg ${act.status === 'finished' ? 'bg-slate-100 text-slate-400 dark:bg-white/5' : 'bg-emerald-500/10 text-emerald-500'}`}>
-                           {act.label} {act.status === 'finished' ? '(CONCLUÍDO)' : '(ATIVO)'}
+                           {act.label} {act.status === 'finished' ? `(${t('shelterTeam.status.finished')})` : `(${t('shelterTeam.status.active')})`}
                         </span>
                       ))}
                     </div>
@@ -276,7 +276,7 @@ export default function ShelterTeam() {
                     onClick={() => handleRemoveFromTeam(member.id_code)}
                     className="text-red-500 font-bold uppercase tracking-widest hover:underline"
                   >
-                    Remover da Equipe
+                    {t('shelterTeam.actions.removeTeam')}
                   </button>
                 </div>
               </div>
@@ -285,8 +285,8 @@ export default function ShelterTeam() {
             {team.length === 0 && (
               <div className="text-center py-20 px-8">
                 <span className="material-symbols-outlined text-[64px] text-slate-300 dark:text-white/10 mb-4">group_off</span>
-                <p className="text-slate-500 dark:text-slate-400 font-bold uppercase text-[10px] tracking-widest">Nenhum voluntário na sua equipe ainda.</p>
-                <p className="text-[11px] text-slate-400 mt-2">As missões aceitas aparecerão aqui agrupadas por usuário.</p>
+                <p className="text-slate-500 dark:text-slate-400 font-bold uppercase text-[10px] tracking-widest">{t('shelterTeam.status.noVolunteers')}</p>
+                <p className="text-[11px] text-slate-400 mt-2">{t('shelterTeam.status.noVolunteersDesc')}</p>
               </div>
             )}
           </div>

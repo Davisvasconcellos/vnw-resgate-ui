@@ -9,15 +9,15 @@ import { api } from '@/services/api'
 
 export default function AssistPage() {
   const { t } = useI18n()
-  const [openRequestsCount, setOpenRequestsCount] = useState<number>(0)
+  const [stats, setStats] = useState<any>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     async function fetchStats() {
       try {
-        const res = await api.get('/requests', { params: { status: 'pending', limit: 1 } })
+        const res = await api.get('/stats')
         if (res.data.success) {
-          setOpenRequestsCount(res.data.total || 0)
+          setStats(res.data.data)
         }
       } catch (error) {
         console.error('Erro ao buscar estatísticas:', error)
@@ -30,9 +30,9 @@ export default function AssistPage() {
 
   const HELP_CARDS = [
     {
-      label: 'Mapa Operacional',
+      label: t('assistPage.mapLabel'),
       icon: 'map',
-      description: 'Visão tática de todos os incidentes da região no mapa.',
+      description: t('assistPage.mapDesc'),
       color: '#E65100',
       bg: 'rgba(230,81,0,0.1)',
       border: 'rgba(230,81,0,0.2)',
@@ -40,9 +40,9 @@ export default function AssistPage() {
       span: 'col-span-2'
     },
     {
-      label: 'Minhas Missões',
+      label: t('assistPage.missionsLabel'),
       icon: 'rocket_launch',
-      description: 'Quadro centralizado com todas as ocorrências e resgates que você assumiu (Barco, Roda ou Abrigo).',
+      description: t('assistPage.missionsDesc'),
       color: '#1565C0',
       bg: 'rgba(21,101,192,0.1)',
       border: 'rgba(21,101,192,0.2)',
@@ -50,9 +50,9 @@ export default function AssistPage() {
       span: 'col-span-2'
     },
     {
-      label: t('navPublic.missing') || 'Desaparecidos',
+      label: t('help.missing'),
       icon: 'person_search',
-      description: 'Consultar ou registrar pessoas não localizadas.',
+      description: t('help.missingDesc'),
       color: '#7B1FA2',
       bg: 'rgba(123,31,162,0.1)',
       border: 'rgba(123,31,162,0.2)',
@@ -61,9 +61,9 @@ export default function AssistPage() {
     },
     {
       value: 'volunteer',
-      label: 'Sou Voluntário',
+      label: t('assistPage.types.volunteer'),
       icon: 'volunteer_activism',
-      description: 'Atualize veículos e forma de ajudar.',
+      description: t('assistPage.types.volunteerDesc'),
       color: '#2E7D32',
       bg: 'rgba(46,125,50,0.1)',
       border: 'rgba(46,125,50,0.2)',
@@ -72,7 +72,7 @@ export default function AssistPage() {
     },
     {
       value: 'shelter',
-      label: 'Meu Abrigo',
+      label: t('assistPage.types.shelter'),
       icon: 'house',
       description: t('assistPage.types.shelterDesc'),
       color: '#1565C0',
@@ -100,29 +100,47 @@ export default function AssistPage() {
         </section>
 
         {/* Stats Section */}
-        <div className="grid grid-cols-3 gap-3">
+        <section>
+          <h2 className="text-xs font-black text-on-surface-variant dark:text-slate-500 uppercase tracking-[0.2em] mb-4 flex items-center gap-2 px-1">
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+            {t('assistPage.statsTitle')}
+          </h2>
+          <div className="grid grid-cols-3 gap-3">
           {[
-            { label: t('assistPage.statVolunteers'), value: '12', icon: 'volunteer_activism', color: 'text-primary' },
-            { label: t('assistPage.statOpen'), value: loading ? '...' : openRequestsCount.toString(), icon: 'pending', color: 'text-secondary' },
-            { label: t('assistPage.statToday'), value: '0', icon: 'check_circle', color: 'text-emerald-600 dark:text-emerald-400' },
-          ].map((stat) => (
-            <div key={stat.label} className="rounded-2xl bg-white dark:bg-white/5 p-4 shadow-sm border border-slate-100 dark:border-white/10 text-center transition-all hover:shadow-md">
-              <div className={`w-10 h-10 rounded-full bg-slate-50 dark:bg-white/5 flex items-center justify-center mx-auto mb-2`}>
-                <span className={`material-symbols-outlined ${stat.color} text-[22px]`} style={{ fontVariationSettings: `'FILL' 1` }}>
-                  {stat.icon}
-                </span>
+            { label: t('assistPage.statVolunteers'), value: loading ? '...' : (stats?.global?.volunteers?.total || 0).toString(), icon: 'volunteer_activism', color: 'text-primary' },
+            { label: t('assistPage.statOpen'), value: loading ? '...' : (stats?.global?.requests?.open || 0).toString(), icon: 'pending', color: 'text-secondary', href: '/volunteer/tasks' },
+            { label: t('assistPage.statToday'), value: loading ? '...' : (stats?.global?.impact?.people_today || 0).toString(), icon: 'check_circle', color: 'text-emerald-600 dark:text-emerald-400' },
+          ].map((stat) => {
+            const CardContent = (
+              <div className="rounded-2xl bg-white dark:bg-white/5 p-4 shadow-sm border border-slate-100 dark:border-white/10 text-center transition-all hover:shadow-md h-full">
+                <div className={`w-10 h-10 rounded-full bg-slate-50 dark:bg-white/5 flex items-center justify-center mx-auto mb-2`}>
+                  <span className={`material-symbols-outlined ${stat.color} text-[22px]`} style={{ fontVariationSettings: `'FILL' 1` }}>
+                    {stat.icon}
+                  </span>
+                </div>
+                <p className="text-xl font-bold text-on-surface dark:text-white font-headline">{(stat as any).value}</p>
+                <p className="text-[9px] font-bold text-on-surface-variant dark:text-slate-500 uppercase tracking-wider mt-0.5 leading-none">{(stat as any).label}</p>
               </div>
-              <p className="text-xl font-bold text-on-surface dark:text-white font-headline">{stat.value}</p>
-              <p className="text-[9px] font-bold text-on-surface-variant dark:text-slate-500 uppercase tracking-wider mt-0.5 leading-none">{stat.label}</p>
-            </div>
-          ))}
-        </div>
+            );
+
+            if ((stat as any).href) {
+              return (
+                <Link key={(stat as any).label} href={(stat as any).href} className="transition-transform active:scale-95 block">
+                  {CardContent}
+                </Link>
+              );
+            }
+
+            return <div key={(stat as any).label}>{CardContent}</div>;
+          })}
+          </div>
+        </section>
 
         {/* Action Grid */}
         <section>
           <h2 className="text-xs font-black text-on-surface-variant dark:text-slate-500 uppercase tracking-[0.2em] mb-4 flex items-center gap-2 px-1">
             <span className="w-2 h-2 rounded-full bg-primary" />
-            Escolha como ajudar
+            {t('assistPage.chooseHelp')}
           </h2>
           <div className="grid grid-cols-2 gap-4">
             {HELP_CARDS.map((card) => (

@@ -138,11 +138,11 @@ export default function AppHeader({
               ref={notifRef}
               className="absolute top-16 right-16 w-72 bg-white/95 dark:bg-[#0d2247]/95 backdrop-blur-xl border border-outline-variant/20 dark:border-white/10 rounded-xl shadow-lg p-2"
             >
-               <h3 className="px-4 py-2 text-[10px] font-black uppercase tracking-widest text-slate-400 border-b border-outline-variant/10 mb-1">Notificações</h3>
+               <h3 className="px-4 py-2 text-[10px] font-black uppercase tracking-widest text-slate-400 border-b border-outline-variant/10 mb-1">{t('notifications.title')}</h3>
                <div className="max-h-[300px] overflow-y-auto custom-scrollbar">
                   {notifications.length === 0 ? (
                     <div className="px-4 py-8 text-center opacity-40">
-                       <p className="text-[10px] font-black uppercase tracking-widest dark:text-white">Sem novidades</p>
+                       <p className="text-[10px] font-black uppercase tracking-widest dark:text-white">{t('notifications.empty')}</p>
                     </div>
                   ) : (
                     notifications.map(notif => (
@@ -156,10 +156,10 @@ export default function AppHeader({
                           className="flex flex-col gap-1 px-4 py-3 rounded-lg hover:bg-slate-50 dark:hover:bg-white/5 transition-colors border-b border-outline-variant/5 last:border-0"
                        >
                           <div className="flex items-center justify-between">
-                             <span className="text-[9px] font-black uppercase text-blue-500">SOS Atualizado</span>
+                             <span className="text-[9px] font-black uppercase text-blue-500">{t('notifications.updated')}</span>
                              <span className="text-[8px] text-slate-400">{new Date(notif.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                           </div>
-                          <span className="text-xs font-bold dark:text-white leading-tight">Pedido de {notif.type} em atendimento!</span>
+                          <span className="text-xs font-bold dark:text-white leading-tight">{t('notifications.inService').replace('{type}', notif.type)}</span>
                        </Link>
                     ))
                   )}
@@ -169,7 +169,7 @@ export default function AppHeader({
                  onClick={() => setNotifOpen(false)}
                  className="block mt-1 text-center py-2 text-[9px] font-black uppercase tracking-widest text-primary dark:text-white hover:bg-slate-50 dark:hover:bg-white/5 rounded-lg transition-colors"
                >
-                 Ver todas
+                 {t('notifications.viewAll')}
                </Link>
             </div>
           )}
