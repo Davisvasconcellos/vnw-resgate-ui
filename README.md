@@ -1,3 +1,40 @@
+# Respostas às questões do desafio
+1 — Apresentação da Ideia
+Esse é o meu projeto: VNW Resgate. A ideia surgiu a partir do desafio sobre as enchentes no Brasil, especialmente observando as recentes crises climáticas onde a comunicação e a logística se tornam os maiores gargalos. Pensando nesse cenário, decidi focar no problema da descentralização da informação e na dificuldade de coordenação entre quem precisa de ajuda e quem pode ajudar em tempo real.
+
+2 — Problema Escolhido
+O problema central é a fragmentação da ajuda e a dispersão de informações. Em situações de crise, as informações ficam espalhadas em dezenas de grupos de WhatsApp, redes sociais e sites diferentes. Isso gera confusão, perda de tempo vital e faz com que a ajuda demore a chegar. O usuário, já em situação de estresse, não pode ficar "pulando" de canal em canal para saber onde há um abrigo, como pedir um barco ou onde postar sobre um parente desaparecido.
+
+3 — Solução Proposta
+A solução é o VNW Resgate como um Hub Único de Monitoramento e Ação. A ideia foi criar um ecossistema centralizado que elimina a necessidade de múltiplos canais.
+
+Central de Resgate: Um canal direto para pedidos de SOS (barcos, transporte, médico).
+Mural de Desaparecidos: Um espaço padronizado para busca e identificação de pessoas.
+Gestão de Voluntariado: Um radar que seleciona missões por proximidade, otimizando o esforço de quem quer ajudar.
+Mapa de Abrigos: Visibilidade imediata de onde há vagas e recursos disponíveis. O sistema atua como o ponto único de verdade, onde a tecnologia organiza o caos para que o usuário encontre tudo o que precisa em um único lugar, de forma rápida e intuitiva.
+Acesso sem barreiras: Uso de Fingerprint de dispositivo para que vítimas peçam ajuda sem precisar de login.
+Inteligência Geográfica: Um mapa interativo que prioriza a localização do usuário e utiliza a fórmula de Haversine no banco de dados para filtrar apenas o que está ao alcance real do voluntário.
+Logística de Abrigos: Gestão dinâmica de ocupação que se atualiza automaticamente conforme os resgates são concluídos, garantindo que ninguém seja levado para um local sem vagas.
+Resiliência PWA: O aplicativo funciona offline, essencial para áreas onde o sinal de internet oscila.
+
+
+4 — Estrutura do Sistema
+O projeto foi dividido de forma modular para garantir alta performance e escalabilidade:
+
+Front-end: Desenvolvido em Next.js 14, utilizando Redux Toolkit para estado global e PWA para permitir a instalação no celular e funcionamento offline. A interface segue um design de "Baixa Carga Cognitiva", essencial para situações de estresse.
+Back-end: Uma API robusta em Node.js e Express, integrada ao Firebase Admin SDK para autenticação segura e à API do Google Drive para armazenamento de evidências fotográficas dos resgates.
+Banco de Dados: Utilizei PostgreSQL pela sua robustez em consultas complexas. O diferencial está na implementação de cálculos matemáticos diretamente no SQL para processar a proximidade entre voluntários, abrigos e vítimas com precisão métrica.
+
+
+Resumidamente a Aplicação é um Hub de coordenação de crise que conecta os três pilares do desastre: a Vítima, o Voluntário e o Abrigo.
+
+
+#  Dados técnicos
+*   **Abaixo seguem as informações técnicas e de desenvolvimento do projeto referente a UI**
+*   **A API Tem seus próprios dados técnicos no arquivo README.md do projeto**
+
+
+
 # 🛡️ VNW Resgate — Interface de Missão Crítica (V1.0)
 
 Esta é a interface **Premium** do ecossistema **VNW Resgate**, desenvolvida em Next.js para ser uma ferramenta de campo ágil, humana e resiliente. Projetada para ser utilizada por voluntários e pessoas em situação de risco durante operações de salvamento.
