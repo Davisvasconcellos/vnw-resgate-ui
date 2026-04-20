@@ -14,6 +14,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { RootState, AppDispatch } from '@/store'
 import { fetchShelters } from '@/store/slices/sheltersSlice'
 import { fetchRequests } from '@/store/slices/requestsSlice'
+import { getCurrentPosition, getIPLocation } from '@/services/geolocation'
 
 type Tab = 'shelters' | 'requests'
 
@@ -66,7 +67,18 @@ function NearbyContent() {
   const [locationReady, setLocationReady] = useState(false)
   const [selectedPin, setSelectedPin] = useState<string | null>(null)
   const [mapExpanded, setMapExpanded] = useState(false)
-  const [mapCenter, setMapCenter] = useState<[number, number]>([-27.4332, -48.4550])
+  const [mapCenter, setMapCenter] = useState<[number, number]>(() => {
+    if (typeof window !== 'undefined') {
+      const u = localStorage.getItem('vnw_user');
+      if (u) {
+        try {
+          const user = JSON.parse(u);
+          if (user.lat && user.lng) return [parseFloat(user.lat), parseFloat(user.lng)];
+        } catch(e){}
+      }
+    }
+    return [-27.4332, -48.4550]; // Fallback Florianópolis
+  })
   const [showAttendModal, setShowAttendModal] = useState(false)
   const [volunteerMessage, setVolunteerMessage] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -97,15 +109,45 @@ function NearbyContent() {
   }
 
   useEffect(() => {
-    // Simula obter navegação nativa e dispara para Redux chamarem backend
-    const timer = setTimeout(() => {
-       setLocationReady(true)
-       // Puxamos um raio de 5000km (ou muito largo) para o mapa enxergar TODO O BRASIL
-       dispatch(fetchShelters({ lat: mapCenter[0], lng: mapCenter[1], radiusKm: 5000 }))
-       dispatch(fetchRequests({ lat: mapCenter[0], lng: mapCenter[1], radiusKm: 5000 }))
-    }, 1600)
-    return () => clearTimeout(timer)
-  }, [dispatch, mapCenter]) // Removido radius para evitar refetching agressivo
+    const acquireLocation = async () => {
+      const storedUser = localStorage.getItem('vnw_user')
+      let lat = mapCenter[0]
+      let lng = mapCenter[1]
+
+      if (storedUser) {
+        try {
+          const user = JSON.parse(storedUser)
+          // Se tiver coordenadas, PRIORIZA elas
+          if (user.lat && user.lng) {
+             lat = parseFloat(user.lat)
+             lng = parseFloat(user.lng)
+             setMapCenter([lat, lng])
+             setLocationReady(true)
+             dispatch(fetchShelters({ lat, lng, radiusKm: 5000 }))
+             dispatch(fetchRequests({ lat, lng, radiusKm: 5000 }))
+             return;
+          }
+        } catch (e) {}
+      }
+
+      try {
+        const pos = await getCurrentPosition({ timeout: 5000 }).catch(() => getIPLocation())
+        lat = pos.coords.latitude
+        lng = pos.coords.longitude
+        setMapCenter([lat, lng])
+        setLocationReady(true)
+      } catch (e) {
+        console.warn('Could not get actual location, using default center')
+        setLocationReady(true) // Ready anyway to show data
+      }
+
+      // Puxamos um raio de 5000km (ou muito largo) para o mapa enxergar TODO O BRASIL
+      dispatch(fetchShelters({ lat, lng, radiusKm: 5000 }))
+      dispatch(fetchRequests({ lat, lng, radiusKm: 5000 }))
+    }
+
+    acquireLocation()
+  }, [dispatch]) 
 
   // 1. Processa TODOS os itens para apresentar no MAPA
   const mapShelters = sheltersState.items.map((s: any) => ({
@@ -131,7 +173,7 @@ function NearbyContent() {
   const selectedRequest = requestsState.items.find((r: any) => (r.id_code === selectedPin || r.id === selectedPin))
 
   return (
-    <main className="min-h-screen bg-surface dark:bg-[#0a1628] flex flex-col pb-44 transition-colors">
+    <main className="min-h-screen bg-surface dark:bg-[#0a1628] flex flex-col pb-44 transition-colors relative">
       {/* Header contextual */}
       {!moduleParam && (
         <div className="sticky top-0 z-20 px-4 pt-12 pb-6 bg-surface/90 dark:bg-[#0a1628]/90 backdrop-blur-xl border-b border-outline-variant/10 transition-colors">
@@ -148,7 +190,18 @@ function NearbyContent() {
                       <span className="text-xs font-bold leading-none uppercase tracking-wider">{t('nearbyPage.locationActive')}</span>
                     </div>
                     <span className="text-outline-variant/30 text-xs mx-0.5">·</span>
-                    <span className="text-on-surface-variant dark:text-outline-variant text-[11px] font-medium leading-none truncate max-w-[150px]">Canasvieiras, Florianópolis</span>
+                    <span className="text-on-surface-variant dark:text-outline-variant text-[11px] font-medium leading-none truncate max-w-[150px]">
+                      {(() => {
+                        const storedUser = typeof window !== 'undefined' ? localStorage.getItem('vnw_user') : null;
+                        if (storedUser) {
+                          const user = JSON.parse(storedUser);
+                          if (user.address_neighborhood && user.address_city) {
+                            return `${user.address_neighborhood}, ${user.address_city}`;
+                          }
+                        }
+                        return 'Localização Atual';
+                      })()}
+                    </span>
                   </>
                 ) : (
                   <>
@@ -213,6 +266,7 @@ function NearbyContent() {
           onUpdateCenter={(center: [number, number]) => setMapCenter(center)}
           isExpanded={mapExpanded}
           onToggleExpand={() => setMapExpanded(!mapExpanded)}
+          externalCenter={mapCenter}
         />
         <div className="absolute bottom-3 right-3 rounded-xl px-3 py-2 flex flex-col gap-1 bg-white/90 dark:bg-black/60 shadow-md dark:shadow-none backdrop-blur-md transition-colors">
           <div className="flex items-center gap-1.5">

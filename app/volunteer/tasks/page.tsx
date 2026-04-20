@@ -6,6 +6,7 @@ import { useI18n } from '@/components/i18n/I18nProvider'
 import { api } from '@/services/api'
 import ProtectedRoute from '@/components/ProtectedRoute'
 import toast from 'react-hot-toast'
+import { getCurrentPosition, checkPermissions, getIPLocation } from '@/services/geolocation'
 
 const CapacityBar = ({ current, total, t }: { current: number; total: number; t: any }) => {
   const percentage = Math.min(Math.round((current / total) * 100), 100);
@@ -46,6 +47,70 @@ export default function VolunteerTasksPage() {
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null)
   const [radiusKm, setRadiusKm] = useState<number>(10)
   const [showLocationMap, setShowLocationMap] = useState(false)
+  const [locationStatus, setLocationStatus] = useState<'idle' | 'acquiring' | 'active' | 'error'>('idle');
+
+  useEffect(() => {
+    const acquireLocation = async () => {
+      if (activeTab !== 'opportunities' || userLocation) return;
+      
+      const storedUser = localStorage.getItem('vnw_user')
+      if (storedUser) {
+        try {
+          const user = JSON.parse(storedUser)
+          if (user.use_default_location && user.lat) {
+            setUserLocation({ lat: parseFloat(user.lat), lng: parseFloat(user.lng) });
+            setLocationStatus('active');
+            return;
+          }
+        } catch (e) {}
+      }
+
+      if (typeof window !== 'undefined' && !window.isSecureContext) {
+        console.warn('Geolocation requires a secure context');
+        setLocationStatus('error');
+        return;
+      }
+
+      setLocationStatus('acquiring');
+      try {
+        const perm = await checkPermissions();
+        if (perm === 'denied') {
+          console.warn('GPS Denied, trying IP Fallback');
+          const ipPos = await getIPLocation();
+          setUserLocation({ lat: ipPos.coords.latitude, lng: ipPos.coords.longitude });
+          setLocationStatus('active');
+          return;
+        }
+
+        const pos = await getCurrentPosition({
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 30000
+        });
+
+        setUserLocation({ lat: pos.coords.latitude, lng: pos.coords.longitude });
+        setLocationStatus('active');
+      } catch (err: any) {
+        console.error('Task Loc error:', err);
+        
+        try {
+          // IP FALLBACK
+          const ipPos = await getIPLocation();
+          setUserLocation({ lat: ipPos.coords.latitude, lng: ipPos.coords.longitude });
+          setLocationStatus('active');
+          toast.success("Localização aproximada (IP)");
+        } catch (ipErr) {
+          setLocationStatus('error');
+          if (err.code === 1) {
+            setShowLocationMap(true);
+            toast.error("GPS Bloqueado. Defina sua base no mapa.");
+          }
+        }
+      }
+    };
+
+    acquireLocation();
+  }, [activeTab, userLocation]);
 
   const refreshData = async () => {
     setLoading(true)
@@ -96,33 +161,6 @@ export default function VolunteerTasksPage() {
       setLoading(false)
     }
   }
-
-  const [locationStatus, setLocationStatus] = useState<'idle' | 'acquiring' | 'active' | 'error'>('idle');
-
-  useEffect(() => {
-    if (activeTab === 'opportunities' && !userLocation) {
-      setLocationStatus('acquiring');
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          (pos) => {
-            setUserLocation({ lat: pos.coords.latitude, lng: pos.coords.longitude });
-            setLocationStatus('active');
-          },
-          (err) => {
-            console.error('Location error', err);
-            setLocationStatus('error');
-          },
-          { 
-            enableHighAccuracy: true, 
-            timeout: 15000, 
-            maximumAge: 0 
-          }
-        );
-      } else {
-        setLocationStatus('error');
-      }
-    }
-  }, [activeTab]);
 
   const handleMapConfirm = (center: [number, number]) => {
     setUserLocation({ lat: center[0], lng: center[1] });

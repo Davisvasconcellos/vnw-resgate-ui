@@ -30,6 +30,9 @@ export const metadata: Metadata = {
     statusBarStyle: 'default',
     title: 'VNW Resgate',
   },
+  other: {
+    'mobile-web-app-capable': 'yes',
+  },
   formatDetection: {
     telephone: false,
   },

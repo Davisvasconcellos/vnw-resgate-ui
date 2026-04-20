@@ -15,7 +15,6 @@ function LoginContent() {
   const offer = searchParams.get('offer') ?? ''
   
   const [loading, setLoading] = useState(false)
-  const [debug, setDebug] = useState<string>('')
 
   // Redireciona se já estiver logado
   useEffect(() => {
@@ -35,29 +34,28 @@ function LoginContent() {
 
   const handleGoogleLogin = async () => {
     setLoading(true);
-    setDebug('Iniciando Google Login...');
     try {
-      setDebug(`API BaseURL: ${api.defaults.baseURL}`);
       const result = await signInWithPopup(auth, googleProvider);
-      setDebug('Google Auth OK. Pegando Token...');
       const idToken = await result.user.getIdToken();
-
-      setDebug('Token obtido. Enviando para API...');
       const response = await api.post('/auth/google', { idToken });
 
       if (response.data.success) {
-        setDebug('API Sucesso! Salvando sessão...');
+        const user = response.data.data.user;
         localStorage.setItem('vnw_token', response.data.data.token);
-        localStorage.setItem('vnw_user', JSON.stringify(response.data.data.user));
-        router.push('/assist');
+        localStorage.setItem('vnw_user', JSON.stringify(user));
+        
+        // Se não tiver sequer a rua cadastrada, vai pro perfil completar
+        if (!user.address_street) {
+          router.push('/user-profile');
+        } else {
+          router.push('/assist');
+        }
       } else {
-        setDebug(`API Erro: ${JSON.stringify(response.data)}`);
         alert(t('login.apiError'));
       }
     } catch (error: any) {
       console.error('Erro no Google Login', error);
       const detail = error.response?.data?.message || error.message || 'Erro desconhecido';
-      setDebug(`CATCH Erro: ${detail} | Config: ${JSON.stringify(error.config?.url)}`);
       alert(t('login.authError') + detail);
     } finally {
       setLoading(false);
@@ -112,18 +110,6 @@ function LoginContent() {
             <span className="material-symbols-outlined text-slate-400 text-[20px]">chevron_right</span>
           </button>
 
-          {/* DEBUG AREA */}
-          {debug && (
-            <div className="p-4 bg-black/40 rounded-2xl border border-white/10 overflow-hidden">
-               <p className="text-[10px] font-black uppercase text-blue-400 tracking-widest mb-2 flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
-                  Console Debug
-               </p>
-               <p className="text-white/70 text-[11px] font-mono break-all leading-relaxed whitespace-pre-wrap">
-                  {debug}
-               </p>
-            </div>
-          )}
 
           <div className="pt-4 text-center">
              <p className="text-white/40 text-[10px] uppercase font-black tracking-[0.2em] mb-4">{t('login.comingSoon')}</p>

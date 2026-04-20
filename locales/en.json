@@ -136,6 +136,7 @@
     "location": "Your location",
     "photo": "Local photo",
     "photoDesc": "(optional but recommended)",
+    "locationError": "Weak or disabled GPS signal. Tap to mark on map.",
     "helpType": "Type of help",
     "peopleCount": "How many people need help?",
     "person": "person",

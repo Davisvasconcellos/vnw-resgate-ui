@@ -96,12 +96,16 @@ function MapFlyTo({ center }: { center: [number, number] }) {
   const map = useMap()
 
   useEffect(() => {
-    if (center) {
-      const current = map.getCenter()
-      // Só voa se a distância for relevante (evita micro-movimentos e loops)
-      const dist = Math.abs(current.lat - center[0]) + Math.abs(current.lng - center[1])
-      if (dist > 0.0001) {
-        map.flyTo(center, 15)
+    if (center && center[0] !== 0) {
+      const current = map.getCenter();
+      const dist = Math.sqrt(Math.pow(current.lat - center[0], 2) + Math.pow(current.lng - center[1], 2));
+      
+      // Só voa (flyTo) se a distância for significativa (> ~100m)
+      if (dist > 0.001) {
+        map.flyTo(center, 15, { duration: 1.5 });
+      } else if (dist > 0.00001) {
+        // Se for uma correção mínima, apenas centraliza suavemente sem resetar o ZOOM do usuário
+        map.panTo(center);
       }
     }
   }, [center, map])
@@ -132,7 +136,7 @@ export default function MapComponent({
   externalCenter?: [number, number] | null
 }) {
   const [isDark, setIsDark] = useState(false)
-  const [currentCenter, setCurrentCenter] = useState<[number, number]>([-27.4332, -48.4550])
+  const [currentCenter, setCurrentCenter] = useState<[number, number]>(externalCenter || [-27.4332, -48.4550])
   const [mapStableKey] = useState(`map-${Date.now()}-${Math.random()}`)
 
   useEffect(() => {
@@ -166,7 +170,7 @@ export default function MapComponent({
   const center: [number, number] = [-27.4332, -48.4550] // Canasvieiras center mocked approx
 
   return (
-    <MapContainer key={mapStableKey} center={currentCenter} zoom={14} style={{ height: '100%', width: '100%', zIndex: 1 }} zoomControl={false}>
+    <MapContainer key={mapStableKey} center={currentCenter} zoom={15} style={{ height: '100%', width: '100%', zIndex: 1 }} zoomControl={false}>
       {externalCenter && <MapFlyTo center={externalCenter} />}
       <MapTracker setCurrentCenter={setCurrentCenter} onUpdateCenter={onUpdateCenter} />
       <MapControls isExpanded={isExpanded} onToggleExpand={onToggleExpand} />
@@ -189,7 +193,7 @@ export default function MapComponent({
 
       {/* User Location marker */}
       <Marker
-        position={center}
+        position={externalCenter || [-27.4332, -48.4550]}
         icon={L.divIcon({
           html: `
           <div style="position:relative; width:32px; height:32px; transform: translate(-16px, -16px)">

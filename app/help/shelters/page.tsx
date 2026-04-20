@@ -5,6 +5,7 @@ import Link from 'next/link'
 import CapacityBar from '@/components/ui/CapacityBar'
 import { useI18n } from '@/components/i18n/I18nProvider'
 import { api } from '@/services/api'
+import { getCurrentPosition, checkPermissions } from '@/services/geolocation'
 
 export default function SheltersPage() {
   const { t } = useI18n()
@@ -13,24 +14,30 @@ export default function SheltersPage() {
   const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null)
 
   useEffect(() => {
-    // Tentar obter localização do usuário
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setCoords({
-            lat: position.coords.latitude,
-            lng: position.coords.longitude
-          })
-        },
-        () => {
-          // Fallback se negar ou falhar, carrega sem filtros de distância
-          fetchShelters()
-        }
-      )
-    } else {
-      fetchShelters()
-    }
-  }, [])
+    const acquireLocation = async () => {
+      if (typeof window !== 'undefined' && !window.isSecureContext) {
+        fetchShelters();
+        return;
+      }
+
+      try {
+        const pos = await getCurrentPosition({
+          enableHighAccuracy: false, // Menos exigente para listagem geral
+          timeout: 8000,
+          maximumAge: 60000
+        });
+
+        setCoords({
+          lat: pos.coords.latitude,
+          lng: pos.coords.longitude
+        });
+      } catch (err) {
+        fetchShelters();
+      }
+    };
+
+    acquireLocation();
+  }, []);
 
   useEffect(() => {
     if (coords) {

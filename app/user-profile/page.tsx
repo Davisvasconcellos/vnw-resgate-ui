@@ -13,7 +13,8 @@ import { signOut } from 'firebase/auth'
 import { api } from '@/services/api'
 import dynamic from 'next/dynamic'
 import TextInput from '@/components/ui/TextInput'
-import LocationIndicator from '@/components/ui/LocationIndicator'
+import toast from 'react-hot-toast'
+
 const MapComponent = dynamic(() => import('@/components/ui/MapComponent'), { ssr: false })
 
 export default function UserProfile() {
@@ -33,12 +34,40 @@ export default function UserProfile() {
     neighborhood: '',
     city: '',
     state: '',
-    zipCode: ''
+    zipCode: '',
+    lat: 0,
+    lng: 0,
+    use_default_location: false
   })
 
   // Map States
   const [showMap, setShowMap] = useState(false)
   const [pickedLoc, setPickedLoc] = useState<[number, number]>([-27.4350, -48.4550])
+
+  // Debounce para o reverse geocode live no mapa
+  useEffect(() => {
+    if (!showMap) return;
+    const timeout = setTimeout(() => {
+      reverseGeocode(pickedLoc);
+    }, 500);
+    return () => clearTimeout(timeout);
+  }, [pickedLoc, showMap]);
+
+  const maskPhone = (value: string) => {
+    let clean = value.replace(/\D/g, '');
+    if (clean.length > 11) clean = clean.slice(0, 11);
+    
+    if (clean.length > 10) {
+      return clean.replace(/^(\d{2})(\d{5})(\d{4}).*/, '($1) $2-$3');
+    } else if (clean.length > 6) {
+      return clean.replace(/^(\d{2})(\d{4})(\d{0,4}).*/, '($1) $2-$3');
+    } else if (clean.length > 2) {
+      return clean.replace(/^(\d{2})(\d{0,4}).*/, '($1) $2');
+    } else if (clean.length > 0) {
+      return clean.replace(/^(\d{0,2}).*/, '($1');
+    }
+    return clean;
+  }
 
   useEffect(() => {
     if (document.documentElement.classList.contains('dark')) {
@@ -53,7 +82,7 @@ export default function UserProfile() {
       if (res.data.success) {
         const u = res.data.data.user
         setUserData(u)
-        setPhone(u.phone || '')
+        setPhone(maskPhone(u.phone || ''))
         setAddress({
           street: u.address_street || '',
           number: u.address_number || '',
@@ -61,8 +90,19 @@ export default function UserProfile() {
           neighborhood: u.address_neighborhood || '',
           city: u.address_city || '',
           state: u.address_state || '',
-          zipCode: u.address_zip_code || ''
+          zipCode: u.address_zip_code || '',
+          lat: u.lat ? parseFloat(u.lat) : 0,
+          lng: u.lng ? parseFloat(u.lng) : 0,
+          use_default_location: u.use_default_location !== undefined ? !!u.use_default_location : true
         })
+        if (u.lat && u.lng) {
+          setPickedLoc([parseFloat(u.lat), parseFloat(u.lng)])
+        }
+        // Se não tiver SEQUER a rua, aí sim força a edição inicial
+        if (!u.address_street) {
+          setIsEditing(true)
+          setAddress(prev => ({ ...prev, use_default_location: true }))
+        }
       }
     } catch (e) {
       console.error('Erro ao buscar perfil', e)
@@ -70,26 +110,46 @@ export default function UserProfile() {
   }
 
   const handleSave = async () => {
+    // Validação de telefone obrigatório
+    if (!phone || phone.trim() === '') {
+      toast.error("O telefone é obrigatório!");
+      return;
+    }
+
+    // Sanitização: deixar somente números
+    const cleanPhone = phone.replace(/\D/g, '');
+    
+    if (cleanPhone.length < 10) {
+      toast.error("Informe um telefone válido com DDD.");
+      return;
+    }
+
     setLoading(true)
     try {
       const payload = {
-        phone,
+        phone: cleanPhone,
         address_street: address.street,
         address_number: address.number,
         address_complement: address.complement,
         address_neighborhood: address.neighborhood,
         address_city: address.city,
         address_state: address.state,
-        address_zip_code: address.zipCode
+        address_zip_code: address.zipCode,
+        lat: address.lat,
+        lng: address.lng,
+        use_default_location: address.use_default_location
       }
       const res = await api.put('/users/me', payload)
       if (res.data.success) {
-        setUserData(res.data.data.user)
-        localStorage.setItem('vnw_user', JSON.stringify(res.data.data.user))
+        const updatedUser = res.data.data.user
+        setUserData(updatedUser)
+        localStorage.setItem('vnw_user', JSON.stringify(updatedUser))
         setIsEditing(false)
+        toast.success("Perfil atualizado!")
       }
     } catch (e) {
       console.error('Erro ao salvar perfil', e)
+      toast.error("Erro ao salvar perfil")
     } finally {
       setLoading(false)
     }
@@ -102,13 +162,13 @@ export default function UserProfile() {
       if (data && data.address) {
         setAddress(prev => ({
           ...prev,
-          street: data.address.road || '',
-          neighborhood: data.address.suburb || data.address.neighbourhood || '',
-          city: data.address.city || data.address.town || '',
-          state: data.address['ISO3166-2-lvl4'] 
-            ? data.address['ISO3166-2-lvl4'].split('-').pop() 
-            : (data.address.state_code || data.address.state || ''),
-          zipCode: data.address.postcode || ''
+          street: data.address.road || prev.street,
+          neighborhood: data.address.suburb || data.address.neighbourhood || prev.neighborhood,
+          city: data.address.city || data.address.town || prev.city,
+          state: (data.address.state_code || data.address.state || '').slice(0, 2).toUpperCase() || prev.state,
+          zipCode: data.address.postcode || prev.zipCode,
+          lat: parseFloat(data.lat) || coords[0],
+          lng: parseFloat(data.lon) || coords[1]
         }))
       }
     } catch (e) {}
@@ -155,7 +215,12 @@ export default function UserProfile() {
             </div>
             {!isEditing && (
               <button 
-                onClick={() => setIsEditing(true)}
+                onClick={() => {
+                  setIsEditing(true);
+                  if (userData?.lat && userData?.lng) {
+                    setPickedLoc([parseFloat(userData.lat), parseFloat(userData.lng)])
+                  }
+                }}
                 className="absolute bottom-0 right-0 w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center shadow-lg border-2 border-white dark:border-[#0a1628] active:scale-90 transition-transform"
               >
                 <span className="material-symbols-outlined text-sm">edit</span>
@@ -163,17 +228,38 @@ export default function UserProfile() {
             )}
           </div>
           <h2 className="text-2xl font-extrabold font-headline tracking-tight text-on-surface dark:text-white mb-2">
-            {userData?.name || 'Calculando...'}
+            {userData?.name || 'Carregando...'}
           </h2>
           <div className="flex items-center gap-2 bg-slate-100 dark:bg-white/5 px-4 py-2 rounded-full">
             <span className="material-symbols-outlined text-primary text-sm">
               location_on
             </span>
             <span className="text-on-surface-variant dark:text-slate-400 text-sm font-medium">
-              {userData?.address_city ? `${userData.address_city}, ${userData.address_state}` : t('userProfile.noLocation')}
+              {(address.lat && address.lng) ? `${address.city}, ${address.state}` : 'Localização não definida'}
             </span>
           </div>
         </section>
+
+        {isEditing && (!userData?.address_street) && (
+          <div className="mb-6 animate-in fade-in zoom-in duration-500">
+            <div className="bg-primary/5 dark:bg-primary/20 border-2 border-dashed border-primary/30 rounded-3xl p-6 relative overflow-hidden">
+               <div className="relative z-10">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center">
+                    <span className="material-symbols-outlined text-sm">info</span>
+                  </div>
+                  <h3 className="font-black text-sm text-primary dark:text-blue-400 uppercase tracking-widest">Configuração Necessária</h3>
+                </div>
+                <p className="text-sm text-on-surface-variant dark:text-slate-200 font-medium leading-relaxed">
+                  Para sua segurança e agilidade nos resgates, use o <b>Mapa</b> para definir sua localização exata e preencher o endereço. Recomendamos manter o endereço como <b>padrão</b> para facilitar suas buscas.
+                </p>
+               </div>
+               <div className="absolute -right-4 -bottom-4 opacity-5 pointer-events-none">
+                  <span className="material-symbols-outlined text-8xl text-primary">pin_drop</span>
+               </div>
+            </div>
+          </div>
+        )}
 
         {isEditing ? (
           <section className="space-y-6 animate-in fade-in slide-in-from-bottom-4">
@@ -182,13 +268,18 @@ export default function UserProfile() {
                 <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
                   <span className="material-symbols-outlined text-[24px]">contact_phone</span>
                 </div>
-                <p className="text-sm font-black uppercase tracking-widest text-[#1565C0] dark:text-blue-400">{t('userProfile.myData')}</p>
+                <p className="text-sm font-black uppercase tracking-widest text-[#1565C0] dark:text-blue-400">MEUS DADOS</p>
               </div>
 
               <div className="space-y-4">
                 <div>
-                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5 ml-1">{t('userProfile.phone')}</p>
-                  <TextInput value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="(00) 00000-0000" />
+                   <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5 ml-1">TELEFONE</p>
+                   <TextInput 
+                     value={phone} 
+                     onChange={(e) => setPhone(maskPhone(e.target.value))} 
+                     type="tel"
+                     placeholder="(00) 00000-0000" 
+                   />
                 </div>
               </div>
             </div>
@@ -199,51 +290,67 @@ export default function UserProfile() {
                   <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
                     <span className="material-symbols-outlined text-[24px]">map</span>
                   </div>
-                  <p className="text-sm font-black uppercase tracking-widest text-[#1565C0] dark:text-blue-400">{t('userProfile.addressTitle')}</p>
+                  <p className="text-sm font-black uppercase tracking-widest text-[#1565C0] dark:text-blue-400">ENDEREÇO</p>
                 </div>
                 <button 
                   onClick={() => setShowMap(true)}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 text-[10px] font-black uppercase tracking-wider"
+                  className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 text-[10px] font-black uppercase tracking-widest border border-blue-100 dark:border-blue-900/30 active:scale-95 transition-all shadow-sm"
                 >
-                  <span className="material-symbols-outlined text-xs">pin_drop</span>
-                  {t('userProfile.map')}
+                  <span className="material-symbols-outlined text-xs animate-pulse-slow">map</span>
+                  MAPA
                 </button>
               </div>
 
               <div className="grid grid-cols-1 gap-4">
                 <div>
-                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5 ml-1">{t('userProfile.street')}</p>
-                  <TextInput value={address.street} onChange={(e) => setAddress({...address, street: e.target.value})} placeholder="Ex: Rua das Amoreiras" />
+                   <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5 ml-1">RUA / LOGRADOURO</p>
+                   <TextInput value={address.street} onChange={(e) => setAddress({...address, street: e.target.value})} placeholder="Ex: Rua das Amoreiras" />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5 ml-1">{t('userProfile.number')}</p>
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5 ml-1">NÚMERO</p>
                     <TextInput value={address.number} onChange={(e) => setAddress({...address, number: e.target.value})} placeholder="100" />
                   </div>
                   <div>
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5 ml-1">{t('userProfile.complement')}</p>
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5 ml-1">COMPLEMENTO</p>
                     <TextInput value={address.complement} onChange={(e) => setAddress({...address, complement: e.target.value})} placeholder="Apt 201" />
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                    <div>
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5 ml-1">{t('userProfile.neighborhood')}</p>
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5 ml-1">BAIRRO</p>
                     <TextInput value={address.neighborhood} onChange={(e) => setAddress({...address, neighborhood: e.target.value})} placeholder="Centro" />
                   </div>
                   <div>
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5 ml-1">{t('userProfile.city')}</p>
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5 ml-1">CIDADE</p>
                     <TextInput value={address.city} onChange={(e) => setAddress({...address, city: e.target.value})} placeholder="Porto Alegre" />
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                    <div>
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5 ml-1">{t('userProfile.state')}</p>
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5 ml-1">UF</p>
                     <TextInput value={address.state} onChange={(e) => setAddress({...address, state: e.target.value.toUpperCase()})} maxLength={2} placeholder="RS" />
                   </div>
                   <div>
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5 ml-1">{t('userProfile.zipCode')}</p>
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5 ml-1">CEP</p>
                     <TextInput value={address.zipCode} onChange={(e) => setAddress({...address, zipCode: e.target.value})} placeholder="00000-000" />
                   </div>
+                </div>
+
+                <div className="flex items-center justify-between p-4 bg-emerald-500/5 rounded-2xl border border-emerald-500/10 mt-2">
+                  <div className="flex items-center gap-3">
+                    <span className="material-symbols-outlined text-emerald-500">my_location</span>
+                    <div>
+                        <p className="text-xs font-black text-slate-800 dark:text-white leading-none mb-1">Usar como endereço padrão</p>
+                        <p className="text-[10px] text-slate-500 font-bold uppercase tracking-tight">Otimiza buscas e pedidos de socorro</p>
+                    </div>
+                  </div>
+                  <button 
+                    onClick={() => setAddress({...address, use_default_location: !address.use_default_location})}
+                    className={`w-12 h-6 rounded-full transition-all relative ${address.use_default_location ? 'bg-emerald-500' : 'bg-slate-300 dark:bg-white/10'}`}
+                  >
+                    <div className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-all ${address.use_default_location ? 'left-7' : 'left-1'}`} />
+                  </button>
                 </div>
               </div>
             </div>
@@ -253,27 +360,27 @@ export default function UserProfile() {
                 onClick={() => setIsEditing(false)}
                 className="w-full py-4 rounded-2xl bg-slate-100 dark:bg-white/10 text-slate-600 dark:text-white font-black uppercase text-[10px] tracking-widest active:scale-95 transition-transform"
                >
-                 {t('userProfile.cancel')}
+                 CANCELAR
                </button>
                <button 
                 onClick={handleSave}
                 disabled={loading}
                 className="w-full py-4 rounded-2xl bg-[#1565C0] text-white font-black uppercase text-[10px] tracking-widest active:scale-95 transition-transform shadow-lg shadow-blue-500/20 disabled:opacity-50"
                >
-                 {loading ? t('userProfile.saving') : t('userProfile.save')}
+                 {loading ? 'SALVANDO...' : 'SALVAR ALTERAÇÕES'}
                </button>
             </div>
           </section>
         ) : (
           <section className="space-y-6 animate-in fade-in slide-in-from-bottom-4">
-            {/* Card: Endereços */}
+            {/* Card: Localização */}
             <div className="bg-surface-container-lowest dark:bg-white/5 border border-outline-variant/20 dark:border-white/5 rounded-3xl p-6 shadow-sm">
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
                     <span className="material-symbols-outlined text-[24px]">map</span>
                   </div>
-                  <p className="text-sm font-black uppercase tracking-widest">{t('request.location')}</p>
+                  <p className="text-sm font-black uppercase tracking-widest">LOCALIZAÇÃO</p>
                 </div>
                 <button 
                   onClick={() => setIsEditing(true)}
@@ -287,7 +394,7 @@ export default function UserProfile() {
                 <div className="bg-slate-50 dark:bg-white/5 rounded-2xl p-4 border border-slate-100 dark:border-white/10">
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex-1">
-                      <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-1">{t('userProfile.residentialAddress')}</p>
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-1">Endereço Residencial</p>
                       {userData?.address_street ? (
                         <>
                           <p className="font-bold text-sm text-slate-800 dark:text-white">
@@ -298,12 +405,12 @@ export default function UserProfile() {
                           </p>
                         </>
                       ) : (
-                        <p className="text-sm text-slate-400 italic">{t('userProfile.noAddress')}</p>
+                        <p className="text-sm text-slate-400 italic">Nenhum endereço cadastrado.</p>
                       )}
                     </div>
-                    {userData?.address_street && (
+                    {address.use_default_location && (
                       <span className="text-[10px] font-bold uppercase tracking-widest text-[#1565C0] bg-blue-50 dark:bg-blue-900/40 px-3 py-1.5 rounded-full">
-                        {t('userProfile.active')}
+                        PADRÃO
                       </span>
                     )}
                   </div>
@@ -315,15 +422,15 @@ export default function UserProfile() {
             <div className="bg-surface-container-lowest dark:bg-white/5 border border-outline-variant/20 dark:border-white/5 rounded-3xl p-6 shadow-sm">
               <div className="flex items-center gap-3 mb-6">
                 <div className="w-10 h-10 rounded-xl bg-orange-500/10 flex items-center justify-center text-orange-500">
-                  <span className="material-symbols-outlined text-[24px]">settings</span>
+                   <span className="material-symbols-outlined text-[24px]">settings</span>
                 </div>
-                <p className="text-sm font-black uppercase tracking-widest">{t('userProfile.settings')}</p>
+                <p className="text-sm font-black uppercase tracking-widest">CONFIGURAÇÕES</p>
               </div>
 
               <div className="space-y-6">
                 {/* Idioma */}
                 <div>
-                  <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-3 ml-1">{t('userProfile.language')}</p>
+                   <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-3 ml-1">IDIOMA</p>
                   <div className="grid grid-cols-2 gap-3">
                     <button 
                       onClick={() => setLanguage('pt-BR')}
@@ -350,7 +457,7 @@ export default function UserProfile() {
 
                 {/* Tema */}
                 <div>
-                  <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-3 ml-1">{t('userProfile.theme')}</p>
+                   <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-3 ml-1">TEMA</p>
                   <div className="grid grid-cols-2 gap-3">
                     <button 
                       onClick={() => toggleTheme('light')}
@@ -361,7 +468,7 @@ export default function UserProfile() {
                       }`}
                     >
                       <span className="material-symbols-outlined text-[18px]">light_mode</span>
-                      {t('userProfile.themeLight')}
+                      CLARO
                     </button>
                     <button 
                       onClick={() => toggleTheme('dark')}
@@ -372,7 +479,7 @@ export default function UserProfile() {
                       }`}
                     >
                       <span className="material-symbols-outlined text-[18px]">dark_mode</span>
-                      {t('userProfile.themeDark')}
+                      ESCURO
                     </button>
                   </div>
                 </div>
@@ -385,14 +492,14 @@ export default function UserProfile() {
                 className="w-full flex items-center justify-center gap-2 bg-slate-50 dark:bg-white/5 text-slate-700 dark:text-white border border-slate-200 dark:border-white/10 font-black py-4 rounded-2xl active:scale-95 transition-transform text-xs uppercase tracking-[0.1em]"
               >
                 <span className="material-symbols-outlined text-[18px]">home</span>
-                {t('userProfile.backHome')}
+                VOLTAR AO INÍCIO
               </Link>
 
               <button 
                 onClick={handleLogout} 
                 className="w-full py-4 text-red-500 font-extrabold uppercase tracking-[0.2em] text-[10px] hover:bg-red-50 dark:hover:bg-red-500/10 rounded-2xl transition-colors"
               >
-                {t('userProfile.logout')}
+                SAIR DA CONTA
               </button>
             </div>
           </section>
@@ -404,12 +511,12 @@ export default function UserProfile() {
         <div className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-6 animate-in fade-in">
            <div className="bg-white dark:bg-[#0d2247] w-full max-w-2xl sm:rounded-[2.5rem] overflow-hidden flex flex-col h-[90vh] sm:h-[80vh] shadow-2xl animate-in slide-in-from-bottom-8 duration-500">
               <div className="p-6 flex items-center justify-between border-b border-slate-100 dark:border-white/10 shrink-0">
-                <h3 className="text-xl font-headline font-black text-slate-900 dark:text-white">{t('userProfile.selectOnMap')}</h3>
-                <button onClick={() => setShowMap(false)} className="w-10 h-10 rounded-full bg-slate-50 dark:bg-white/5 flex items-center justify-center text-slate-400">
+                <h3 className="text-xl font-headline font-black text-slate-900 dark:text-white uppercase tracking-tight">SELECIONE NO MAPA</h3>
+                <button onClick={() => setShowMap(false)} className="w-10 h-10 rounded-full bg-slate-50 dark:bg-white/5 flex items-center justify-center text-slate-400 transition-colors hover:bg-slate-100 dark:hover:bg-white/10">
                   <span className="material-symbols-outlined">close</span>
                 </button>
               </div>
-              <div className="flex-1 relative">
+              <div className="flex-1 relative bg-slate-100">
                 <MapComponent externalCenter={pickedLoc} onUpdateCenter={(center: [number, number]) => setPickedLoc(center)} />
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none z-[1000]">
                   <div className="relative">
@@ -418,90 +525,68 @@ export default function UserProfile() {
                   </div>
                 </div>
               </div>
-              <div className="p-6 bg-slate-50 dark:bg-[#0d2247] border-t border-slate-100 dark:border-white/10 shrink-0">
-                {/* FORMULARIO COMPACTO - PERFIL */}
-                <div className="space-y-3 mb-4">
+              <div className="p-6 bg-white dark:bg-[#0d2247] border-t border-slate-100 dark:border-white/10 shrink-0">
+                <div className="space-y-3 mb-6">
                   <div>
-                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1 ml-1">{t('userProfile.street')}</p>
+                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1 ml-1 leading-none">RUA / LOGRADOURO</p>
                     <TextInput 
                       value={address.street} 
                       onChange={(e) => setAddress({...address, street: e.target.value})} 
                       placeholder="Rua..." 
-                      className="!py-2 !text-xs !rounded-xl"
+                      className="!py-3.5 !text-xs !rounded-2xl"
                     />
                   </div>
                   
-                  <div className="grid grid-cols-3 gap-2">
+                  <div className="grid grid-cols-3 gap-3">
                     <div>
-                      <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1 ml-1">{t('userProfile.number').slice(0,2)}.</p>
+                      <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1 ml-1 leading-none">NÚMERO</p>
                       <TextInput 
                         value={address.number} 
                         onChange={(e) => setAddress({...address, number: e.target.value})} 
                         placeholder="100" 
-                        className="!py-2 !text-xs !rounded-xl"
+                        className="!py-3.5 !text-xs !rounded-2xl text-center"
                       />
                     </div>
-                    <div>
-                      <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1 ml-1">{t('userProfile.complement').slice(0,5)}.</p>
+                    <div className="col-span-2">
+                       <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1 ml-1 leading-none">BAIRRO</p>
                       <TextInput 
-                        value={address.complement} 
-                        onChange={(e) => setAddress({...address, complement: e.target.value})} 
-                        placeholder="Apt..." 
-                        className="!py-2 !text-xs !rounded-xl"
-                      />
-                    </div>
-                    <div>
-                      <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1 ml-1">{t('userProfile.state')}</p>
-                      <TextInput 
-                        value={address.state} 
-                        onChange={(e) => setAddress({...address, state: e.target.value.toUpperCase()})} 
-                        placeholder="RS" 
-                        maxLength={2}
-                        className="!py-2 !text-xs !rounded-xl text-center"
+                        value={address.neighborhood} 
+                        onChange={(e) => setAddress({...address, neighborhood: e.target.value})} 
+                        placeholder="Ex: Centro" 
+                        className="!py-3.5 !text-xs !rounded-2xl"
                       />
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-3 gap-2 pb-1">
+                  <div className="grid grid-cols-2 gap-3 pb-1">
                     <div>
-                      <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1 ml-1">{t('userProfile.neighborhood')}</p>
-                      <TextInput 
-                        value={address.neighborhood} 
-                        onChange={(e) => setAddress({...address, neighborhood: e.target.value})} 
-                        placeholder="Bairro..." 
-                        className="!py-2 !text-xs !rounded-xl"
-                      />
-                    </div>
-                    <div>
-                      <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1 ml-1">{t('userProfile.city')}</p>
+                       <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1 ml-1 leading-none">CIDADE</p>
                       <TextInput 
                         value={address.city} 
                         onChange={(e) => setAddress({...address, city: e.target.value})} 
                         placeholder="Cidade..." 
-                        className="!py-2 !text-xs !rounded-xl"
+                        className="!py-3.5 !text-xs !rounded-2xl"
                       />
                     </div>
                     <div>
-                      <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1 ml-1">{t('userProfile.zipCode')}</p>
+                       <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1 ml-1 leading-none">ESTADO / UF</p>
                       <TextInput 
-                        value={address.zipCode} 
-                        onChange={(e) => setAddress({...address, zipCode: e.target.value})} 
-                        placeholder="00000" 
-                        className="!py-2 !text-xs !rounded-xl"
+                         value={address.state} 
+                         onChange={(e) => setAddress({...address, state: e.target.value.toUpperCase()})} 
+                         placeholder="UF" 
+                         maxLength={2}
+                         className="!py-3.5 !text-xs !rounded-2xl text-center"
                       />
                     </div>
                   </div>
                 </div>
 
-                <p className="text-[10px] font-black uppercase text-slate-400 mb-4 tracking-widest text-center">{t('userProfile.moveMapWarning')}</p>
+                <p className="text-[10px] font-black uppercase text-slate-400 mb-4 tracking-widest text-center mt-2">MOVA O MAPA PARA POSICIONAR EXATAMENTE</p>
                 <button 
-                  onClick={() => {
-                    reverseGeocode(pickedLoc);
-                    setShowMap(false);
-                  }}
-                  className="w-full py-4 bg-[#1565C0] text-white rounded-2xl font-black uppercase text-xs tracking-widest shadow-xl shadow-blue-500/20 active:scale-95 transition-transform"
+                  onClick={() => setShowMap(false)}
+                  className="w-full py-4.5 bg-[#1565C0] text-white rounded-[1.25rem] font-black uppercase text-xs tracking-widest shadow-xl shadow-blue-500/20 active:scale-[0.98] transition-all min-h-[56px] flex items-center justify-center"
                 >
-                  {t('userProfile.confirmLocation')}
+                  CONFIRMAR LOCALIZAÇÃO
                 </button>
               </div>
            </div>

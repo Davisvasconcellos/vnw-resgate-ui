@@ -131,3 +131,18 @@ input[type='range']::-webkit-slider-thumb {
     transform: translate3d(0, 0, 0);
   }
 }
+
+.animate-pulse-slow {
+  animation: pulse-blink 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse-blink {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(1.1);
+  }
+}

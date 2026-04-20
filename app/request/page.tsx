@@ -11,8 +11,9 @@ const MapComponent = dynamic(() => import('@/components/ui/MapComponent'), { ssr
 import { useI18n } from '@/components/i18n/I18nProvider'
 import TextInput from '@/components/ui/TextInput'
 import AppHeader from '@/components/headers/AppHeader'
-import { api } from '@/services/api' // <-- HTTP Client real
+import { api } from '@/services/api' 
 import { getDeviceId, saveHelpRequest } from '@/services/fingerprint'
+import { getCurrentPosition, checkPermissions, getIPLocation } from '@/services/geolocation'
 import toast from 'react-hot-toast'
 
 type HelpType = 'rescue' | 'shelter' | 'medical' | 'food' | 'transport' | 'boat'
@@ -104,14 +105,116 @@ function RequestForm() {
     } catch (e) {}
   }
 
-  // Simulate geolocation
+  // Detect real location on load - Optimized for speed
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setLocationStatus('ready')
-      setLocationAddress('Sincronizando localização...')
-    }, 1500)
-    return () => clearTimeout(timer)
-  }, [])
+    const initLocation = async () => {
+      const storedUser = localStorage.getItem('vnw_user')
+      let user: any = null
+      if (storedUser) {
+        try {
+          user = JSON.parse(storedUser)
+          // Se o usuário já definiu que quer usar a localização dele, respeitamos isso DE CARA
+          if (user.use_default_location && user.lat && user.address_street) {
+            const coords: [number, number] = [parseFloat(user.lat), parseFloat(user.lng)]
+            setPickedLoc(coords)
+            setMapFlyTrigger(coords)
+            setLocationStatus('ready')
+            
+            const parts = [
+              user.address_street ? `${user.address_street}${user.address_number ? `, ${user.address_number}` : ''}` : '',
+              user.address_neighborhood,
+              user.address_city ? (user.address_state ? `${user.address_city} - ${user.address_state}` : user.address_city) : user.address_state
+            ].filter(Boolean)
+            setLocationAddress(parts.join(' / '))
+            
+            setAddressDetails({
+              street: user.address_street || '',
+              number: user.address_number || '',
+              complement: user.address_complement || '',
+              neighborhood: user.address_neighborhood || '',
+              city: user.address_city || '',
+              state: user.address_state || '',
+              zipCode: user.address_zip_code || ''
+            })
+            return; // Encerra aqui, não tenta GPS
+          }
+        } catch (e) {}
+      }
+
+      // Se não tiver local padrão ou não estiver logado, tenta o fluxo normal
+      detectLocation(!!user);
+    }
+
+    initLocation();
+  }, []);
+
+  const detectLocation = async (isLoggedIn: boolean) => {
+    if (typeof window !== 'undefined' && !window.isSecureContext) {
+      console.warn('Geolocation requires a secure context (HTTPS/Localhost)');
+      setLocationStatus('error');
+      setLocationAddress("Erro: O GPS requer uma conexão segura (HTTPS).");
+      toast.error("Erro de segurança: GPS requer HTTPS.");
+      setShowMapModal(true);
+      return;
+    }
+
+    try {
+      setLocationStatus('acquiring');
+      
+      const perm = await checkPermissions();
+      if (perm === 'denied') {
+         // Fallback para IP APENAS se não estiver logado
+         if (!isLoggedIn) {
+            console.warn('GPS negado, tentando IP fallback...');
+            const ipPos = await getIPLocation();
+            const coords: [number, number] = [ipPos.coords.latitude, ipPos.coords.longitude];
+            setPickedLoc(coords);
+            setMapFlyTrigger(coords);
+            setLocationStatus('ready');
+            reverseGeocode(coords);
+            toast.success("GPS Bloqueado. Localização estimada.");
+         } else {
+            setLocationStatus('error');
+            setLocationAddress("GPS Bloqueado. Use o mapa.");
+            setShowMapModal(true);
+         }
+         return;
+      }
+
+      const pos = await getCurrentPosition({
+        enableHighAccuracy: true,
+        timeout: 8000,
+        maximumAge: 10000
+      });
+
+      const coords: [number, number] = [pos.coords.latitude, pos.coords.longitude];
+      setPickedLoc(coords);
+      setMapFlyTrigger(coords);
+      setLocationStatus('ready');
+      reverseGeocode(coords);
+    } catch (err: any) {
+      console.error('Loc error detail:', err);
+      
+      if (!isLoggedIn) {
+        try {
+          // Tentar IP Fallback para anônimos
+          const ipPos = await getIPLocation();
+          const coords: [number, number] = [ipPos.coords.latitude, ipPos.coords.longitude];
+          setPickedLoc(coords);
+          setMapFlyTrigger(coords);
+          setLocationStatus('ready');
+          reverseGeocode(coords);
+          toast.success("Localização aproximada (Rede)");
+        } catch (innerErr) {
+          setLocationStatus('error');
+          setShowMapModal(true);
+        }
+      } else {
+        setLocationStatus('error');
+        setShowMapModal(true);
+      }
+    }
+  }
 
   const handlePhotoCapture = (file: File | null) => {
     if (file) {
@@ -396,9 +499,21 @@ function RequestForm() {
           </div>
         </section>
 
-        {/* Location */}
         <section>
-          <p className="text-xs font-bold uppercase tracking-wide text-slate-400 mb-2">{t('request.location')}</p>
+          <div className="flex items-center justify-between mb-2">
+            <p className="text-xs font-bold uppercase tracking-wide text-slate-400">{t('request.location')}</p>
+            {locationStatus === 'error' && (
+              <button 
+                type="button"
+                onClick={() => {
+                  detectLocation(!!userId);
+                }}
+                className="text-[10px] font-black uppercase text-primary underline underline-offset-4"
+              >
+                Tentar Novamente
+              </button>
+            )}
+          </div>
           <LocationIndicator 
             address={locationAddress} 
             status={locationStatus} 
