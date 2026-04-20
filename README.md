@@ -2,6 +2,10 @@
 
 Esta é a interface **Premium** do ecossistema **VNW Resgate**, desenvolvida em Next.js para ser uma ferramenta de campo ágil, humana e resiliente. Projetada para ser utilizada por voluntários e pessoas em situação de risco durante operações de salvamento.
 
+Recomendo que instale como PWA quando for solicitado, pois a experiência é melhor. já está otimizado com o arquivo manifest.json e o service worker.
+
+O arquivo manifest.json está configurado para que o aplicativo seja instalado como um aplicativo nativo no dispositivo do usuário. O service worker está configurado para que o aplicativo funcione offline e também para que o aplicativo possa ser instalado como um aplicativo nativo no dispositivo do usuário.
+
 ---
 
 ## 🎨 Filosofia de Design: "Objective & Light"
