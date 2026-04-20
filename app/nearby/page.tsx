@@ -8,6 +8,7 @@ import CapacityBar from '@/components/ui/CapacityBar'
 import StatusBadge from '@/components/ui/StatusBadge'
 import InteractiveMap from '@/components/ui/InteractiveMap'
 import { api } from '@/services/api'
+import { getFirstName } from '@/services/utils'
 import { useI18n } from '@/components/i18n/I18nProvider'
 
 import { useDispatch, useSelector } from 'react-redux'
@@ -456,7 +457,7 @@ function NearbyContent() {
               <div className="flex-1 min-w-0 pr-4">
                 <div className="flex items-center gap-2 mb-1">
                     <p className="font-extrabold text-slate-800 dark:text-white text-base leading-snug truncate transition-colors">
-                        {item.name || HELP_TYPE_LABELS[item.type as keyof typeof HELP_TYPE_LABELS]?.label || item.type}
+                        {getFirstName(item.name || HELP_TYPE_LABELS[item.type as keyof typeof HELP_TYPE_LABELS]?.label || item.type)}
                     </p>
                     {item.is_verified && (
                         <span className="material-symbols-outlined text-blue-500 text-[16px]" style={{ fontVariationSettings: "'FILL' 1" }}>verified</span>
@@ -497,7 +498,7 @@ function NearbyContent() {
                   </div>
                   <div className="flex items-center gap-1.5 bg-slate-50 dark:bg-white/5 px-2.5 py-1.5 rounded-xl border border-slate-100 dark:border-white/5 truncate">
                     <span className="material-symbols-outlined text-[14px]">person</span>
-                    <span className="truncate">{item.reporter_name || item.name || '---'}</span>
+                    <span className="truncate">{getFirstName(item.reporter_name || item.name)}</span>
                   </div>
                 </div>
               </div>

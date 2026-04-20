@@ -7,6 +7,7 @@ import { api } from '@/services/api'
 import ProtectedRoute from '@/components/ProtectedRoute'
 import toast from 'react-hot-toast'
 import { getCurrentPosition, checkPermissions, getIPLocation } from '@/services/geolocation'
+import { getFirstName } from '@/services/utils'
 
 const CapacityBar = ({ current, total, t }: { current: number; total: number; t: any }) => {
   const percentage = Math.min(Math.round((current / total) * 100), 100);
@@ -357,18 +358,18 @@ export default function VolunteerTasksPage() {
                   }`}
                 >
                   {/* Top: Name & Status */}
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-slate-50 dark:bg-white/5">
+                  <div className="flex items-center justify-between mb-2 gap-2">
+                    <div className="flex items-center gap-3 flex-1 min-w-0 pr-1">
+                      <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-slate-50 dark:bg-white/5 shrink-0">
                         <span className="material-symbols-outlined text-[18px]" style={{ color: getTaskColor(item.type) }}>
                           {getTaskIcon(item.type)}
                         </span>
                       </div>
-                      <h3 className="text-sm font-black text-slate-900 dark:text-white uppercase tracking-tighter truncate max-w-[180px]">
-                        {item.reporter_name || item.name}
+                      <h3 className="text-sm font-black text-slate-900 dark:text-white uppercase tracking-tighter truncate">
+                        {getFirstName(item.reporter_name || item.name)}
                       </h3>
                     </div>
-                    <div className="flex items-center gap-1.5 text-slate-300">
+                    <div className="flex items-center gap-1.5 text-slate-300 shrink-0">
                        {item.distance !== undefined && (
                          <div className="flex items-center gap-1 px-2 py-1 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 mr-2">
                            <span className="material-symbols-outlined text-[14px]">near_me</span>
